@@ -45,7 +45,6 @@ export const useAuthStore = defineStore({
 			this.logInError = null
 			try {
 				const user = await Parse.User.logIn(email, password)
-				console.log(user)
 				this.currentUser = user
 				this.userId = user.id
 				this.sessionToken = user.get('sessionToken')

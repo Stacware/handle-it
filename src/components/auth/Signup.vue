@@ -73,6 +73,7 @@ export default {
 			passwordTouched: false,
 			confirmPasswordTouched: false,
 			loading: false,
+			authStore: useAuthStore(),
 		};
 	},
 	computed: {
@@ -101,9 +102,8 @@ export default {
 		async signUp() {
 			if (this.isFormValid) {
 				this.loading = true;
-				const authStore = useAuthStore();
 				try {
-					await authStore.signUp(this.email, this.password);
+					await this.authStore.signUp(this.email, this.password);
 				} finally {
 					setTimeout(() => {
 						this.loading = false;

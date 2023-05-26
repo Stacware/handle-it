@@ -89,7 +89,6 @@ export default {
 	watch: {
 		userId(val) {
 			if (val) {
-				console.log(val);
 				this.$router.push({ name: 'dashboard', params: { userId: this.userId } });
 			}
 		},

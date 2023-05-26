@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import MarketingView from '../views/MarketingView.vue'
 import EmailView from '../views/EmailView.vue'
+import ManageView from '../views/ManageView.vue'
 import { useAuthStore } from '../stores/auth.js'
 
 const router = createRouter({
@@ -12,6 +13,12 @@ const router = createRouter({
 			path: '/',
 			name: 'home',
 			component: HomeView
+		},
+		{
+			path: '/manage-account/:userId',
+			name: 'manage',
+			component: ManageView,
+			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
 		},
 		{
 			path: '/dashboard/:userId',
