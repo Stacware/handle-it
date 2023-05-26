@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import MarketingView from '../views/MarketingView.vue'
+import EmailView from '../views/EmailView.vue'
 import { useAuthStore } from '../stores/auth.js'
 
 const router = createRouter({
@@ -15,6 +17,18 @@ const router = createRouter({
 			path: '/dashboard/:userId',
 			name: 'dashboard',
 			component: DashboardView,
+			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
+		},
+		{
+			path: '/marketing/:userId',
+			name: 'marketing',
+			component: MarketingView,
+			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
+		},
+		{
+			path: '/email/:userId',
+			name: 'email',
+			component: EmailView,
 			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
 		}
 	]

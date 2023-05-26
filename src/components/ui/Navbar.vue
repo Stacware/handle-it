@@ -7,8 +7,23 @@
 			<span class="navbar-brand mb-0 h1">handleIT</span>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
+					<li v-if="userId" class="nav-item align-items-start me-3">
+						<router-link :to="{ name: 'dashboard', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+							<i class="bi bi-clipboard-data-fill me-2"></i>
+							Dashboard
+						</router-link>
+					</li>
+					<li v-if="userId" class="nav-item align-items-start me-3">
+						<router-link :to="{ name: 'marketing', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+							<i class="bi bi-megaphone-fill me-2"></i>
+							Marketing
+						</router-link>
+					</li>
 					<li v-if="userId" class="nav-item align-items-start">
-						<router-link :to="{ name: 'dashboard', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">Dashboard</router-link>
+						<router-link :to="{ name: 'email', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+							<i class="bi bi-envelope-at-fill me-2"></i>
+							Email
+						</router-link>
 					</li>
 					<li v-if="false" class="nav-item">
 						<router-link to="/manage-account" class="nav-link">Manage Account</router-link>

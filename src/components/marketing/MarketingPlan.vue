@@ -1,3 +1,3 @@
 <template>
-	<h1>Marketing</h1>
+	<h1>Marketing Plan</h1>
 </template>

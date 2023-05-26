@@ -14,7 +14,9 @@
 									id="loginEmail"
 									v-model="email"
 									@input="emailTouched = true"
-									:class="{ 'is-invalid': !isEmailValid && emailTouched }"
+									@focus="onUsernameFocus"
+									@blur="onBlur"
+									:class="{ 'is-invalid': !isEmailValid && emailTouched, focused: usernameFocused }"
 									placeholder="Email Address" />
 								<div class="invalid-feedback">Please enter a valid email address.</div>
 							</div>
@@ -26,7 +28,9 @@
 									id="loginPassword"
 									v-model="password"
 									@input="passwordTouched = true"
-									:class="{ 'is-invalid': !isPasswordValid && passwordTouched }"
+									@focus="onPasswordFocus"
+									@blur="onBlur"
+									:class="{ 'is-invalid': !isPasswordValid && passwordTouched, focused: passwordFocused }"
 									placeholder="Password" />
 								<div class="invalid-feedback">Password should be at least 8 characters.</div>
 							</div>
@@ -42,6 +46,22 @@
 								<small class="text-danger">Error! {{ returnLogInError }}</small>
 							</div>
 						</form>
+						<div class="ear-l"></div>
+						<div class="ear-r"></div>
+						<div class="panda-face">
+							<div class="blush-l"></div>
+							<div class="blush-r"></div>
+							<div class="eye-l">
+								<div class="eyeball-l" :class="{ focused: usernameFocused }"></div>
+							</div>
+							<div class="eye-r">
+								<div class="eyeball-r" :class="{ focused: usernameFocused }"></div>
+							</div>
+							<div class="nose"></div>
+							<div class="mouth"></div>
+						</div>
+						<div class="hand-l" :class="{ focused: passwordFocused }"></div>
+						<div class="hand-r" :class="{ focused: passwordFocused }"></div>
 					</div>
 				</div>
 			</div>
@@ -51,13 +71,17 @@
 
 <script>
 import { useAuthStore } from '../../stores/auth.js';
+
 export default {
+	components: {},
 	data() {
 		return {
 			email: '',
 			password: '',
 			emailTouched: false,
 			passwordTouched: false,
+			usernameFocused: false,
+			passwordFocused: false,
 			loading: false,
 			authStore: useAuthStore(),
 		};
@@ -92,6 +116,18 @@ export default {
 		},
 	},
 	methods: {
+		onUsernameFocus() {
+			this.usernameFocused = true;
+			this.passwordFocused = false;
+		},
+		onPasswordFocus() {
+			this.usernameFocused = false;
+			this.passwordFocused = true;
+		},
+		onBlur() {
+			this.usernameFocused = false;
+			this.passwordFocused = false;
+		},
 		async login() {
 			if (this.isFormValid) {
 				this.loading = true;
@@ -105,3 +141,170 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.eyeball-l.focused {
+	left: 0.75em;
+	top: 1.12em;
+}
+.eyeball-r.focused {
+	right: 0.75em;
+	top: 1.12em;
+}
+.hand-l.focused {
+	height: 6.56em;
+	top: -5.625rem;
+	left: 15.625rem;
+	transform: rotate(-155deg);
+}
+.hand-r.focused {
+	height: 6.56em;
+	top: -5.625rem;
+	right: 15.625rem;
+	transform: rotate(155deg);
+}
+.panda-face {
+	height: 7.5em;
+	width: 8.4em;
+	background-color: #ffffff;
+	border: 0.18em solid #2e0d30;
+	border-radius: 7.5em 7.5em 5.62em 5.62em;
+	position: absolute;
+	top: -7.5rem;
+	margin: auto;
+	left: 0;
+	right: 0;
+}
+.ear-l,
+.ear-r {
+	background-color: #3f3554;
+	height: 2.5em;
+	width: 2.81em;
+	border: 0.18em solid #2e0d30;
+	border-radius: 2.5em 2.5em 0 0;
+	top: -7.813rem;
+	position: absolute;
+}
+.ear-l {
+	transform: rotate(-38deg);
+	left: 14.375rem;
+}
+.ear-r {
+	transform: rotate(38deg);
+	right: 14.375rem;
+}
+.blush-l,
+.blush-r {
+	background-color: #ff8bb1;
+	height: 1em;
+	width: 1.37em;
+	border-radius: 50%;
+	position: absolute;
+	top: 4em;
+}
+.blush-l {
+	transform: rotate(25deg);
+	left: 1em;
+}
+.blush-r {
+	transform: rotate(-25deg);
+	right: 1em;
+}
+.eye-l,
+.eye-r {
+	background-color: #3f3554;
+	height: 2.18em;
+	width: 2em;
+	border-radius: 2em;
+	position: absolute;
+	top: 2.18em;
+}
+.eye-l {
+	left: 1.37em;
+	transform: rotate(-20deg);
+}
+.eye-r {
+	right: 1.37em;
+	transform: rotate(20deg);
+}
+.eyeball-l,
+.eyeball-r {
+	height: 0.6em;
+	width: 0.6em;
+	background-color: #ffffff;
+	border-radius: 50%;
+	position: absolute;
+	left: 0.6em;
+	top: 0.6em;
+	transition: 1s all;
+}
+.eyeball-l {
+	transform: rotate(20deg);
+}
+.eyeball-r {
+	transform: rotate(-20deg);
+}
+.nose {
+	height: 1em;
+	width: 1em;
+	background-color: #3f3554;
+	position: absolute;
+	top: 4.37em;
+	margin: auto;
+	left: 0;
+	right: 0;
+	border-radius: 1.2em 0 0 0.25em;
+	transform: rotate(45deg);
+}
+.nose:before {
+	content: '';
+	position: absolute;
+	background-color: #3f3554;
+	height: 0.6em;
+	width: 0.1em;
+	transform: rotate(-45deg);
+	top: 0.75em;
+	left: 1em;
+}
+.mouth,
+.mouth:before {
+	height: 0.75em;
+	width: 0.93em;
+	background-color: transparent;
+	position: absolute;
+	border-radius: 50%;
+	box-shadow: 0 0.18em #3f3554;
+}
+.mouth {
+	top: 5.31em;
+	left: 3.12em;
+}
+.mouth:before {
+	content: '';
+	position: absolute;
+	left: 0.87em;
+}
+.hand-l,
+.hand-r {
+	background-color: #3f3554;
+	height: 2.81em;
+	width: 2.5em;
+	border: 0.18em solid #2e0d30;
+	border-radius: 0.6em 0.6em 2.18em 2.18em;
+	transition: 1s all;
+	position: absolute;
+	top: -5px;
+}
+.hand-l {
+	left: 7.5em;
+}
+.hand-r {
+	right: 7.5em;
+}
+
+@media screen and (max-width: 500px) {
+	.container {
+		font-size: 14px;
+	}
+}
+</style>
