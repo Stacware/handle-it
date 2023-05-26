@@ -50,6 +50,9 @@
 							<div class="mt-3">
 								<small>Already have an account? <a href="#" @click.prevent="$emit('switch')">Log in!</a></small>
 							</div>
+							<div v-if="returnSignUpError" class="mt-3">
+								<small class="text-danger">Error! {{ returnSignUpError }}</small>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -89,6 +92,9 @@ export default {
 
 		isFormValid() {
 			return this.isEmailValid && this.isPasswordValid && this.isConfirmPasswordValid;
+		},
+		returnSignUpError() {
+			return this.authStore.returnSignUpError;
 		},
 	},
 	methods: {

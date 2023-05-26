@@ -38,6 +38,9 @@
 							<div class="mt-3">
 								<small>Don't have an account? No problem, <a href="#" @click.prevent="$emit('switch')">create one!</a></small>
 							</div>
+							<div v-if="returnLogInError" class="mt-3">
+								<small class="text-danger">Error! {{ returnLogInError }}</small>
+							</div>
 						</form>
 					</div>
 				</div>
@@ -83,6 +86,9 @@ export default {
 		},
 		userId() {
 			return this.authStore.returnCurrentUserId;
+		},
+		returnLogInError() {
+			return this.authStore.returnLogInError;
 		},
 	},
 	methods: {

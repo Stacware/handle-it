@@ -42,6 +42,7 @@ export const useAuthStore = defineStore({
 			}
 		},
 		async logIn (email, password) {
+			this.logInError = null
 			try {
 				const user = await Parse.User.logIn(email, password)
 				console.log(user)
@@ -57,6 +58,7 @@ export const useAuthStore = defineStore({
 		},
 
 		async signUp (email, password) {
+			this.signUpError = null
 			const user = new Parse.User()
 			user.set("username", email)
 			user.set("password", password)
@@ -77,6 +79,7 @@ export const useAuthStore = defineStore({
 			localStorage.removeItem("Parse/MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU/currentUser")
 			this.currentUser = null
 			this.sessionToken = null
+			this.userId = null
 		}
 	}
 })

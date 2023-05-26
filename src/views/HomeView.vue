@@ -10,11 +10,30 @@
 <script>
 import Login from '../components/auth/Login.vue';
 import SignUp from '../components/auth/Signup.vue';
+import { useAuthStore } from '@/stores/auth.js';
 
 export default {
 	components: {
 		Login,
 		SignUp,
+	},
+	async mounted() {
+		const authStore = useAuthStore();
+
+		// Check if the user is authenticated
+		if (!authStore.currentUser) {
+			try {
+				// If the currentUser is not available, fetch it from your backend or local storage
+				await authStore.fetchCurrentUser();
+			} catch (error) {
+				console.error('Failed to fetch the currentUser:', error);
+			}
+		}
+
+		// If user is authenticated, navigate to the Dashboard view
+		if (authStore.currentUser) {
+			this.$router.push({ name: 'dashboard', params: { userId: authStore.userId } });
+		}
 	},
 	data() {
 		return {
