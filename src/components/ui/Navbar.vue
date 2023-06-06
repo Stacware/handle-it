@@ -4,7 +4,7 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="container-fluid">
-			<span class="navbar-brand mb-0 h1">handleIT</span>
+			<span class="navbar-brand mb-0 h1">market panda</span>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
 					<li v-if="userId" class="nav-item align-items-start me-3">
@@ -74,6 +74,11 @@ export default {
 </script>
 
 <style scoped>
+.navbar {
+	z-index: 2;
+	position: relative; /* or absolute or fixed or sticky */
+}
+
 .nav-item {
 	position: relative;
 	/* overflow: hidden; */

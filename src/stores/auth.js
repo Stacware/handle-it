@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import Parse from 'parse/dist/parse.min.js'
+import { useGptRequestsStore } from './gptRequests.js'
+
 export const useAuthStore = defineStore({
 	id: 'auth',
 
@@ -36,6 +38,14 @@ export const useAuthStore = defineStore({
 				try {
 					this.currentUser = JSON.parse(storedUser)
 					this.userId = userId
+					const User = new Parse.User()
+					const query = new Parse.Query(User)
+
+					query.get(userId)
+						.then((user) => {
+							const requestsStore = useGptRequestsStore()
+							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
+						})
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
 				}
@@ -44,7 +54,9 @@ export const useAuthStore = defineStore({
 		async logIn (email, password) {
 			this.logInError = null
 			try {
+				const requestsStore = useGptRequestsStore()
 				const user = await Parse.User.logIn(email, password)
+				if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
 				this.currentUser = user
 				this.userId = user.id
 				this.sessionToken = user.get('sessionToken')

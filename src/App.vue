@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<Navbar />
-		<router-view class="container"></router-view>
+		<router-view></router-view>
 	</div>
 </template>
 <script>
@@ -21,11 +21,15 @@ export default {
 	provide() {
 		return {
 			userId: computed(() => this.userId),
+			currentUser: computed(() => this.currentUser),
 		};
 	},
 	computed: {
 		userId() {
 			return this.authStore.returnCurrentUserId;
+		},
+		currentUser() {
+			return this.authStore.returnCurrentUser;
 		},
 	},
 };
