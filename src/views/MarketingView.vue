@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<h1>Marketing View</h1>
 		<MarketingPlan />
 	</div>
 </template>

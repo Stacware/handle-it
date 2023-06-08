@@ -19,5 +19,13 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
-
+app.mixin({
+	methods: {
+		formatMessage (message) {
+			if (!message) return ''
+			message = message.toString()
+			return message.replace(/\n/g, '<br/>')
+		},
+	},
+})
 app.mount('#app')
