@@ -52,5 +52,6 @@ export const useGptRequestsStore = defineStore({
 				console.error(error)
 			}
 		}
+
 	}
 })
