@@ -42,10 +42,11 @@ export const useGptRequestsStore = defineStore({
 				if (response.data.taskStatus === 'complete') {
 					const User = new Parse.User()
 					const query = new Parse.Query(User)
-					query.get(userId)
-						.then((user) => {
-							this.marketingPlan = user.attributes.marketingPlan
-						})
+					query.equalTo("objectId", userId)
+					const user = await query.first({ useMasterKey: true })
+					const marketingPlan = user.get("marketingPlan")
+					this.marketingPlan = marketingPlan
+
 				}
 				return this.taskStatus
 			} catch (error) {
