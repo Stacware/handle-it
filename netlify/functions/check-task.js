@@ -5,8 +5,8 @@ Parse.serverURL = "https://parseapi.back4app.com"
 
 exports.handler = async (event, context) => {
 	const Parse = require('parse/node')
-	Parse.initialize(process.env.APP_ID, null, process.env.MASTER_KEY)
-	Parse.serverURL = process.env.SERVER_URL
+	PParse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
+	Parse.serverURL = "https://parseapi.back4app.com"
 
 	const userId = event.pathParameters.userId // Get the userId from path parameters
 	console.log(event)
