@@ -20,6 +20,7 @@ exports.handler = async (event, context) => {
 
 	try {
 		const user = await query.get(userId) // Get the user object
+		console.log(user)
 		user.set('taskStatus', 'pending') // Set taskStatus to 'pending'
 		await user.save() // Wait for the save operation to complete
 		console.log('User saved successfully.')
