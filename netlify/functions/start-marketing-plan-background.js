@@ -22,6 +22,12 @@ exports.handler = async (event, context) => {
 	const user = await query.get(userId) // Get the user object
 	user.set('taskStatus', 'pending') // Set taskStatus to 'pending'
 	await user.save()
+		.then(() => {
+			console.log('User saved successfully.')
+		})
+		.catch((error) => {
+			console.error('Error saving user: ', error)
+		})
 
 	const configuration = new Configuration({
 		organization: 'org-5C2c3cHJsvmv3cCc5WWNhZs1',
