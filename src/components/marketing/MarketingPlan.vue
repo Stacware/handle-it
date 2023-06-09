@@ -5,7 +5,8 @@
 			<button v-if="!loading && marketingPlan === null" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button>
 			<LoadingEyes v-if="loading" />
 			<div v-if="marketingPlan" class="text-start class container">
-				<div v-html="formatMarketingStrategyResponse(marketingPlan)"></div>
+				<!-- <div v-html="formatMarketingStrategyResponse(marketingPlan)"></div> -->
+				{{ marketingPlan }}
 			</div>
 		</div>
 	</div>
