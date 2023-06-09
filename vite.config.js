@@ -17,10 +17,10 @@ export default defineConfig({
 	},
 	server: {
 		proxy: {
-			'/api': {
-				target: 'http://wyf-server.herokuapp.com',
+			'/.netlify/functions': {
+				target: 'https://handle-it.netlify.app',
 				changeOrigin: true,
-				rewrite: (path) => path.replace(/^\/api/, '')
+
 			}
 		}
 	}

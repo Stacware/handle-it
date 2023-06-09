@@ -1,5 +1,6 @@
+const { Configuration, OpenAIApi } = require('openai')
+
 exports.handler = async (event, context, callback) => {
-	const { Configuration, OpenAIApi } = require('openai')
 
 	const body = JSON.parse(event.body)
 	const payload = body.payload
@@ -28,4 +29,4 @@ exports.handler = async (event, context, callback) => {
 			body: JSON.stringify({ error: error.toString() }),
 		})
 	}
-};
+}
