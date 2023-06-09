@@ -23,7 +23,7 @@ export const useGptRequestsStore = defineStore({
 		async startMarketingPlan (payload) {
 			const userStore = useAuthStore()
 			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan', { payload, userId: userStore.userId })
+				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', { payload, userId: userStore.userId })
 				this.taskStatus = 'pending'
 			} catch (error) {
 				console.error(error)
