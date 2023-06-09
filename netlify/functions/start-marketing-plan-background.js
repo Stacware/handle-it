@@ -15,11 +15,11 @@ exports.handler = async (event, context) => {
 			messages: [{ role: 'user', content: payload }],
 		})
 
-		console.log('OpenAI API Response:', response.data) // Log the API response
-
-		return {
-			statusCode: 200,
-			body: JSON.stringify({ marketingPlan: response.data.choices[0].message.content })
+		if (response) {
+			return {
+				statusCode: 200,
+				body: JSON.stringify({ marketingPlan: response.data.choices[0].message.content })
+			}
 		}
 	} catch (error) {
 		console.error('Error:', error)
