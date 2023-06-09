@@ -19,7 +19,6 @@ export const useGptRequestsStore = defineStore({
 			return state.taskStatus
 		}
 	},
-
 	actions: {
 		async startMarketingPlan (payload) {
 			const userStore = useAuthStore()
