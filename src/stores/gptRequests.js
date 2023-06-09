@@ -23,7 +23,7 @@ export const useGptRequestsStore = defineStore({
 	actions: {
 		async startMarketingPlan (payload) {
 			try {
-				const response = await axios.post('/api/start-marketing-plan', { payload })
+				const response = await axios.post('/.netlify/functions/start-marketing-plan', { payload })
 				this.taskId = response.data.taskId
 			} catch (error) {
 				console.error(error)
@@ -33,7 +33,7 @@ export const useGptRequestsStore = defineStore({
 		async checkTaskStatus () {
 			const userStore = useAuthStore()
 			try {
-				const response = await axios.get(`/api/check-task/${this.taskId}`)
+				const response = await axios.get(`/.netlify/functions/check-task/${this.taskId}`)
 				if (response.data.status === 'complete') {
 					this.marketingPlan = response.data.result[0].message.content
 					const userId = userStore.userId
