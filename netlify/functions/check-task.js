@@ -5,8 +5,8 @@ Parse.serverURL = "https://parseapi.back4app.com"
 
 exports.handler = async (event, context) => {
 	const Parse = require('parse/node')
-	Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
-	Parse.serverURL = "https://parseapi.back4app.com"
+	Parse.initialize(process.env.APP_ID, null, process.env.MASTER_KEY)
+	Parse.serverURL = process.env.SERVER_URL
 
 	const userId = event.pathParameters.userId // Get the userId from path parameters
 
@@ -20,6 +20,11 @@ exports.handler = async (event, context) => {
 
 		// Respond based on the taskStatus
 		if (taskStatus === 'complete') {
+			// Clear out taskStatus and taskResult after retrieving them
+			user.set('taskStatus', '')
+			user.set('taskResult', '')
+			await user.save()
+
 			return {
 				statusCode: 200,
 				body: JSON.stringify({ status: 'complete', result: taskResult })
@@ -43,4 +48,5 @@ exports.handler = async (event, context) => {
 		}
 	}
 }
+
 
