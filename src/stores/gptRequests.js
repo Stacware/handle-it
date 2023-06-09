@@ -24,8 +24,24 @@ export const useGptRequestsStore = defineStore({
 			const userStore = useAuthStore()
 			try {
 				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', { payload: payload })
-				console.log(response)
 				this.taskStatus = 'pending'
+				if (response.statusCode === 200) {
+					this.marketingPlan = response.data.result[0].message.content
+					this.taskStatus = 'complete'
+
+					const User = new Parse.User()
+					const query = new Parse.Query(User)
+
+					query.get(userStore.userId)
+						.then((user) => {
+							user.set('marketingPlan', this.marketingPlan)
+							return user.save()
+						})
+				} else if (response.statusCOde === 500) {
+					console.log('error')
+					this.taskStatus = 'error'
+					console.error(response.data.error)
+				}
 			} catch (error) {
 				console.error(error)
 			}
@@ -45,8 +61,6 @@ export const useGptRequestsStore = defineStore({
 					query.get(userStore.userId)
 						.then((user) => {
 							user.set('marketingPlan', this.marketingPlan)
-							user.unset('taskStatus')
-							user.unset('taskResult')
 							return user.save()
 						})
 				} else if (response.data.status === 'error') {
