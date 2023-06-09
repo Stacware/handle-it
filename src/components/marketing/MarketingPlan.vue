@@ -57,7 +57,7 @@ export default {
 			4. Measurement: Explain how success can be measured.
 
 			Lastly, please emphasize the best practices for converting small businesses into loyal customers.`,
-				userId: this.authsStore.userId,
+				userId: this.authStore.userId,
 			};
 			this.requestsStore.startMarketingPlan(payload);
 		},
