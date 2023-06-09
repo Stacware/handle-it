@@ -4,12 +4,11 @@ Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeR
 Parse.serverURL = "https://parseapi.back4app.com"
 
 exports.handler = async (event, context) => {
-	console.log(event)
 	const Parse = require('parse/node')
 	Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
 	Parse.serverURL = "https://parseapi.back4app.com"
 
-	const userId = event.pathParameters.userId // Get the userId from path parameters
+	const userId = event.queryStringParameters.userId
 	const User = Parse.Object.extend('User')
 	const query = new Parse.Query(User)
 

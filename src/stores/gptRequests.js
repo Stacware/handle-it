@@ -34,7 +34,7 @@ export const useGptRequestsStore = defineStore({
 		async checkTaskStatus () {
 			const userStore = useAuthStore()
 			try {
-				const response = await axios.get(`/.netlify/functions/check-task/${userStore.userId}`)
+				const response = await axios.get(`/.netlify/functions/check-task?userId=${userStore.userId}`)
 				if (response.data.status === 'complete') {
 					this.marketingPlan = response.data.result[0].message.content
 					this.taskStatus = null
