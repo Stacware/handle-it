@@ -21,7 +21,6 @@ export const useGptRequestsStore = defineStore({
 	},
 	actions: {
 		async startMarketingPlan (payload) {
-			const userStore = useAuthStore()
 			const callbackUrl = 'https://handle-it.netlify.app/.netlify/functions/callback-endpoint'
 
 			try {
@@ -32,6 +31,22 @@ export const useGptRequestsStore = defineStore({
 
 				this.taskStatus = 'pending'
 
+				if (response.status === 200) {
+					this.taskStatus = 'complete'
+				} else {
+					console.error('Error:', response.data.error)
+					this.taskStatus = 'error'
+				}
+			} catch (error) {
+				console.error(error)
+			}
+		},
+
+		async checkTaskStatus () {
+			const callbackUrl = 'https://handle-it.netlify.app/.netlify/functions/callback-endpoint'
+			const userStore = useAuthStore()
+			try {
+				const response = await axios.get(callbackUrl)
 				if (response.status === 200) {
 					const marketingPlan = response.data.marketingPlan
 					this.marketingPlan = marketingPlan
@@ -46,12 +61,10 @@ export const useGptRequestsStore = defineStore({
 					})
 				} else {
 					console.error('Error:', response.data.error)
-					this.taskStatus = 'error'
 				}
 			} catch (error) {
 				console.error(error)
 			}
 		}
-
 	}
 })
