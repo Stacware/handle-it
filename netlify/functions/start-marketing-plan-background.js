@@ -1,14 +1,4 @@
-const { Configuration, OpenAIApi } = require('openai')
-const Parse = require('parse/node')
-
-// Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
-// Parse.serverURL = "https://parseapi.back4app.com"
-
 exports.handler = async (event, context) => {
-	const Parse = require('parse/node')
-
-	Parse.initialize('MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU', 'V4j0HjRijESDoPboQohy16nq75kHY3H6RS6Xf1ty')
-	Parse.serverURL = "https://parseapi.back4app.com"
 
 	const { Configuration, OpenAIApi } = require('openai')
 
