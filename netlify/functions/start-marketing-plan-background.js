@@ -46,7 +46,7 @@ exports.handler = async (event, context) => {
 
 	return {
 		statusCode: 200,
-		body: JSON.stringify({ taskId: userId })
+		body: JSON.stringify({ taskId: userId, marketingPlan: response.data.choices[0].message.content })
 	}
 }
 
