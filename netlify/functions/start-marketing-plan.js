@@ -11,7 +11,7 @@ app.use(express.json())
 
 app.post('/.netlify/functions/start-marketing-plan', async (req, res) => {
 	// const taskId = uuidv4()
-	// const payload = req.body.payload
+	const payload = req.body.payload
 	// createMarketingPlan(payload, taskId)
 	// res.json({ taskId })
 	const configuration = new Configuration({
