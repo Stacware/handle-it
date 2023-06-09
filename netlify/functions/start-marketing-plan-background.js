@@ -18,8 +18,7 @@ exports.handler = async (event, context) => {
 
 	try {
 		const configuration = new Configuration({
-			organization: 'org-5C2c3cHJsvmv3cCc5WWNhZs1',
-			apiKey: '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',
+			apiKey: process.env.OPENAI_API_KEY,
 		})
 
 		const openai = new OpenAIApi(configuration)
