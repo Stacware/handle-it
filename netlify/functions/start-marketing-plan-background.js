@@ -6,8 +6,7 @@ exports.handler = async (event, context) => {
 	Parse.initialize('MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU', 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 	Parse.serverURL = 'https://parseapi.back4app.com/'
 	const body = JSON.parse(event.body)
-	const payload = body.payload
-	const userId = body.userId
+	const payload = body
 
 	try {
 		const configuration = new Configuration({
