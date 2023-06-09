@@ -14,25 +14,9 @@ exports.handler = async (event, context) => {
 
 	const body = JSON.parse(event.body)
 	const payload = body.payload
-	const userId = body.userId // Get the userId from the request body
 
-	const User = Parse.Object.extend('User')
-	const query = new Parse.Query(User)
 
 	try {
-		const user = await query.get(userId) // Get the user object
-		console.log(user)
-		user.set('taskStatus', 'pending') // Set taskStatus to 'pending'
-		await user.save() // Wait for the save operation to complete
-		console.log('User saved successfully.')
-	} catch (error) {
-		console.error('Error: ', error)
-		return {
-			statusCode: 500,
-			body: JSON.stringify({ error: error.toString() })
-		}
-	} finally {
-		const user = await query.get(userId)
 		const configuration = new Configuration({
 			organization: 'org-5C2c3cHJsvmv3cCc5WWNhZs1',
 			apiKey: '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',
@@ -44,14 +28,15 @@ exports.handler = async (event, context) => {
 			messages: [{ role: 'user', content: payload }],
 		})
 
-		// Once the task is complete, update the taskStatus and taskResult
-		user.set('taskStatus', 'complete')
-		user.set('taskResult', response.data.choices)
-		await user.save() // Wait for the save operation to complete
-
 		return {
 			statusCode: 200,
-			body: JSON.stringify({ taskId: userId, marketingPlan: response.data.choices[0].message.content })
+			body: JSON.stringify({ marketingPlan: response.data.choices[0].message.content })
+		}
+	} catch (error) {
+		console.error('Error: ', error)
+		return {
+			statusCode: 500,
+			body: JSON.stringify({ error: error.toString() })
 		}
 	}
 }

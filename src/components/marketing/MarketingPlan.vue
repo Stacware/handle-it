@@ -28,11 +28,11 @@ export default {
 			loading: false,
 		};
 	},
-	// watch: {
-	// 	marketingPlan(val) {
-	// 		if (val) this.loading = false;
-	// 	},
-	// },
+	watch: {
+		marketingPlan(val) {
+			if (val) this.loading = false;
+		},
+	},
 	computed: {
 		marketingPlan() {
 			return this.requestsStore.returnMarketingPlan;
@@ -56,13 +56,13 @@ export default {
 
 				Lastly, please emphasize the best practices for converting small businesses into loyal customers.`
 			);
-			const intervalId = setInterval(async () => {
-				await this.requestsStore.checkTaskStatus();
-				if (this.marketingPlan) {
-					clearInterval(intervalId);
-					this.loading = false;
-				}
-			}, 10000);
+			// const intervalId = setInterval(async () => {
+			// 	await this.requestsStore.checkTaskStatus();
+			// 	if (this.marketingPlan) {
+			// 		clearInterval(intervalId);
+			// 		this.loading = false;
+			// 	}
+			// }, 10000);
 		},
 	},
 };
