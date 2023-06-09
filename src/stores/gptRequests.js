@@ -46,6 +46,7 @@ export const useGptRequestsStore = defineStore({
 
 				if (response.status === 202) {
 					const taskStatusEndpoint = response.headers['location']
+					console.log(taskStatusEndpoint)
 					await this.pollForResponse(taskStatusEndpoint)
 				} else {
 					console.error('Error:', response.data.error)
