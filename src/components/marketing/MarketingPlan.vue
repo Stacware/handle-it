@@ -26,11 +26,15 @@ export default {
 			industry: 'Coffee Shop',
 			targetAudience: 'people',
 			loading: false,
+			intervalId: null,
 		};
 	},
 	watch: {
 		marketingPlan(val) {
-			if (val) this.loading = false;
+			if (val) {
+				this.loading = false;
+				clearInterval(this.intervalId);
+			}
 		},
 	},
 	computed: {
@@ -55,6 +59,9 @@ export default {
 			4. Measurement: Explain how success can be measured.
 			
 			Lastly, please emphasize the best practices for converting small businesses into loyal customers.`);
+			this.intervalId = setInterval(() => {
+				this.requestsStore.checkTaskStatus();
+			}, 10000);
 		},
 	},
 };
