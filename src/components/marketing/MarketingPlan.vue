@@ -61,16 +61,6 @@ export default {
 				userId: this.authStore.userId,
 			};
 			this.requestsStore.startMarketingPlan(payload);
-			this.intervalId = setInterval(this.checkTaskStatus, 5000);
-		},
-		async checkTaskStatus() {
-			const taskStatus = await this.requestsStore.getTaskStatusFromBack4App();
-
-			if (taskStatus === 'complete') {
-				clearInterval(this.intervalId);
-				const marketingPlan = await this.requestsStore.getMarketingPlanFromBack4App();
-				this.requestsStore.saveMarketingPlanToStore(marketingPlan); // Use a store action to update the state
-			}
 		},
 	},
 };
