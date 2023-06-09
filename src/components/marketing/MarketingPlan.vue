@@ -31,10 +31,7 @@ export default {
 	},
 	watch: {
 		marketingPlan(val) {
-			if (val) {
-				this.loading = false;
-				clearInterval(this.intervalId);
-			}
+			if (val) this.loading = false;
 		},
 	},
 	computed: {
@@ -59,9 +56,16 @@ export default {
 			4. Measurement: Explain how success can be measured.
 			
 			Lastly, please emphasize the best practices for converting small businesses into loyal customers.`);
-			this.intervalId = setInterval(() => {
-				this.requestsStore.checkTaskStatus();
-			}, 10000);
+			this.intervalId = setInterval(this.checkTaskStatus, 5000);
+		},
+		async checkTaskStatus() {
+			const taskStatus = await this.requestsStore.getTaskStatusFromBack4App();
+
+			if (taskStatus === 'complete') {
+				clearInterval(this.intervalId);
+				const marketingPlan = await this.requestsStore.getMarketingPlanFromBack4App();
+				this.requestsStore.marketingPlan = marketingPlan; // Update marketing plan in store
+			}
 		},
 	},
 };

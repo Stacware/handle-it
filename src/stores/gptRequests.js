@@ -1,10 +1,7 @@
-import axios from 'axios'
-import { defineStore } from 'pinia'
-import { useAuthStore } from './auth.js'
-import Parse from 'parse/dist/parse.min.js'
+import { Parse } from "parse"
 
 export const useGptRequestsStore = defineStore({
-	id: 'gptRequests',
+	id: "gptRequests",
 
 	state: () => ({
 		marketingPlan: null,
@@ -17,54 +14,50 @@ export const useGptRequestsStore = defineStore({
 		},
 		returnTaskStatus (state) {
 			return state.taskStatus
-		}
+		},
 	},
-	actions: {
-		async startMarketingPlan (payload) {
-			const callbackUrl = 'https://handle-it.netlify.app/.netlify/functions/callback-endpoint'
 
+	actions: {
+		async saveTaskStatusToBack4App (taskStatus) {
+			const user = Parse.User.current()
+			user.set("taskStatus", taskStatus)
+			await user.save()
+		},
+
+		async saveMarketingPlanToBack4App (marketingPlan) {
+			const user = Parse.User.current()
+			user.set("marketingPlan", marketingPlan)
+			await user.save()
+		},
+
+		async getTaskStatusFromBack4App () {
+			const user = Parse.User.current()
+			await user.fetch()
+			return user.get("taskStatus")
+		},
+
+		async getMarketingPlanFromBack4App () {
+			const user = Parse.User.current()
+			await user.fetch()
+			return user.get("marketingPlan")
+		},
+
+		async startMarketingPlan (payload) {
 			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', {
+				const response = await axios.post("/.netlify/functions/start-marketing-plan-background", {
 					payload: payload,
-					callbackUrl: callbackUrl,
 				})
 
-				this.taskStatus = 'pending'
-
 				if (response.status === 200) {
-					this.taskStatus = 'complete'
+					await this.saveTaskStatusToBack4App("complete")
+					await this.saveMarketingPlanToBack4App(response.data.marketingPlan)
 				} else {
-					console.error('Error:', response.data.error)
-					this.taskStatus = 'error'
+					console.error("Error:", response.data.error)
+					await this.saveTaskStatusToBack4App("error")
 				}
 			} catch (error) {
 				console.error(error)
 			}
 		},
-
-		async checkTaskStatus () {
-			const callbackUrl = 'https://handle-it.netlify.app/.netlify/functions/callback-endpoint'
-			const userStore = useAuthStore()
-			try {
-				const response = await axios.get(callbackUrl)
-				if (response.status === 200) {
-					const marketingPlan = response.data.marketingPlan
-					this.marketingPlan = marketingPlan
-					this.taskStatus = 'complete'
-
-					const User = new Parse.User()
-					const query = new Parse.Query(User)
-
-					query.get(userStore.userId).then((user) => {
-						user.set('marketingPlan', this.marketingPlan)
-						return user.save()
-					})
-				} else {
-					console.error('Error:', response.data.error)
-				}
-			} catch (error) {
-				console.error(error)
-			}
-		}
-	}
+	},
 })

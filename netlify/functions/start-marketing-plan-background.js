@@ -1,11 +1,13 @@
-const axios = require('axios')
-
 exports.handler = async (event, context) => {
-	const { Configuration, OpenAIApi } = require('openai')
+	// Import Parse
+	const Parse = require('parse')
+
+	// Parse initialization
+	Parse.initialize('MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU', 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+	Parse.serverURL = 'https://parseapi.back4app.com/'
 
 	const body = JSON.parse(event.body)
 	const payload = body.payload
-	const callbackUrl = body.callbackUrl
 
 	try {
 		const configuration = new Configuration({
@@ -19,28 +21,21 @@ exports.handler = async (event, context) => {
 		})
 
 		if (response) {
-			// Send the OpenAI response to the callback URL
-			await sendCallbackResponse(callbackUrl, response.data.choices[0].message.content)
+			const user = Parse.User.current()
+			user.set('taskStatus', 'complete')
+			user.set('marketingPlan', response.data.choices[0].message.content)
+			await user.save()
 
 			return {
 				statusCode: 200,
-				body: JSON.stringify({ message: 'Callback sent successfully' }),
+				body: JSON.stringify({ taskStatus: 'complete' })
 			}
 		}
 	} catch (error) {
 		console.error('Error:', error)
 		return {
 			statusCode: 500,
-			body: JSON.stringify({ error: error.toString() }),
+			body: JSON.stringify({ error: error.toString() })
 		}
-	}
-}
-
-async function sendCallbackResponse (url, content) {
-	try {
-		await axios.post(url, { marketingPlan: content })
-		console.log('Callback sent successfully')
-	} catch (error) {
-		console.error('Callback Error:', error)
 	}
 }
