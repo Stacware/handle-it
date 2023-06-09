@@ -30,7 +30,7 @@ export const useGptRequestsStore = defineStore({
 		},
 
 		async getTaskStatus (userId) {
-			Parse.initialize(process.env.BACK4APP_KEY, null, process.env.MASTER_KEY)
+			Parse.initialize(process.env.BACK4APP_KEY, "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
 			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
 				const response = await axios.get('/.netlify/functions/get-task-status', {
@@ -43,7 +43,7 @@ export const useGptRequestsStore = defineStore({
 					const User = new Parse.User()
 					const query = new Parse.Query(User)
 					query.equalTo("objectId", userId)
-					const user = await query.first({ useMasterKey: true })
+					const user = await query.first()
 					const marketingPlan = user.get("marketingPlan")
 					this.marketingPlan = marketingPlan
 
