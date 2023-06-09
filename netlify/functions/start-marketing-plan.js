@@ -25,6 +25,7 @@ app.post('/.netlify/functions/start-marketing-plan', async (req, res) => {
 	// })
 	// res.json(response)
 })
+const tasks = new Map()
 
 app.get('/.netlify/functions/check-task/:taskId', (req, res) => {
 	const taskId = req.params.taskId
@@ -33,7 +34,6 @@ app.get('/.netlify/functions/check-task/:taskId', (req, res) => {
 })
 
 // Marketing Plan Creation
-const tasks = new Map()
 
 async function createMarketingPlan (payload, taskId) {
 	const configuration = new Configuration({
