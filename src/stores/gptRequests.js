@@ -1,4 +1,5 @@
 import { Parse } from "parse"
+import { useAuthStore } from './auth' // import authStore
 
 export const useGptRequestsStore = defineStore({
 	id: "gptRequests",
@@ -19,25 +20,37 @@ export const useGptRequestsStore = defineStore({
 
 	actions: {
 		async saveTaskStatusToBack4App (taskStatus) {
-			const user = Parse.User.current()
+			const authStore = useAuthStore()
+			const User = Parse.Object.extend("User")
+			const query = new Parse.Query(User)
+			const user = await query.get(authStore.userId)
 			user.set("taskStatus", taskStatus)
 			await user.save()
 		},
 
 		async saveMarketingPlanToBack4App (marketingPlan) {
-			const user = Parse.User.current()
+			const authStore = useAuthStore()
+			const User = Parse.Object.extend("User")
+			const query = new Parse.Query(User)
+			const user = await query.get(authStore.userId)
 			user.set("marketingPlan", marketingPlan)
 			await user.save()
 		},
 
 		async getTaskStatusFromBack4App () {
-			const user = Parse.User.current()
+			const authStore = useAuthStore()
+			const User = Parse.Object.extend("User")
+			const query = new Parse.Query(User)
+			const user = await query.get(authStore.userId)
 			await user.fetch()
 			return user.get("taskStatus")
 		},
 
 		async getMarketingPlanFromBack4App () {
-			const user = Parse.User.current()
+			const authStore = useAuthStore()
+			const User = Parse.Object.extend("User")
+			const query = new Parse.Query(User)
+			const user = await query.get(authStore.userId)
 			await user.fetch()
 			return user.get("marketingPlan")
 		},
