@@ -71,7 +71,6 @@ export default {
 				if (taskStatus === 'complete') {
 					clearInterval(this.taskPollingInterval);
 					this.loading = false;
-					// Fetch the result here
 				}
 			}, 5000); // Poll every 5 seconds
 		},

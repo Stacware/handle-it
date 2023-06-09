@@ -7,7 +7,10 @@ exports.handler = async (event, context) => {
 	const body = JSON.parse(event.body)
 	const payload = body.payload
 	const userId = body.userId
-
+	const User = Parse.Object.extend("User")
+	const query = new Parse.Query(User)
+	query.equalTo("objectId", userId)
+	const user = await query.first({ useMasterKey: true })
 	try {
 		const configuration = new Configuration({
 			apiKey: process.env.OPENAI_API_KEY,
@@ -18,12 +21,10 @@ exports.handler = async (event, context) => {
 			model: 'gpt-3.5-turbo',
 			messages: [{ role: 'user', content: payload }],
 		})
-
+		user.set("taskStatus", "pending")
+		await user.save(null, { useMasterKey: true })
 		if (response) {
-			const User = Parse.Object.extend("User")
-			const query = new Parse.Query(User)
-			query.equalTo("objectId", userId)
-			const user = await query.first({ useMasterKey: true })
+
 
 			user.set("taskStatus", "complete")
 			user.set("marketingPlan", response.data.choices[0].message.content)

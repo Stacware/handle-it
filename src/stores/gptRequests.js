@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
-// import { useAuthStore } from './auth.js'
+import { useAuthStore } from './auth.js'
 // import Parse from 'parse/dist/parse.min.js'
 
 export const useGptRequestsStore = defineStore({
@@ -38,6 +38,16 @@ export const useGptRequestsStore = defineStore({
 					}
 				})
 				this.taskStatus = response.data.taskStatus
+				if (response.data.taskStatus === 'complete') {
+					const User = new Parse.User()
+					const query = new Parse.Query(User)
+
+					query.get(userId)
+						.then((user) => {
+							const requestsStore = useGptRequestsStore()
+							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
+						})
+				}
 				return this.taskStatus
 			} catch (error) {
 				console.error(error)
