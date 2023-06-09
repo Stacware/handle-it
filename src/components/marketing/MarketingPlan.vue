@@ -69,7 +69,7 @@ export default {
 			if (taskStatus === 'complete') {
 				clearInterval(this.intervalId);
 				const marketingPlan = await this.requestsStore.getMarketingPlanFromBack4App();
-				this.requestsStore.marketingPlan = marketingPlan; // Update marketing plan in store
+				this.requestsStore.saveMarketingPlanToStore(marketingPlan); // Use a store action to update the state
 			}
 		},
 	},

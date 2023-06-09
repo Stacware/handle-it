@@ -70,5 +70,8 @@ export const useGptRequestsStore = defineStore({
 				console.error(error)
 			}
 		},
+		saveMarketingPlanToStore (marketingPlan) {
+			this.marketingPlan = marketingPlan
+		},
 	},
 })
