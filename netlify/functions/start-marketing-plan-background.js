@@ -1,6 +1,5 @@
 const { Configuration, OpenAIApi } = require('openai')
-
-exports.handler = async (event, context, callback) => {
+exports.handler = async (event) => {
 
 	const body = JSON.parse(event.body)
 	const payload = body.payload
@@ -18,15 +17,15 @@ exports.handler = async (event, context, callback) => {
 
 		const marketingPlan = response.data.choices[0].message.content
 
-		callback(null, {
+		return {
 			statusCode: 200,
 			body: JSON.stringify({ marketingPlan }),
-		})
+		}
 	} catch (error) {
 		console.error('Error: ', error)
-		callback(null, {
+		return {
 			statusCode: 500,
 			body: JSON.stringify({ error: error.toString() }),
-		})
+		}
 	}
 }
