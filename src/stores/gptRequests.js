@@ -40,58 +40,21 @@ export const useGptRequestsStore = defineStore({
 		// }
 		async startMarketingPlan (payload) {
 			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', payload)
+				const response = await axios.post('/.netlify/functions/start-marketing-plan', payload)
 
 				this.taskStatus = 'pending'
-
-				if (response.status === 202) {
-					const taskStatusEndpoint = response.headers['location']
-					console.log(taskStatusEndpoint)
-					await this.pollForResponse()
-				} else {
-					console.error('Error:', response.data.error)
-					this.taskStatus = 'error'
-				}
+				console.log(response)
+				// if (response.status === 202) {
+				// 	const taskStatusEndpoint = response.headers['location']
+				// 	console.log(taskStatusEndpoint)
+				// 	await this.pollForResponse()
+				// } else {
+				// 	console.error('Error:', response.data.error)
+				// 	this.taskStatus = 'error'
+				// }
 			} catch (error) {
 				console.error(error)
 			}
-		},
-
-		async pollForResponse (endpoint) {
-			const maxAttempts = 10
-			const pollInterval = 5000 // 3 seconds
-			let attempts = 0
-
-			while (attempts < maxAttempts) {
-				try {
-					const response = await axios.get(endpoint)
-					const data = response.data
-
-					if (data.taskStatus === 'complete') {
-						this.taskStatus = 'complete'
-						const marketingPlan = data.marketingPlan
-						console.log(marketingPlan)
-						return // Exit the loop and function
-					} else if (data.taskStatus === 'pending') {
-						console.log('still waiting....')
-					} else if (data.taskStatus === 'error') {
-						console.error('Error:', data.error)
-						this.taskStatus = 'error'
-						return // Exit the loop and function
-					}
-
-					attempts++
-					await new Promise(resolve => setTimeout(resolve, pollInterval))
-				} catch (error) {
-					console.error(error)
-					this.taskStatus = 'error'
-					return // Exit the loop and function
-				}
-			}
-
-			console.error('Response not available within the specified number of attempts.')
-			this.taskStatus = 'error'
 		}
-
 	}
 })
