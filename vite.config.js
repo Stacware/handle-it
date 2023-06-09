@@ -18,7 +18,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			'/api': {
-				target: 'https://wyf-server.herokuapp.com',
+				target: 'http://wyf-server.herokuapp.com',
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/api/, '')
 			}

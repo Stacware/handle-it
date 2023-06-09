@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 class="text-center">{{ maerketingPlan ? 'Marketing Plan' : 'Create a Marketing Plan' }}</h1>
+		<h1 class="text-center">{{ marketingPlan ? 'Marketing Plan' : 'Create a Marketing Plan' }}</h1>
 		<div class="text-center" :class="{ main: !marketingPlan }">
 			<button v-if="!loading && marketingPlan === null" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button>
 			<LoadingEyes v-if="loading" />
