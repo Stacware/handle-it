@@ -4,17 +4,43 @@ Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeR
 Parse.serverURL = "https://parseapi.back4app.com"
 
 exports.handler = async (event, context) => {
-	const userId = event.path.split('/').pop()
+	const Parse = require('parse/node')
+	Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
+	Parse.serverURL = "https://parseapi.back4app.com"
 
-	const User = Parse.Object.extend("User")
+	const userId = event.pathParameters.userId // Get the userId from path parameters
+
+	const User = Parse.Object.extend('User')
 	const query = new Parse.Query(User)
-	const user = await query.get(userId)
 
-	const task = JSON.parse(user.get("taskId"))
-	const response = task ? task : 'Still waiting...'
+	try {
+		const user = await query.get(userId) // Get the user object
+		const taskStatus = user.get('taskStatus')
+		const taskResult = user.get('taskResult')
 
-	return {
-		statusCode: 200,
-		body: JSON.stringify(response),
+		// Respond based on the taskStatus
+		if (taskStatus === 'complete') {
+			return {
+				statusCode: 200,
+				body: JSON.stringify({ status: 'complete', result: taskResult })
+			}
+		} else if (taskStatus === 'error') {
+			return {
+				statusCode: 500,
+				body: JSON.stringify({ status: 'error', error: 'An error occurred' })
+			}
+		} else {
+			return {
+				statusCode: 200,
+				body: JSON.stringify({ status: 'pending' })
+			}
+		}
+	} catch (error) {
+		console.error(error)
+		return {
+			statusCode: 500,
+			body: JSON.stringify({ status: 'error', error: 'An error occurred' })
+		}
 	}
 }
+
