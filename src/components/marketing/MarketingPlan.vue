@@ -54,20 +54,6 @@ export default {
 							4. Measurement: Explain how success can be measured.
 							
 							Lastly, please emphasize the best practices for converting small businesses into loyal customers.`;
-
-			const callbackUrl = 'https://handle-it.netlify.app/.netlify/functions/callback-endpoint';
-
-			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', {
-					payload: payload,
-					callbackUrl: callbackUrl,
-				});
-
-				// Handle the response
-				console.log(response.data);
-			} catch (error) {
-				console.error(error);
-			}
 		},
 	},
 };

@@ -22,36 +22,37 @@ export const useGptRequestsStore = defineStore({
 	actions: {
 		async startMarketingPlan (payload) {
 			const userStore = useAuthStore()
+			const callbackUrl = 'https://handle-it.netlify.app/.netlify/functions/callback-endpoint'
+
 			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', { payload: payload })
+				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', {
+					payload: payload,
+					callbackUrl: callbackUrl,
+				})
+
 				this.taskStatus = 'pending'
-				if (response.status >= 200 && response.status < 300) {
-					// Successful response
-					this.marketingPlan = response.data.result[0].message.content
+
+				if (response.status === 200) {
+					const marketingPlan = response.data.marketingPlan
+					this.marketingPlan = marketingPlan
 					this.taskStatus = 'complete'
 
 					const User = new Parse.User()
 					const query = new Parse.Query(User)
 
-					query.get(userStore.userId)
-						.then((user) => {
-							user.set('marketingPlan', this.marketingPlan)
-							return user.save()
-						})
+					query.get(userStore.userId).then((user) => {
+						user.set('marketingPlan', this.marketingPlan)
+						return user.save()
+					})
 				} else {
-					// Handle error response
-					console.log('error')
+					console.error('Error:', response.data.error)
 					this.taskStatus = 'error'
-					if (response.data && response.data.error) {
-						console.error(response.data.error)
-					} else {
-						console.error('An error occurred')
-					}
 				}
 			} catch (error) {
 				console.error(error)
 			}
 		}
+
 
 
 		// async checkTaskStatus () {
