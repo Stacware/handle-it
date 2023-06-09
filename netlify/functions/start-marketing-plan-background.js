@@ -10,7 +10,6 @@ exports.handler = async (event, context) => {
 	Parse.serverURL = "https://parseapi.back4app.com"
 
 	const { Configuration, OpenAIApi } = require('openai')
-	const { v4: uuidv4 } = require('uuid')
 
 	const body = JSON.parse(event.body)
 	const payload = body.payload
