@@ -13,9 +13,6 @@ exports.handler = async (event, context) => {
 	query.equalTo("objectId", userId)
 	const user = await query.first({ useMasterKey: true })
 
-	user.set("taskStatus", "pending")
-	await user.save(null, { useMasterKey: true })
-
 	try {
 		const configuration = new Configuration({
 			apiKey: process.env.OPENAI_API_KEY,
