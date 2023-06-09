@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth.js'
-// import Parse from 'parse/dist/parse.min.js'
+import Parse from 'parse/dist/parse.min.js'
 
 export const useGptRequestsStore = defineStore({
 	id: 'gptRequests',
@@ -31,6 +31,8 @@ export const useGptRequestsStore = defineStore({
 		},
 
 		async getTaskStatus (userId) {
+			Parse.initialize(process.env.BACK4APP_KEY, null, process.env.MASTER_KEY)
+			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
 				const response = await axios.get('/.netlify/functions/get-task-status', {
 					params: {
