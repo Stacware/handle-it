@@ -33,6 +33,11 @@ exports.handler = async (event, context) => {
 				statusCode: 200,
 				body: JSON.stringify({ taskStatus: 'complete', marketingPlan: response.data.choices[0].message.content }),
 			}
+		} else {
+			return {
+				statusCode: 1,
+				body: JSON.stringify({ taskStatus: 'pending', marketingPlan: null })
+			}
 		}
 	} catch (error) {
 		console.error('Error:', error)

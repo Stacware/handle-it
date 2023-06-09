@@ -45,9 +45,9 @@ export const useGptRequestsStore = defineStore({
 				this.taskStatus = 'pending'
 
 				if (response.status === 202) {
-					const taskStatusEndpoint = response.headers['location']
-					console.log(taskStatusEndpoint)
-					await this.pollForResponse(taskStatusEndpoint)
+					// const taskStatusEndpoint = response.headers['location']
+					// console.log(taskStatusEndpoint)
+					await this.pollForResponse()
 				} else {
 					console.error('Error:', response.data.error)
 					this.taskStatus = 'error'
@@ -57,14 +57,14 @@ export const useGptRequestsStore = defineStore({
 			}
 		},
 
-		async pollForResponse (endpoint) {
+		async pollForResponse () {
 			const maxAttempts = 10
 			const pollInterval = 5000 // 3 seconds
 			let attempts = 0
 
 			while (attempts < maxAttempts) {
 				try {
-					const response = await axios.get(endpoint)
+					const response = await axios.get('/.netlify/functions/start-marketing-plan-background')
 					const data = response.data
 
 					if (data.taskStatus === 'complete') {
@@ -72,6 +72,8 @@ export const useGptRequestsStore = defineStore({
 						const marketingPlan = data.marketingPlan
 						console.log(marketingPlan)
 						return // Exit the loop and function
+					} else if (data.taskStatus === 'pending') {
+						console.log('still waiting....')
 					} else if (data.taskStatus === 'error') {
 						console.error('Error:', data.error)
 						this.taskStatus = 'error'
