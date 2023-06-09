@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import LoadingEyes from '@/components/ui/LoadingEyes.vue';
 import { formatOutputMixin } from '@/components/mixins/formatOutputMixin.js';
