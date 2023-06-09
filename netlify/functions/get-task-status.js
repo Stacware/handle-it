@@ -9,7 +9,7 @@ exports.handler = async (event, context) => {
 		const User = Parse.Object.extend("User")
 		const query = new Parse.Query(User)
 		query.equalTo("objectId", userId)
-		const user = await query.first()
+		const user = await query.first({ useMasterKey: true })
 
 		const taskStatus = user.get("taskStatus")
 

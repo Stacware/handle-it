@@ -23,11 +23,11 @@ exports.handler = async (event, context) => {
 			const User = Parse.Object.extend("User")
 			const query = new Parse.Query(User)
 			query.equalTo("objectId", userId)
-			const user = await query.first()
+			const user = await query.first({ useMasterKey: true })
 
 			user.set("taskStatus", "complete")
 			user.set("marketingPlan", response.data.choices[0].message.content)
-			await user.save()
+			await user.save(null, { useMasterKey: true })
 
 			return {
 				statusCode: 200,
