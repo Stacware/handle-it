@@ -20,41 +20,30 @@ export const useGptRequestsStore = defineStore({
 		}
 	},
 	actions: {
-		// async startMarketingPlan (payload) {
-
-		// 	try {
-		// 		const response = await axios.post('/.netlify/functions/start-marketing-plan-background',
-		// 			payload)
-
-		// 		this.taskStatus = 'pending'
-
-		// 		if (response.status === 200) {
-		// 			this.taskStatus = 'complete'
-		// 		} else {
-		// 			console.error('Error:', response.data.error)
-		// 			this.taskStatus = 'error'
-		// 		}
-		// 	} catch (error) {
-		// 		console.error(error)
-		// 	}
-		// }
 		async startMarketingPlan (payload) {
 			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan', payload)
-
+				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', payload)
 				this.taskStatus = 'pending'
 				console.log(response)
-				// if (response.status === 202) {
-				// 	const taskStatusEndpoint = response.headers['location']
-				// 	console.log(taskStatusEndpoint)
-				// 	await this.pollForResponse()
-				// } else {
-				// 	console.error('Error:', response.data.error)
-				// 	this.taskStatus = 'error'
-				// }
 			} catch (error) {
 				console.error(error)
 			}
-		}
+		},
+
+		async getTaskStatus (userId) {
+			try {
+				const response = await axios.get('/.netlify/functions/get-task-status', {
+					params: {
+						userId: userId
+					}
+				})
+				this.taskStatus = response.data.taskStatus
+				return this.taskStatus
+			} catch (error) {
+				console.error(error)
+				return null
+			}
+		},
+
 	}
 })
