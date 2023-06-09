@@ -1,3 +1,4 @@
+const { Configuration, OpenAIApi } = require('openai')
 exports.handler = async (event, context) => {
 	// Import Parse
 	const Parse = require('parse')
