@@ -25,7 +25,8 @@ export const useGptRequestsStore = defineStore({
 			try {
 				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', { payload: payload })
 				this.taskStatus = 'pending'
-				if (response.status === 200) {
+				if (response.status >= 200 && response.status < 300) {
+					// Successful response
 					this.marketingPlan = response.data.result[0].message.content
 					this.taskStatus = 'complete'
 
@@ -37,15 +38,21 @@ export const useGptRequestsStore = defineStore({
 							user.set('marketingPlan', this.marketingPlan)
 							return user.save()
 						})
-				} else if (response.status === 500) {
+				} else {
+					// Handle error response
 					console.log('error')
 					this.taskStatus = 'error'
-					console.error(response.data.error)
+					if (response.data && response.data.error) {
+						console.error(response.data.error)
+					} else {
+						console.error('An error occurred')
+					}
 				}
 			} catch (error) {
 				console.error(error)
 			}
-		},
+		}
+
 
 		// async checkTaskStatus () {
 		// 	const userStore = useAuthStore()
