@@ -3,6 +3,8 @@ const { Configuration, OpenAIApi } = require('openai')
 const express = require('express')
 const serverless = require('serverless-http')
 const app = express()
+const { v4: uuidv4 } = require('uuid')
+
 
 app.use(cors())
 app.use(express.json())
