@@ -44,16 +44,14 @@ export const useGptRequestsStore = defineStore({
 
 		async startMarketingPlan (payload) {
 			try {
-				const response = await axios.post("/.netlify/functions/start-marketing-plan-background", {
-					payload: payload,
-				})
+				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', payload)
 
 				if (response.status === 200) {
-					await this.saveTaskStatusToBack4App("complete")
+					await this.saveTaskStatusToBack4App('complete')
 					await this.saveMarketingPlanToBack4App(response.data.marketingPlan)
 				} else {
-					console.error("Error:", response.data.error)
-					await this.saveTaskStatusToBack4App("error")
+					console.error('Error:', response.data.error)
+					await this.saveTaskStatusToBack4App('error')
 				}
 			} catch (error) {
 				console.error(error)
