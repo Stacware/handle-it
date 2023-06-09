@@ -1,8 +1,10 @@
-import { Parse } from "parse"
-import { useAuthStore } from './auth' // import authStore
+import axios from 'axios'
+import { defineStore } from 'pinia'
+// import { useAuthStore } from './auth.js'
+// import Parse from 'parse/dist/parse.min.js'
 
 export const useGptRequestsStore = defineStore({
-	id: "gptRequests",
+	id: 'gptRequests',
 
 	state: () => ({
 		marketingPlan: null,
@@ -15,63 +17,26 @@ export const useGptRequestsStore = defineStore({
 		},
 		returnTaskStatus (state) {
 			return state.taskStatus
-		},
+		}
 	},
-
 	actions: {
-		async saveTaskStatusToBack4App (taskStatus) {
-			const authStore = useAuthStore()
-			const User = Parse.Object.extend("User")
-			const query = new Parse.Query(User)
-			const user = await query.get(authStore.userId)
-			user.set("taskStatus", taskStatus)
-			await user.save()
-		},
-
-		async saveMarketingPlanToBack4App (marketingPlan) {
-			const authStore = useAuthStore()
-			const User = Parse.Object.extend("User")
-			const query = new Parse.Query(User)
-			const user = await query.get(authStore.userId)
-			user.set("marketingPlan", marketingPlan)
-			await user.save()
-		},
-
-		async getTaskStatusFromBack4App () {
-			const authStore = useAuthStore()
-			const User = Parse.Object.extend("User")
-			const query = new Parse.Query(User)
-			const user = await query.get(authStore.userId)
-			await user.fetch()
-			return user.get("taskStatus")
-		},
-
-		async getMarketingPlanFromBack4App () {
-			const authStore = useAuthStore()
-			const User = Parse.Object.extend("User")
-			const query = new Parse.Query(User)
-			const user = await query.get(authStore.userId)
-			await user.fetch()
-			return user.get("marketingPlan")
-		},
-
 		async startMarketingPlan (payload) {
+
 			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', payload)
+				const response = await axios.post('/.netlify/functions/start-marketing-plan-background',
+					payload)
+
+				this.taskStatus = 'pending'
 
 				if (response.status === 200) {
-					await this.saveTaskStatusToBack4App('complete')
-					await this.saveMarketingPlanToBack4App(response.data.marketingPlan)
+					this.taskStatus = 'complete'
 				} else {
 					console.error('Error:', response.data.error)
-					await this.saveTaskStatusToBack4App('error')
+					this.taskStatus = 'error'
 				}
 			} catch (error) {
 				console.error(error)
 			}
-		},
-		saveMarketingPlanToStore (marketingPlan) {
-			this.marketingPlan = marketingPlan
-		},
-	},
+		}
+	}
 })
