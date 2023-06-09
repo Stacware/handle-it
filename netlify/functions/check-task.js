@@ -9,6 +9,7 @@ exports.handler = async (event, context) => {
 	Parse.serverURL = process.env.SERVER_URL
 
 	const userId = event.pathParameters.userId // Get the userId from path parameters
+	console.log(event)
 
 	const User = Parse.Object.extend('User')
 	const query = new Parse.Query(User)
