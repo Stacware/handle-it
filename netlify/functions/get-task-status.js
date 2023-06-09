@@ -1,7 +1,7 @@
 exports.handler = async (event, context) => {
 	const Parse = require('parse/node')
 
-	Parse.initialize('MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU', 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+	Parse.initialize(process.env.BACK4APP_KEY, null, process.env.MASTER_KEY)
 	Parse.serverURL = 'https://parseapi.back4app.com/'
 	const userId = event.queryStringParameters.userId
 
