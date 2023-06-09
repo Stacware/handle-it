@@ -10,20 +10,20 @@ app.use(cors())
 app.use(express.json())
 
 app.post('/.netlify/functions/start-marketing-plan', async (req, res) => {
-	// const taskId = uuidv4()
+	const taskId = uuidv4()
 	const payload = req.body.payload
-	// createMarketingPlan(payload, taskId)
-	// res.json({ taskId })
-	const configuration = new Configuration({
-		organization: 'org-5C2c3cHJsvmv3cCc5WWNhZs1',
-		apiKey: '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',
-	})
-	const openai = new OpenAIApi(configuration)
-	const response = await openai.createChatCompletion({
-		model: 'gpt-3.5-turbo',
-		messages: [{ role: 'user', content: payload }],
-	})
-	res.json(response)
+	createMarketingPlan(payload, taskId)
+	res.json({ taskId })
+	// const configuration = new Configuration({
+	// 	organization: 'org-5C2c3cHJsvmv3cCc5WWNhZs1',
+	// 	apiKey: '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',
+	// })
+	// const openai = new OpenAIApi(configuration)
+	// const response = await openai.createChatCompletion({
+	// 	model: 'gpt-3.5-turbo',
+	// 	messages: [{ role: 'user', content: payload }],
+	// })
+	// res.json(response)
 })
 
 app.get('/.netlify/functions/check-task/:taskId', (req, res) => {
@@ -35,18 +35,18 @@ app.get('/.netlify/functions/check-task/:taskId', (req, res) => {
 // Marketing Plan Creation
 const tasks = new Map()
 
-// async function createMarketingPlan (payload, taskId) {
-// 	const configuration = new Configuration({
-// 		organization: 'org-5C2c3cHJsvmv3cCc5WWNhZs1',
-// 		apiKey: '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',
-// 	})
-// 	const openai = new OpenAIApi(configuration)
-// 	const response = await openai.createChatCompletion({
-// 		model: 'gpt-3.5-turbo',
-// 		messages: [{ role: 'user', content: payload }],
-// 	})
-// 	updateTaskStatus(taskId, response)
-// }
+async function createMarketingPlan (payload, taskId) {
+	const configuration = new Configuration({
+		organization: 'org-5C2c3cHJsvmv3cCc5WWNhZs1',
+		apiKey: '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',
+	})
+	const openai = new OpenAIApi(configuration)
+	const response = await openai.createChatCompletion({
+		model: 'gpt-3.5-turbo',
+		messages: [{ role: 'user', content: payload }],
+	})
+	updateTaskStatus(taskId, response)
+}
 
 // Update Task Status
 function updateTaskStatus (taskId, result) {
