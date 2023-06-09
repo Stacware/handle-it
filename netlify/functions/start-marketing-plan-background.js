@@ -1,10 +1,6 @@
-
 exports.handler = async (event, context) => {
 	const { Configuration, OpenAIApi } = require('openai')
-	// const Parse = require('parse/node')
 
-	// Parse.initialize('MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU', 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
-	// Parse.serverURL = 'https://parseapi.back4app.com/'
 	const body = JSON.parse(event.body)
 	const payload = body.payload
 	const userId = body.userId
@@ -21,22 +17,21 @@ exports.handler = async (event, context) => {
 		})
 
 		if (response) {
-			// const User = Parse.Object.extend("User")
-			// const query = new Parse.Query(User)
-			// const user = await query.get(userId)  // Get the user based on objectId
+			const taskStatusEndpoint = 'https://your-netlify-function-url/.netlify/functions/task-status/' + context.awsRequestId
 
-			// user.set('taskStatus', 'complete')
-			// user.set('marketingPlan', response.data.choices[0].message.content)
-			// await user.save()
-
-			return {
-				statusCode: 200,
-				body: JSON.stringify({ taskStatus: 'complete', marketingPlan: response.data.choices[0].message.content }),
+			// Set the location header in the response
+			const responseBody = {
+				taskStatus: 'pending',
+				taskStatusEndpoint: taskStatusEndpoint,
 			}
-		} else {
+
 			return {
-				statusCode: 1,
-				body: JSON.stringify({ taskStatus: 'pending', marketingPlan: null })
+				statusCode: 202,
+				headers: {
+					'Content-Type': 'application/json',
+					'Location': taskStatusEndpoint,
+				},
+				body: JSON.stringify(responseBody),
 			}
 		}
 	} catch (error) {
