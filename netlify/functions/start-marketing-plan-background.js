@@ -1,10 +1,8 @@
-exports.handler = async (event, context) => {
-
+exports.handler = async (event, context, callback) => {
 	const { Configuration, OpenAIApi } = require('openai')
 
 	const body = JSON.parse(event.body)
 	const payload = body.payload
-
 
 	try {
 		const configuration = new Configuration({
@@ -17,15 +15,17 @@ exports.handler = async (event, context) => {
 			messages: [{ role: 'user', content: payload }],
 		})
 
-		return {
+		const marketingPlan = response.data.choices[0].message.content
+
+		callback(null, {
 			statusCode: 200,
-			body: JSON.stringify({ marketingPlan: response.data.choices[0].message.content })
-		}
+			body: JSON.stringify({ marketingPlan }),
+		})
 	} catch (error) {
 		console.error('Error: ', error)
-		return {
+		callback(null, {
 			statusCode: 500,
-			body: JSON.stringify({ error: error.toString() })
-		}
+			body: JSON.stringify({ error: error.toString() }),
+		})
 	}
-}
+};
