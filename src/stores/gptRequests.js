@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import Parse from 'parse'
+import Parse from 'parse/dist/parse.min.js'
 
 export const useGptRequestsStore = defineStore({
 	id: 'gptRequests',
@@ -20,10 +20,10 @@ export const useGptRequestsStore = defineStore({
 
 	actions: {
 		async startMarketingPlan (payload) {
-			Parse.initialize(process.env.BACK4APP_KEY, 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
-				const response = await Parse.Cloud.run('backgroundFunction', payload)
+				const response = await Parse.Cloud.run('startMarketingPlan', payload)
 				this.taskStatus = response.taskStatus
 				this.marketingPlan = response.marketingPlan
 			} catch (error) {
@@ -32,7 +32,7 @@ export const useGptRequestsStore = defineStore({
 		},
 
 		async getTaskStatus (userId) {
-			Parse.initialize(process.env.BACK4APP_KEY, 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
 				const response = await Parse.Cloud.run('getTaskStatus', { userId })
