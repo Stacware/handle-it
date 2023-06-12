@@ -7,32 +7,32 @@
 			<span class="navbar-brand mb-0 h1">market panda</span>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
-					<li v-if="userId" class="nav-item align-items-start me-3">
+					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
 						<router-link :to="{ name: 'dashboard', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<i class="bi bi-clipboard-data-fill me-1"></i>
 							<span>Dashboard</span>
 						</router-link>
 					</li>
-					<li v-if="userId" class="nav-item align-items-start me-3">
+					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
 						<router-link :to="{ name: 'marketing', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<i class="bi bi-megaphone-fill me-1"></i>
 							<span>Marketing</span>
 						</router-link>
 					</li>
-					<li v-if="userId" class="nav-item align-items-start me-3">
+					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
 						<router-link :to="{ name: 'email', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<i class="bi bi-envelope-at-fill me-1"></i>
 							<span>Email</span>
 						</router-link>
 					</li>
-					<li v-if="userId" class="nav-item align-items-start me-3">
+				</ul>
+				<ul class="navbar-nav ms-auto">
+					<li v-if="userId" @mouseenter="linkHover = 'settings'" @mouseleave="linkHover = null" class="nav-item align-items-start">
 						<router-link :to="{ name: 'manage', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
-							<i class="bi bi-gear-fill me-1"></i>
-							<span>Account Settings</span>
+							<i v-if="linkHover !== 'settings'" class="bi bi-gear-fill me-1 align-self-bottom"></i>
+							<span v-if="linkHover === 'settings'">Account Settings</span>
 						</router-link>
 					</li>
-				</ul>
-				<ul class="navbar-nav ms-auto" v-if="userId">
 					<li class="nav-item" @mouseenter="linkHover = 'logout'" @mouseleave="linkHover = null">
 						<button class="btn btn-danger d-flex" @click="logout">
 							<i v-if="linkHover !== 'logout'" class="bi bi-box-arrow-left me-1 align-self-bottom"></i>
@@ -84,19 +84,19 @@ export default {
 	/* overflow: hidden; */
 }
 
-.nav-link {
+.main-nav > .nav-link {
 	display: flex;
 	align-items: center;
 	width: 100%;
 	justify-content: flex-start;
 }
 
-.nav-link i {
+.main-nav > .nav-link i {
 	margin-right: 5px;
 	transition: margin 0.3s ease-in-out;
 }
 
-.nav-link span {
+.main-nav > .nav-link span {
 	position: absolute;
 	left: 12px; /* Starting position off-screen (to the left) */
 	color: transparent; /* Hide the text initially */
@@ -104,20 +104,20 @@ export default {
 	white-space: nowrap;
 }
 
-.nav-item:hover .nav-link span {
+.main-nav > .nav-item:hover .nav-link span {
 	color: initial; /* Reveal the text on hover */
 	transform: translateX(20px);
 }
 
-.nav-item:hover .nav-link i {
+.main-nav > .nav-item:hover .nav-link i {
 	margin-right: 2px; /* Adjust this value to create enough space for the text */
 }
 
-.navbar-nav li {
+.navbar-nav > .main-nav li {
 	transition: transform 0.3s ease-in-out;
 }
 
-.navbar-nav li:hover ~ li {
+.navbar-nav > .main-nav li:hover ~ li {
 	transform: translateX(70px); /* Adjust this value based on the width of your text */
 }
 
