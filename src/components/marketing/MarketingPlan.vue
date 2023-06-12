@@ -63,7 +63,7 @@ export default {
 			this.requestsStore.startMarketingPlan(payload);
 
 			// Start polling
-			this.pollTaskStatus();
+			// this.pollTaskStatus();
 		},
 
 		async pollTaskStatus() {

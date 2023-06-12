@@ -1,6 +1,5 @@
-import axios from 'axios'
 import { defineStore } from 'pinia'
-import Parse from 'parse/dist/parse.min.js'
+import Parse from 'parse'
 
 export const useGptRequestsStore = defineStore({
 	id: 'gptRequests',
@@ -16,37 +15,34 @@ export const useGptRequestsStore = defineStore({
 		},
 		returnTaskStatus (state) {
 			return state.taskStatus
-		}
+		},
 	},
+
 	actions: {
 		async startMarketingPlan (payload) {
+			Parse.initialize(process.env.BACK4APP_KEY, 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
-				const response = await axios.post('/.netlify/functions/start-marketing-plan-background', payload)
-				this.taskStatus = 'pending'
-				console.log(response)
+				const response = await Parse.Cloud.run('backgroundFunction', payload)
+				this.taskStatus = response.taskStatus
+				this.marketingPlan = response.marketingPlan
 			} catch (error) {
 				console.error(error)
 			}
 		},
 
 		async getTaskStatus (userId) {
-			Parse.initialize(process.env.BACK4APP_KEY, "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
+			Parse.initialize(process.env.BACK4APP_KEY, 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
-				const response = await axios.get('/.netlify/functions/get-task-status', {
-					params: {
-						userId: userId
-					}
-				})
-				this.taskStatus = response.data.taskStatus
-				if (response.data.taskStatus === 'complete') {
+				const response = await Parse.Cloud.run('getTaskStatus', { userId })
+				this.taskStatus = response.taskStatus
+				if (response.taskStatus === 'complete') {
 					const User = new Parse.User()
 					const query = new Parse.Query(User)
-					query.equalTo("objectId", userId)
+					query.equalTo('objectId', userId)
 					const user = await query.first()
-					const marketingPlan = user.get("marketingPlan")
-					this.marketingPlan = marketingPlan
-
+					this.marketingPlan = user.get('marketingPlan')
 				}
 				return this.taskStatus
 			} catch (error) {
@@ -54,6 +50,5 @@ export const useGptRequestsStore = defineStore({
 				return null
 			}
 		},
-
-	}
+	},
 })
