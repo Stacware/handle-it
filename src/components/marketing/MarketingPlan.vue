@@ -29,7 +29,7 @@ export default {
 			requestsStore: useGptRequestsStore(),
 			authStore: useAuthStore(),
 			industry: 'Software Development Company',
-			targetAudience: 'small businesses',
+			targetAudience: 'small businesses and millenials',
 			loading: false,
 		};
 	},
