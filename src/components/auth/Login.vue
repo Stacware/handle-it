@@ -170,7 +170,7 @@ export default {
 	height: 7.5em;
 	width: 8.4em;
 	background-color: #ffffff;
-	border: 0.18em solid #2e0d30;
+	border: 0.18em solid #052b64;
 	border-radius: 7.5em 7.5em 5.62em 5.62em;
 	position: absolute;
 	top: -7.5rem;
@@ -180,10 +180,10 @@ export default {
 }
 .ear-l,
 .ear-r {
-	background-color: #3f3554;
+	background-color: #0d6efd;
 	height: 2.5em;
 	width: 2.81em;
-	border: 0.18em solid #2e0d30;
+	border: 0.18em solid #052b64;
 	border-radius: 2.5em 2.5em 0 0;
 	top: -7.813rem;
 	position: absolute;
@@ -215,7 +215,7 @@ export default {
 }
 .eye-l,
 .eye-r {
-	background-color: #3f3554;
+	background-color: #052b64;
 	height: 2.18em;
 	width: 2em;
 	border-radius: 2em;
@@ -250,7 +250,7 @@ export default {
 .nose {
 	height: 1em;
 	width: 1em;
-	background-color: #3f3554;
+	background-color: #052b64;
 	position: absolute;
 	top: 4.37em;
 	margin: auto;
@@ -262,7 +262,7 @@ export default {
 .nose:before {
 	content: '';
 	position: absolute;
-	background-color: #3f3554;
+	background-color: #052b64;
 	height: 0.6em;
 	width: 0.1em;
 	transform: rotate(-45deg);
@@ -276,7 +276,7 @@ export default {
 	background-color: transparent;
 	position: absolute;
 	border-radius: 50%;
-	box-shadow: 0 0.18em #3f3554;
+	box-shadow: 0 0.18em #052b64;
 }
 .mouth {
 	top: 5.31em;
@@ -289,10 +289,10 @@ export default {
 }
 .hand-l,
 .hand-r {
-	background-color: #3f3554;
+	background-color: #0d6efd;
 	height: 2.81em;
 	width: 2.5em;
-	border: 0.18em solid #2e0d30;
+	border: 0.18em solid #052b64;
 	border-radius: 0.6em 0.6em 2.18em 2.18em;
 	transition: 1s all;
 	position: absolute;
