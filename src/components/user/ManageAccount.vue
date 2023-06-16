@@ -1,7 +1,7 @@
 <template>
-	<div class="mt-5">
+	<div class="mt-5 container">
 		<h4 class="text-center">Manage account</h4>
-		<div>Hello{{ currentUser.attributes.firstName ? ', ' + currentUser.attributes.firstName + '!' : '!' }}</div>
+		<div>Hello{{ currentUser.firstName ? ', ' + currentUser.firstName + '!' : '!' }}</div>
 		{{ currentUser }}
 	</div>
 </template>
