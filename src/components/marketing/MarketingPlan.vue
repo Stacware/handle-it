@@ -3,7 +3,14 @@
 		<h1 class="text-center">{{ marketingPlan ? 'Marketing' : 'Create a Marketing Plan' }}</h1>
 		<div class="center-content" :class="{ main: !marketingPlan }">
 			<button v-if="!loading && marketingPlan === null" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button>
-			<LoadingEyes v-if="loading" />
+			<div v-if="loading">
+				<LoadingHand />
+				<div class="mt-5">
+					<transition name="slide-fade" mode="out-in">
+						<span class="load-status h4" :key="loadStatus">{{ loadStatus }}</span>
+					</transition>
+				</div>
+			</div>
 			<div v-if="marketingPlan" class="marketing-guide container">
 				<h1>{{ title }}</h1>
 				<div v-for="(paragraph, index) in paragraphs" :key="index">
@@ -17,11 +24,11 @@
 <script>
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import { useAuthStore } from '@/stores/auth.js';
-import LoadingEyes from '@/components/ui/LoadingEyes.vue';
+import LoadingHand from '@/components/ui/LoadingHand.vue';
 import { marketingGuideMixin } from '@/components/mixins/marketingGuideMixin';
 export default {
 	components: {
-		LoadingEyes,
+		LoadingHand,
 	},
 	mixins: [marketingGuideMixin],
 	data() {
@@ -31,6 +38,7 @@ export default {
 			industry: 'Software Development Company',
 			targetAudience: 'small businesses and millenials',
 			loading: false,
+			loadStatus: 'Checking your info...',
 		};
 	},
 	watch: {
@@ -44,7 +52,10 @@ export default {
 		},
 	},
 	methods: {
-		createMarketingPlan() {
+		sleep(ms) {
+			return new Promise((resolve) => setTimeout(resolve, ms));
+		},
+		async createMarketingPlan() {
 			this.loading = true;
 			const payload = {
 				payload: `Please generate a comprehensive marketing guide, strategy, and market analysis for a company operating in the ${this.industry} industry and targeting the ${this.targetAudience}.`,
@@ -67,7 +78,18 @@ export default {
 			// 		userId: this.authStore.userId,
 			// 	};
 			this.requestsStore.startMarketingPlan(payload);
-
+			await this.sleep(2000);
+			this.loadStatus = 'Creating marketing guide...';
+			await this.sleep(5000);
+			this.loadStatus = 'Creating strategy...';
+			await this.sleep(6000);
+			this.loadStatus = 'Gathering market analysis info...';
+			await this.sleep(5000);
+			this.loadStatus = 'Making it look nice...';
+			await this.sleep(4000);
+			this.loadStatus = 'A little magic...';
+			await this.sleep(4000);
+			this.loadStatus = 'Voila!';
 			// Start polling
 			// this.pollTaskStatus();
 		},
@@ -109,5 +131,15 @@ export default {
 .marketing-guide > p {
 	margin-bottom: 1em;
 	line-height: 1.5;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+	transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+	opacity: 0;
 }
 </style>

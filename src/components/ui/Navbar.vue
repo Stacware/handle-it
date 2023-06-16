@@ -33,7 +33,7 @@
 							<span v-if="linkHover === 'settings'">Account Settings</span>
 						</router-link>
 					</li>
-					<li class="nav-item" @mouseenter="linkHover = 'logout'" @mouseleave="linkHover = null">
+					<li v-if="userId" class="nav-item" @mouseenter="linkHover = 'logout'" @mouseleave="linkHover = null">
 						<button class="btn btn-danger d-flex" @click="logout">
 							<i v-if="linkHover !== 'logout'" class="bi bi-box-arrow-left me-1"></i>
 							<span v-if="linkHover === 'logout'">Logout</span>

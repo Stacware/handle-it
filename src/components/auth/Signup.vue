@@ -42,11 +42,12 @@
 									placeholder="Confirm Password" />
 								<div class="invalid-feedback">Passwords do not match.</div>
 							</div>
-							<button type="submit" class="btn btn-primary w-100 mt-4 py-2" :disabled="!isFormValid || loading">
+							<SparkleButton :text="loading ? 'Creating your account...' : 'Sign Up'" :disabled="!isFormValid" class="my-5" />
+							<!-- <button type="submit" class="btn btn-primary w-100 mt-4 py-2" :disabled="!isFormValid || loading">
 								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="loading"></span>
 								<span v-if="loading"> Creating your account...</span>
 								<span v-else>Sign Up</span>
-							</button>
+							</button> -->
 							<div class="mt-3">
 								<small>Already have an account? <a href="#" @click.prevent="$emit('switch')">Log in!</a></small>
 							</div>
@@ -63,7 +64,12 @@
 
 <script>
 import { useAuthStore } from '../../stores/auth.js';
+import SparkleButton from '@/components/ui/SparkleButton.vue';
+
 export default {
+	components: {
+		SparkleButton,
+	},
 	data() {
 		return {
 			email: '',

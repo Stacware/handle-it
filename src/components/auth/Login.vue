@@ -34,11 +34,13 @@
 									placeholder="Password" />
 								<div class="invalid-feedback">Password should be at least 8 characters.</div>
 							</div>
-							<button type="submit" class="btn btn-primary w-100 mt-4 py-2" :disabled="!isFormValid || loading">
+							<SparkleButton :text="loading ? 'Logging in...' : 'Login'" :disabled="!isFormValid" class="my-5" />
+							<!-- <button type="submit" class="btn btn-primary w-100 mt-4 py-2" :disabled="!isFormValid || loading">
 								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="loading"></span>
 								<span v-if="loading"> Logging in...</span>
 								<span v-else>Log In</span>
-							</button>
+							</button> -->
+
 							<div class="mt-3">
 								<small>Don't have an account? No problem, <a href="#" @click.prevent="$emit('switch')">create one!</a></small>
 							</div>
@@ -71,9 +73,11 @@
 
 <script>
 import { useAuthStore } from '../../stores/auth.js';
-
+import SparkleButton from '@/components/ui/SparkleButton.vue';
 export default {
-	components: {},
+	components: {
+		SparkleButton,
+	},
 	data() {
 		return {
 			email: '',
