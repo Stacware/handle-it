@@ -7,6 +7,8 @@ export const useGptRequestsStore = defineStore({
 	state: () => ({
 		marketingPlan: null,
 		emailTemplates: null,
+		emailCount: 0,
+		emailConversation: [],
 		taskStatus: null,
 	}),
 
@@ -17,6 +19,9 @@ export const useGptRequestsStore = defineStore({
 		returnEmailTemplates (state) {
 			return state.emailTemplates
 		},
+		returnEmailCount (state) {
+			return state.emailCount
+		}
 	},
 
 	actions: {
@@ -38,6 +43,7 @@ export const useGptRequestsStore = defineStore({
 			try {
 				const response = await Parse.Cloud.run('getEmails', payload)
 				this.emailTemplates = response.emailTemplates
+				this.emailCount = response.emailCount
 			} catch (error) {
 				console.error(error)
 			}

@@ -1,18 +1,24 @@
 <template>
 	<div>
 		<h1 class="text-center">{{ emailTemplates ? 'Email Templates' : 'Create Email Templates' }}</h1>
+		<h5 class="text-center">You have used {{ emailCount }}/5 email templates.</h5>
 		<div class="center-content" :class="{ main: !emailTemplates }">
-			<button v-if="!loading && emailTemplates === null" @click="getEmailTemplates" class="btn btn-sm btn-outline-primary">Create Email Templates</button>
-			<div v-if="loading">
+			<div v-if="emailTemplates" class="marketing-guide container mb-5">
+				<div v-for="(template, index) in emailTemplates" :key="index" class="mt-4">
+					<h3>Email #{{ index + 1 }}</h3>
+					{{ template.content }}
+				</div>
+			</div>
+			<button v-if="!loading && emailCount < 5" @click="getEmailTemplates" class="btn btn-sm btn-outline-primary mt-5">
+				{{ emailCount === 0 ? 'Create an email' : 'Create another email' }}
+			</button>
+			<div v-if="loading" class="mt-5">
 				<LoadingHand />
-				<div class="mt-5">
+				<div class="mt-5 mb-5">
 					<transition name="slide-fade" mode="out-in">
 						<span class="load-status h4" :key="loadStatus">{{ loadStatus }}</span>
 					</transition>
 				</div>
-			</div>
-			<div v-if="emailTemplates" class="marketing-guide container">
-				{{ emailTemplates }}
 			</div>
 		</div>
 	</div>
@@ -49,6 +55,9 @@ export default {
 		emailTemplates() {
 			return this.requestsStore.returnEmailTemplates;
 		},
+		emailCount() {
+			return this.requestsStore.returnEmailCount;
+		},
 	},
 	methods: {
 		sleep(ms) {
@@ -56,26 +65,17 @@ export default {
 		},
 		async getEmailTemplates() {
 			this.loading = true;
+			let conversation = this.requestsStore.emailConversation || [];
+
+			conversation.push({
+				role: 'user',
+				content: `You are an email marketing guru, can you provide me an email template that i can send to my customers to for maximum roi to ${this.emailIntent}. The email style must be ${this.emailStyle}. My company name is ${this.companyName} and i am in the ${this.industry} and my target audience is ${this.targetAudience}`,
+			});
+
 			const payload = {
-				payload: `You are an email marketing guru, can you provide me an email template that i can send to my customers to for maximum roi to ${this.emailIntent}. The email style must be ${this.emailStyle}. My company name is ${this.companyName} and i am in the ${this.industry} and my target audience is ${this.targetAudience}`,
+				messages: conversation,
 				userId: this.authStore.userId,
 			};
-			// 	const payload = {
-			// 		payload: `Could you provide a 5-step marketing strategy for a company in the ${this.industry} industry, targeting ${this.targetAudience}? Please include the following for each step:
-			// 1. Action: Describe the specific tasks that need to be performed.
-			// 2. Resources/Tools: Mention the tools or resources required to execute the action.
-			// 3. Timeline: Specify when and how long each action should take.
-			// 4. Measurement: Explain how success can be measured.
-
-			// Additionally, please provide strategies for lead generation, nurturing, and conversion, with details for each strategy:
-			// 1. Action: Describe the actions to be taken for lead generation, nurturing, and conversion.
-			// 2. Resources/Tools: Mention the tools or resources required for each strategy.
-			// 3. Timeline: Specify when and how long each strategy should be implemented.
-			// 4. Measurement: Explain how success can be measured.
-
-			// Lastly, please emphasize the best practices for converting small businesses into loyal customers.`,
-			// 		userId: this.authStore.userId,
-			// 	};
 			this.requestsStore.startEmailTemplates(payload);
 			// await this.sleep(2000);
 			// this.loadStatus = 'Creating marketing guide...';
