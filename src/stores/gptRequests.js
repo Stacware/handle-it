@@ -6,6 +6,7 @@ export const useGptRequestsStore = defineStore({
 
 	state: () => ({
 		marketingPlan: null,
+		emailTemplates: null,
 		taskStatus: null,
 	}),
 
@@ -13,8 +14,8 @@ export const useGptRequestsStore = defineStore({
 		returnMarketingPlan (state) {
 			return state.marketingPlan
 		},
-		returnTaskStatus (state) {
-			return state.taskStatus
+		returnEmailTemplates (state) {
+			return state.emailTemplates
 		},
 	},
 
@@ -26,6 +27,17 @@ export const useGptRequestsStore = defineStore({
 				const response = await Parse.Cloud.run('startMarketingPlan', payload)
 				this.taskStatus = response.taskStatus
 				this.marketingPlan = response.marketingPlan
+			} catch (error) {
+				console.error(error)
+			}
+		},
+
+		async startEmailTemplates (payload) {
+			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+			Parse.serverURL = 'https://parseapi.back4app.com/'
+			try {
+				const response = await Parse.Cloud.run('getEmails', payload)
+				this.emailTemplates = response.emailTemplates
 			} catch (error) {
 				console.error(error)
 			}

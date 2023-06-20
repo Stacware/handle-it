@@ -45,6 +45,7 @@ export const useAuthStore = defineStore({
 						.then((user) => {
 							const requestsStore = useGptRequestsStore()
 							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
+							if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
 						})
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
@@ -57,6 +58,7 @@ export const useAuthStore = defineStore({
 				const requestsStore = useGptRequestsStore()
 				const user = await Parse.User.logIn(email, password)
 				if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
+				if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
 				this.currentUser = user
 				this.userId = user.id
 				this.sessionToken = user.get('sessionToken')
