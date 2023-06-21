@@ -45,9 +45,14 @@ export const useAuthStore = defineStore({
 						.then((user) => {
 							const requestsStore = useGptRequestsStore()
 							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
+							
 							if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
 							requestsStore.emailCount = user.attributes.emailCount
 							requestsStore.emailConversation = user.attributes.emailConversation
+							
+							if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
+							requestsStore.postCount = user.attributes.postCount
+							requestsStore.postConversation = user.attributes.postConversation
 						})
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
@@ -63,6 +68,10 @@ export const useAuthStore = defineStore({
 				if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
 				requestsStore.emailCount = user.attributes.emailCount
 				requestsStore.emailConversation = user.attributes.emailConversation
+				
+				if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
+				requestsStore.postCount = user.attributes.postCount
+				requestsStore.postConversation = user.attributes.postConversation
 
 				this.currentUser = user
 				this.userId = user.id
