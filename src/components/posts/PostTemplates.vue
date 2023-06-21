@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1 class="text-center">{{ postTemplates ? 'Post Templates' : 'Create Post Templates' }}</h1>
+		<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
 		<h5 class="text-center">You have used {{ postCount }}/5 post templates.</h5>
 		<div class="center-content" :class="{ main: !postTemplates }">
 			<div v-if="postTemplates" class="marketing-guide container mb-5">
@@ -10,6 +10,7 @@
 				</div>
 			</div>
 			<FlippyButton v-if="!loading && postCount < 5" @click="getPostTemplates" :title="'Create'" class="mt-5" />
+			<FlippyButton v-if="!loading && postCount >= 5" @click="upgradeTier" :title="'Upgrade Tier'" class="mt-5" />
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />
 				<div class="mt-5 mb-5">
@@ -41,7 +42,7 @@ export default {
 			targetAudience: 'small businesses and millenials',
 			postStyle: 'funny',
 			postIntent: 'visit my website',
-
+			imageStyle: 'Digital Art',
 			loading: false,
 			loadStatus: 'Checking your info...',
 		};
@@ -69,7 +70,7 @@ export default {
 
 			conversation.push({
 				role: 'user',
-				content: `You are an social media marketing guru, can you provide me an post template that i can send to my customers to for maximum roi to ${this.postIntent}. The post style must be ${this.postStyle}. My company name is ${this.companyName} and i am in the ${this.industry} and my target audience is ${this.targetAudience}`,
+				content: `You are an social media marketing guru, can you provide me an post template that i can send to my customers to for maximum roi to ${this.postIntent}. The post style must be ${this.postStyle}. My company name is ${this.companyName} and i am in the ${this.industry} and my target audience is ${this.targetAudience}. Give me an idea of an image I should include in this post as well. I'd like you to create a prompt for an AI Image generator as well for this in this style ${this.imageStyle}.`,
 			});
 
 			const payload = {
