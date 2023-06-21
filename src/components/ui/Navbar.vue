@@ -25,6 +25,12 @@
 							<span>Email</span>
 						</router-link>
 					</li>
+					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
+						<router-link :to="{ name: 'post', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+							<i class="bi bi-postcard-fill"></i>
+							<span>Post</span>
+						</router-link>
+					</li>
 				</ul>
 				<ul class="navbar-nav ms-auto">
 					<li v-if="userId" @mouseenter="linkHover = 'settings'" @mouseleave="linkHover = null" class="nav-item align-items-center">
