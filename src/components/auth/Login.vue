@@ -34,7 +34,6 @@
 									placeholder="Password" />
 								<div class="invalid-feedback">Password should be at least 8 characters.</div>
 							</div>
-							<SparkleButton :text="loading ? 'Logging in...' : 'Login'" :disabled="!isFormValid" class="my-5" />
 							<!-- <button type="submit" class="btn btn-primary w-100 mt-4 py-2" :disabled="!isFormValid || loading">
 								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="loading"></span>
 								<span v-if="loading"> Logging in...</span>
@@ -47,6 +46,7 @@
 							<div v-if="returnLogInError" class="mt-3">
 								<small class="text-danger">Error! {{ returnLogInError }}</small>
 							</div>
+							<FlippyButton :title="loading ? 'Logging in...' : 'Login'" class="mt-5" />
 						</form>
 						<div class="ear-l"></div>
 						<div class="ear-r"></div>
@@ -73,10 +73,11 @@
 
 <script>
 import { useAuthStore } from '../../stores/auth.js';
-import SparkleButton from '@/components/ui/SparkleButton.vue';
+import FlippyButton from '@/components/ui/FlippyButton.vue';
+
 export default {
 	components: {
-		SparkleButton,
+		FlippyButton,
 	},
 	data() {
 		return {
@@ -146,6 +147,9 @@ export default {
 </script>
 
 <style scoped>
+.card {
+	z-index: 1;
+}
 .eyeball-l.focused {
 	left: 0.75em;
 	top: 1.12em;

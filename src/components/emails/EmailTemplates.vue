@@ -9,9 +9,7 @@
 					{{ template.content }}
 				</div>
 			</div>
-			<button v-if="!loading && emailCount < 5" @click="getEmailTemplates" class="btn btn-sm btn-outline-primary mt-5">
-				{{ emailCount === 0 ? 'Create an email' : 'Create another email' }}
-			</button>
+			<FlippyButton v-if="!loading && emailCount < 5" @click="getEmailTemplates" :title="'Create'" class="mt-5" />
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />
 				<div class="mt-5 mb-5">
@@ -28,9 +26,11 @@
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import { useAuthStore } from '@/stores/auth.js';
 import LoadingHand from '@/components/ui/LoadingHand.vue';
+import FlippyButton from '@/components/ui/FlippyButton.vue';
 export default {
 	components: {
 		LoadingHand,
+		FlippyButton,
 	},
 	data() {
 		return {
