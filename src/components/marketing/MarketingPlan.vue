@@ -1,8 +1,8 @@
 <template>
-	<div>
+	<div v-if="currentUser">
 		<h1 class="text-center">{{ marketingPlan ? 'Marketing' : 'Create a Marketing Plan' }}</h1>
 		<div class="center-content" :class="{ main: !marketingPlan }">
-			<button v-if="!loading && marketingPlan === null" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button>
+			<button v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button>
 			<div v-if="loading">
 				<LoadingHand />
 				<div class="mt-5">
@@ -31,11 +31,12 @@ export default {
 		LoadingHand,
 	},
 	mixins: [marketingGuideMixin],
+	inject: ['currentUser'],
 	data() {
 		return {
 			requestsStore: useGptRequestsStore(),
 			authStore: useAuthStore(),
-			industry: 'Software Development Company',
+			industry: this.currentUser.industry,
 			targetAudience: 'small businesses and millenials',
 			loading: false,
 			loadStatus: 'Checking your info...',

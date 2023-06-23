@@ -42,7 +42,31 @@
 									placeholder="Confirm Password" />
 								<div class="invalid-feedback">Passwords do not match.</div>
 							</div>
-							<FlippyButton :title="loading ? 'Creating your account...' : 'Sign Up'" :disabled="!isFormValid" class="my-5" />
+							<div class="mb-3 input-group">
+								<span class="input-group-text" id="industry"><i class="bi bi-building"></i></span>
+								<input
+									type="text"
+									class="form-control"
+									id="industry"
+									v-model="industry"
+									@input="industryTouched = true"
+									:class="{ 'is-invalid': !isIndustryValid && industryTouched }"
+									placeholder="Type your industry" />
+								<div class="invalid-feedback">Cannot be left blank.</div>
+							</div>
+							<div class="mb-3 input-group">
+								<span class="input-group-text" id="company-name-addon"><i class="bi bi-input-cursor-text"></i></span>
+								<input
+									type="text"
+									class="form-control"
+									id="companyName"
+									v-model="companyName"
+									@input="companyNameTouched = true"
+									:class="{ 'is-invalid': !isCompanyNameValid && companyNameTouched }"
+									placeholder="Company name" />
+								<div class="invalid-feedback">Cannot be left blank.</div>
+							</div>
+							<FlippyButton :title="loading ? 'Creating...' : 'Sign Up'" :disabled="!isFormValid" class="my-5" />
 							<!-- <button type="submit" class="btn btn-primary w-100 mt-4 py-2" :disabled="!isFormValid || loading">
 								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="loading"></span>
 								<span v-if="loading"> Creating your account...</span>
@@ -75,14 +99,28 @@ export default {
 			email: '',
 			password: '',
 			confirmPassword: '',
+			industry: '',
+			companyName: '',
 			emailTouched: false,
 			passwordTouched: false,
 			confirmPasswordTouched: false,
+			industryTouched: false,
+			companyNameTouched: false,
 			loading: false,
 			authStore: useAuthStore(),
 		};
 	},
+	watch: {
+		userId(val) {
+			if (val) {
+				this.$router.push({ name: 'dashboard', params: { userId: this.userId } });
+			}
+		},
+	},
 	computed: {
+		userId() {
+			return this.authStore.returnCurrentUserId;
+		},
 		isEmailValid() {
 			// Simple regex for basic email validation
 			const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -96,9 +134,14 @@ export default {
 		isConfirmPasswordValid() {
 			return this.password === this.confirmPassword;
 		},
-
+		isIndustryValid() {
+			return this.industry.length > 0;
+		},
+		isCompanyNameValid() {
+			return this.companyName.length > 0;
+		},
 		isFormValid() {
-			return this.isEmailValid && this.isPasswordValid && this.isConfirmPasswordValid;
+			return this.isEmailValid && this.isPasswordValid && this.isConfirmPasswordValid && this.isIndustryValid && this.isCompanyNameValid;
 		},
 		returnSignUpError() {
 			return this.authStore.returnSignUpError;
@@ -109,16 +152,20 @@ export default {
 			if (this.isFormValid) {
 				this.loading = true;
 				try {
-					await this.authStore.signUp(this.email, this.password);
+					await this.authStore.signUp(this.email, this.password, this.industry, this.companyName);
 				} finally {
 					setTimeout(() => {
 						this.loading = false;
 						this.email = '';
 						this.password = '';
 						this.confirmPassword = '';
+						this.industry = '';
+						this.companyName = '';
 						this.emailTouched = false;
 						this.passwordTouched = false;
 						this.confirmPasswordTouched = false;
+						this.industryTouched = false;
+						this.companyNameTouched = false;
 					}, 1800);
 				}
 			}

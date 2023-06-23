@@ -56,6 +56,7 @@ router.beforeEach(async (to, from, next) => {
 		// If the currentUser is not available, fetch it from your backend or local storage
 		try {
 			await authStore.fetchCurrentUser()
+			authStore.userLoading = false
 		} catch (error) {
 			console.error('Failed to fetch the currentUser:', error)
 		}

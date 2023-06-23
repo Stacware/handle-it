@@ -11,6 +11,7 @@ export const useAuthStore = defineStore({
 		sessionToken: null,
 		currentUser: null,
 		userId: null,
+		userLoading: true,
 		vaar: "Parse/MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU/currentUser"
 	}),
 
@@ -26,6 +27,9 @@ export const useAuthStore = defineStore({
 		},
 		returnCurrentUserId (state) {
 			return state.userId
+		},
+		returnUserLoading (state) {
+			return state.userLoading
 		}
 	},
 
@@ -45,15 +49,16 @@ export const useAuthStore = defineStore({
 						.then((user) => {
 							const requestsStore = useGptRequestsStore()
 							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
-							
+
 							if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
 							requestsStore.emailCount = user.attributes.emailCount
 							requestsStore.emailConversation = user.attributes.emailConversation
-							
+
 							if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
 							requestsStore.postCount = user.attributes.postCount
 							requestsStore.postConversation = user.attributes.postConversation
 						})
+					// this.userLoading = false
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
 				}
@@ -68,41 +73,45 @@ export const useAuthStore = defineStore({
 				if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
 				requestsStore.emailCount = user.attributes.emailCount
 				requestsStore.emailConversation = user.attributes.emailConversation
-				
+
 				if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
 				requestsStore.postCount = user.attributes.postCount
 				requestsStore.postConversation = user.attributes.postConversation
 
-				this.currentUser = user
+				this.currentUser = user.attributes
 				this.userId = user.id
 				this.sessionToken = user.get('sessionToken')
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)
-
+				this.userLoading = false
 			} catch (error) {
 				this.logInError = error
 			}
 		},
 
-		async signUp (email, password) {
+		async signUp (email, password, industry, companyName) {
 			this.signUpError = null
 			const user = new Parse.User()
 			user.set("username", email)
 			user.set("password", password)
 			user.set("email", email)
+			user.set('industry', industry)
+			user.set('companyName', companyName)
 
 			try {
 				await user.signUp()
-				this.currentUser = user
-				this.sessionToken = user.get('sessionToken')
+
 			} catch (error) {
 				this.signUpError = error
+			} finally {
+				this.logIn(email, password)
 			}
 		},
 
 		logOut () {
 			Parse.User.logOut()
 			localStorage.removeItem('currentUser')
+			localStorage.removeItem('userId')
 			localStorage.removeItem("Parse/MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU/currentUser")
 			this.currentUser = null
 			this.sessionToken = null

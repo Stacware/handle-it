@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="currentUser">
 		<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
 		<h5 class="text-center">You have used {{ postCount }}/5 post templates.</h5>
 		<div class="center-content" :class="{ main: !postTemplates }">
@@ -9,8 +9,8 @@
 					{{ template.content }}
 				</div>
 			</div>
-			<FlippyButton v-if="!loading && postCount < 5" @click="getPostTemplates" :title="'Create'" class="mt-5" />
-			<FlippyButton v-if="!loading && postCount >= 5" @click="upgradeTier" :title="'Upgrade Tier'" class="mt-5" />
+			<FlippyButton v-if="!loading && postCount < 5 && $route.name !== 'dashboard'" @click="getPostTemplates" :title="'Create'" class="my-5" />
+			<FlippyButton v-if="!loading && postCount >= 5 && $route.name !== 'dashboard'" @click="upgradeTier" :title="'Upgrade Tier'" class="my-5" />
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />
 				<div class="mt-5 mb-5">
@@ -33,12 +33,14 @@ export default {
 		LoadingHand,
 		FlippyButton,
 	},
+	inject: ['currentUser'],
+
 	data() {
 		return {
 			requestsStore: useGptRequestsStore(),
 			authStore: useAuthStore(),
-			companyName: 'Stacware',
-			industry: 'Software Development Company',
+			companyName: this.currentUser.companyName,
+			industry: this.currentUser.industry,
 			targetAudience: 'small businesses and millenials',
 			postStyle: 'funny',
 			postIntent: 'visit my website',
@@ -102,6 +104,9 @@ export default {
 					this.loading = false;
 				}
 			}, 5000); // Poll every 5 seconds
+		},
+		upgradeTier() {
+			console.log('upgrade');
 		},
 	},
 };

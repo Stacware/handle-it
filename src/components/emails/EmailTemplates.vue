@@ -1,5 +1,8 @@
 <template>
-	<div>
+	<div v-if="currentUser">
+		<base-modal :show="openModal" @close="openModal = false" @create="getEmailTemplates">
+			<dropdown-select :options="['Normal', 'Funny', 'Professional', 'Serious', 'Funny and Professional', 'Out of the box']" :title="'Choose email style'"></dropdown-select>
+		</base-modal>
 		<h1 class="text-center">{{ emailTemplates ? 'Email Templates' : 'Create Email Templates' }}</h1>
 		<h5 class="text-center">You have used {{ emailCount }}/5 email templates.</h5>
 		<div class="center-content" :class="{ main: !emailTemplates }">
@@ -9,7 +12,9 @@
 					{{ template.content }}
 				</div>
 			</div>
-			<FlippyButton v-if="!loading && emailCount < 5" @click="getEmailTemplates" :title="'Create'" class="mt-5" />
+			<FlippyButton v-if="!loading && emailCount < 5 && $route.name !== 'dashboard'" @click="openModal = true" :title="'Create'" class="my-5" />
+			<FlippyButton v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'" @click="upgradeTier" :title="'Upgrade Tier'" class="my-5" />
+
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />
 				<div class="mt-5 mb-5">
@@ -32,18 +37,19 @@ export default {
 		LoadingHand,
 		FlippyButton,
 	},
+	inject: ['currentUser'],
 	data() {
 		return {
 			requestsStore: useGptRequestsStore(),
 			authStore: useAuthStore(),
-			companyName: 'Stacware',
-			industry: 'Software Development Company',
+			companyName: this.currentUser.companyName,
+			industry: this.currentUser.industry,
 			targetAudience: 'small businesses and millenials',
 			emailStyle: 'funny',
 			emailIntent: 'visit my website',
-
 			loading: false,
 			loadStatus: 'Checking your info...',
+			openModal: false,
 		};
 	},
 	watch: {
@@ -65,6 +71,7 @@ export default {
 		},
 		async getEmailTemplates() {
 			this.loading = true;
+			this.openModal = false;
 			let conversation = this.requestsStore.emailConversation || [];
 
 			conversation.push({
@@ -101,6 +108,9 @@ export default {
 					this.loading = false;
 				}
 			}, 5000); // Poll every 5 seconds
+		},
+		upgradeTier() {
+			console.log('upgrade');
 		},
 	},
 };
