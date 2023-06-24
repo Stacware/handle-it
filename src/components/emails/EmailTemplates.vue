@@ -1,7 +1,19 @@
 <template>
 	<div v-if="currentUser">
-		<base-modal :show="openModal" @close="openModal = false" @create="getEmailTemplates">
-			<dropdown-select :options="['Normal', 'Funny', 'Professional', 'Serious', 'Funny and Professional', 'Out of the box']" :title="'Choose email style'"></dropdown-select>
+		<base-modal :show="openModal" :title="'Email Options'">
+			<dropdown-select :options="emailStyleOpts" :title="'Email Style'" @model-change="emailStyleSelection"></dropdown-select>
+			<dropdown-select :options="emailIntentOpts" :title="'Email Intent'" @model-change="emailIntentSelection"></dropdown-select>
+			<div class="form-floating">
+				<input type="text" v-model="targetAudience" class="form-control" :class="{ 'is-invalid': targetAudience === null }" id="floatingInputValue" />
+				<small class="text-muted ms-1">i.e. Small businesses, families, over 18, etc..</small>
+				<label for="floatingInputValue">Target Audience</label>
+			</div>
+			<template v-slot:buttons>
+				<div class="d-flex justify-content-between">
+					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" />
+					<FlippyButton :disabled="!validForm" :title="'Create'" @click="getEmailTemplates" />
+				</div>
+			</template>
 		</base-modal>
 		<h1 class="text-center">{{ emailTemplates ? 'Email Templates' : 'Create Email Templates' }}</h1>
 		<h5 class="text-center">You have used {{ emailCount }}/5 email templates.</h5>
@@ -44,9 +56,11 @@ export default {
 			authStore: useAuthStore(),
 			companyName: this.currentUser.companyName,
 			industry: this.currentUser.industry,
-			targetAudience: 'small businesses and millenials',
-			emailStyle: 'funny',
-			emailIntent: 'visit my website',
+			targetAudience: null,
+			emailStyle: null,
+			emailStyleOpts: ['Normal', 'Funny', 'Professional', 'Serious', 'Funny and Professional', 'Out of the box'],
+			emailIntent: null,
+			emailIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			loading: false,
 			loadStatus: 'Checking your info...',
 			openModal: false,
@@ -63,6 +77,9 @@ export default {
 		},
 		emailCount() {
 			return this.requestsStore.returnEmailCount;
+		},
+		validForm() {
+			return this.emailStyle !== null && this.targetAudience !== null && this.emailIntent !== null;
 		},
 	},
 	methods: {
@@ -98,8 +115,14 @@ export default {
 			// this.loadStatus = 'Voila!';
 			// Start polling
 			// this.pollTaskStatus();
+			this.targetAudience = null;
 		},
-
+		emailStyleSelection(val) {
+			this.emailStyle = val;
+		},
+		emailIntentSelection(val) {
+			this.emailIntent = val;
+		},
 		async pollTaskStatus() {
 			this.taskPollingInterval = setInterval(async () => {
 				const taskStatus = await this.requestsStore.getTaskStatus(this.authStore.userId);
