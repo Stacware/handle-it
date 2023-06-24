@@ -11,7 +11,7 @@
 			<template v-slot:buttons>
 				<div class="d-flex justify-content-between">
 					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" />
-					<FlippyButton :disabled="!validForm" :title="'Create'" @click="getEmailTemplates" />
+					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getEmailTemplates" :class="{ disabled: !validForm }" />
 				</div>
 			</template>
 		</base-modal>
@@ -25,7 +25,7 @@
 				</div>
 			</div>
 			<FlippyButton v-if="!loading && emailCount < 5 && $route.name !== 'dashboard'" @click="openModal = true" :title="'Create'" class="my-5" />
-			<FlippyButton v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'" @click="upgradeTier" :title="'Upgrade Tier'" class="my-5" />
+			<FlippyButton v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'" :disabled="true" @click="null" :title="'Upgrade Tier'" class="my-5" :class="{ disabled: !validForm }" />
 
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />
@@ -173,5 +173,9 @@ export default {
 .slide-fade-enter-from,
 .slide-fade-leave-to {
 	opacity: 0;
+}
+
+.disabled {
+	cursor: not-allowed;
 }
 </style>

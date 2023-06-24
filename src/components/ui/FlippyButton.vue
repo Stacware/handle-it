@@ -59,7 +59,7 @@ export default {
 
 .flippy.close::before {
 	color: #ed0d0d !important;
-	background: linear-gradient(-45deg, #ff4141 0%, #ff8989 100%) !important;
+	background: linear-gradient(-45deg, #9d5a60 0%, #ea868f 100%) !important;
 }
 
 .flippy.disabled::before {
@@ -83,7 +83,7 @@ export default {
 }
 
 .flippy.close::after {
-	background: linear-gradient(-45deg, #ff4141 0%, #ff8989 100%);
+	background: linear-gradient(-45deg, #9d5a60 0%, #ea868f 100%);
 }
 
 .flippy.disabled::after {
