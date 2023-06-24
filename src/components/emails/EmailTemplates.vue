@@ -21,11 +21,17 @@
 			<div v-if="emailTemplates" class="marketing-guide container mb-5">
 				<div v-for="(template, index) in emailTemplates" :key="index" class="mt-4">
 					<h3>Email #{{ index + 1 }}</h3>
-					{{ template.content }}
+					<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" />
 				</div>
 			</div>
-			<FlippyButton v-if="!loading && emailCount < 5 && $route.name !== 'dashboard'" @click="openModal = true" :title="'Create'" class="my-5" />
-			<FlippyButton v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'" :disabled="true" @click="null" :title="'Upgrade Tier'" class="my-5" :class="{ disabled: !validForm }" />
+			<FlippyButton v-if="!loading && emailCount < 5 && $route.name !== 'dashboard'" @click="openModal = true" :title="emailCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
+			<FlippyButton
+				v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'"
+				:disabled="true"
+				@click="null"
+				:title="'Upgrade Tier'"
+				class="mb-5 mt-2"
+				:class="{ disabled: !validForm }" />
 
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />

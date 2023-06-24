@@ -11,6 +11,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle'
 import '../public/fonts.css'
 
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
 import BaseModal from '@/components/ui/BaseModal.vue'
 import DropdownSelect from '@/components/ui/DropdownSelect.vue'
 
@@ -23,6 +26,7 @@ const app = createApp(App)
 
 app.component('base-modal', BaseModal)
 app.component('dropdown-select', DropdownSelect)
+app.component('QuillEditor', QuillEditor)
 app.use(createPinia())
 app.use(router)
 app.mixin({
