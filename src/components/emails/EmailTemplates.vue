@@ -4,7 +4,7 @@
 			<dropdown-select :options="emailStyleOpts" :title="'Email Style'" @model-change="emailStyleSelection"></dropdown-select>
 			<dropdown-select :options="emailIntentOpts" :title="'Email Intent'" @model-change="emailIntentSelection"></dropdown-select>
 			<div class="form-floating">
-				<input type="text" v-model="targetAudience" class="form-control" :class="{ 'is-invalid': targetAudience === null }" id="floatingInputValue" />
+				<input type="text" v-model="targetAudience" class="form-control" :class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" id="floatingInputValue" />
 				<small class="text-muted ms-1">i.e. Small businesses, families, over 18, etc..</small>
 				<label for="floatingInputValue">Target Audience</label>
 			</div>
@@ -79,7 +79,7 @@ export default {
 			return this.requestsStore.returnEmailCount;
 		},
 		validForm() {
-			return this.emailStyle !== null && (this.targetAudience !== null || this.targetAudience !== '') && this.emailIntent !== null;
+			return this.emailStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.emailIntent !== null;
 		},
 	},
 	methods: {
