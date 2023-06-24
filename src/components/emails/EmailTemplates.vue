@@ -79,7 +79,7 @@ export default {
 			return this.requestsStore.returnEmailCount;
 		},
 		validForm() {
-			return this.emailStyle !== null && this.targetAudience !== null && this.emailIntent !== null;
+			return this.emailStyle !== null && (this.targetAudience !== null || this.targetAudience !== '') && this.emailIntent !== null;
 		},
 	},
 	methods: {
