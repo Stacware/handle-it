@@ -11,7 +11,7 @@
 			<template v-slot:buttons>
 				<div class="d-flex justify-content-between">
 					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" />
-					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getEmailTemplates" :class="{ disabled: !validForm }" />
+					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getEmailTemplates()" :class="{ disabled: !validForm }" />
 				</div>
 			</template>
 		</base-modal>
