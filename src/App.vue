@@ -2,7 +2,7 @@
 	<div class="app-container">
 		<Navbar />
 		<LoadingSpinner v-if="userLoading" class="spinner" />
-		<router-view v-else></router-view>
+		<router-view v-if="!userLoading"></router-view>
 	</div>
 </template>
 <script>

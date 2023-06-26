@@ -56,7 +56,6 @@ router.beforeEach(async (to, from, next) => {
 		// If the currentUser is not available, fetch it from your backend or local storage
 		try {
 			await authStore.fetchCurrentUser()
-			authStore.userLoading = false
 		} catch (error) {
 			console.error('Failed to fetch the currentUser:', error)
 		}
@@ -64,7 +63,7 @@ router.beforeEach(async (to, from, next) => {
 
 	if (to.meta.requiresAuth) {
 		// Check if the user is authenticated
-		if (authStore.currentUser && authStore.userId === to.params.userId) {
+		if (authStore.userId === to.params.userId) {
 			// User is authenticated and matches the required objectId
 			next()
 		} else {

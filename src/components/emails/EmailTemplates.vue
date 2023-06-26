@@ -1,5 +1,6 @@
 <template>
 	<div v-if="currentUser">
+		<!-- Options Modal -->
 		<base-modal :show="openModal" :title="'Email Options'">
 			<dropdown-select :options="emailStyleOpts" :title="'Email Style'" @model-change="emailStyleSelection"></dropdown-select>
 			<dropdown-select :options="emailIntentOpts" :title="'Email Intent'" @model-change="emailIntentSelection"></dropdown-select>
@@ -15,15 +16,26 @@
 				</div>
 			</template>
 		</base-modal>
+		<!-- Page Title -->
 		<h1 class="text-center">{{ emailTemplates ? 'Email Templates' : 'Create Email Templates' }}</h1>
 		<h5 class="text-center">You have used {{ emailCount }}/5 email templates.</h5>
 		<div class="center-content" :class="{ main: !emailTemplates }">
+			<!-- Email Templates -->
 			<div v-if="emailTemplates" class="marketing-guide container mb-5">
 				<div v-for="(template, index) in emailTemplates" :key="index" class="mt-4">
-					<h3>Email #{{ index + 1 }}</h3>
-					<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" />
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<h3 class="mb-0">Email #{{ index + 1 }}</h3>
+						<div class="d-flex justify-content-end align-items-center">
+							<p v-show="isSaved && editEmail === index" class="text-success mb-0 me-2">SAVED!</p>
+							<ShineButton v-if="editEmail !== index && $route.name !== 'dashboard'" :title="'Edit'" @click="editEmail = index" />
+							<ShineCloseButton v-else-if="editEmail === index && $route.name !== 'dashboard'" :title="'Close'" @click="editEmail = null" />
+						</div>
+					</div>
+					<QuillEditor v-if="editEmail === index" theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
+					<div v-else>{{ template.content }}</div>
 				</div>
 			</div>
+			<!-- Create/Upgrade Buttons -->
 			<FlippyButton v-if="!loading && emailCount < 5 && $route.name !== 'dashboard'" @click="openModal = true" :title="emailCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
 			<FlippyButton
 				v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'"
@@ -32,7 +44,7 @@
 				:title="'Upgrade Tier'"
 				class="mb-5 mt-2"
 				:class="{ disabled: !validForm }" />
-
+			<!-- Loading -->
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />
 				<div class="mt-5 mb-5">
@@ -50,10 +62,26 @@ import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import { useAuthStore } from '@/stores/auth.js';
 import LoadingHand from '@/components/ui/LoadingHand.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
+import ShineButton from '@/components/ui/ShineButton.vue';
+import ShineCloseButton from '@/components/ui/ShineCloseButton.vue';
+
+function debounce(func, wait) {
+	let timeout;
+	return function (...args) {
+		const context = this;
+		clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			func.apply(context, args);
+		}, wait);
+	};
+}
+
 export default {
 	components: {
 		LoadingHand,
 		FlippyButton,
+		ShineButton,
+		ShineCloseButton,
 	},
 	inject: ['currentUser'],
 	data() {
@@ -70,7 +98,13 @@ export default {
 			loading: false,
 			loadStatus: 'Checking your info...',
 			openModal: false,
+			editEmail: null,
+			saveEdit: null,
+			isSaved: false,
 		};
+	},
+	mounted() {
+		this.saveEdit = debounce(this.saveEditImpl, 1500);
 	},
 	watch: {
 		emailTemplates(val) {
@@ -122,6 +156,14 @@ export default {
 			// Start polling
 			// this.pollTaskStatus();
 			this.targetAudience = null;
+		},
+		async saveEditImpl(content, index) {
+			const templates = this.emailTemplates;
+			templates[index].content = content.replace(/<[^>]*>/g, '');
+			this.requestsStore.saveEditedEmail(templates, this.currentUser.objectId);
+			this.isSaved = true;
+			await new Promise((resolve) => setTimeout(resolve, 4000)); // Adjust delay as needed
+			this.isSaved = false;
 		},
 		emailStyleSelection(val) {
 			this.emailStyle = val;
@@ -183,5 +225,8 @@ export default {
 
 .disabled {
 	cursor: not-allowed;
+}
+p {
+	min-height: 1em; /* Adjust as needed */
 }
 </style>

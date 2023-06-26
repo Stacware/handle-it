@@ -18,7 +18,7 @@ export const useGptRequestsStore = defineStore({
 	getters: {
 		returnMarketingPlan (state) {
 			return state.marketingPlan
-		},		
+		},
 		returnPostTemplates (state) {
 			return state.postTemplates
 		},
@@ -30,7 +30,7 @@ export const useGptRequestsStore = defineStore({
 		},
 		returnEmailCount (state) {
 			return state.emailCount
-		}		
+		}
 	},
 
 	actions: {
@@ -57,7 +57,22 @@ export const useGptRequestsStore = defineStore({
 				console.error(error)
 			}
 		},
-		
+		async saveEditedEmail (payload, userId) {
+			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+			try {
+				const User = new Parse.User()
+				const query = new Parse.Query(User)
+
+				query.get(userId)
+					.then((user) => {
+						user.set('emailTemplates', payload)
+						user.save()
+					})
+				// this.userLoading = false
+			} catch (error) {
+				console.error('Failed to parse the stored user:', error)
+			}
+		},
 		async startPostTemplates (payload) {
 			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			Parse.serverURL = 'https://parseapi.back4app.com/'

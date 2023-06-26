@@ -35,18 +35,19 @@ export const useAuthStore = defineStore({
 
 	actions: {
 		async fetchCurrentUser () {
-			const storedUser = localStorage.getItem('currentUser')
+			// const storedUser = localStorage.getItem('currentUser')
 			const userId = localStorage.getItem('userId')
-			if (storedUser) {
+			if (userId) {
 				// If user is found in local storage, parse and set it as the currentUser
 				try {
-					this.currentUser = JSON.parse(storedUser)
+					// this.currentUser = JSON.parse(storedUser)
 					this.userId = userId
 					const User = new Parse.User()
 					const query = new Parse.Query(User)
 
 					query.get(userId)
 						.then((user) => {
+							this.currentUser = user.attributes
 							const requestsStore = useGptRequestsStore()
 							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
 
@@ -57,8 +58,8 @@ export const useAuthStore = defineStore({
 							if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
 							requestsStore.postCount = user.attributes.postCount
 							requestsStore.postConversation = user.attributes.postConversation
+							this.userLoading = false
 						})
-					// this.userLoading = false
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
 				}
