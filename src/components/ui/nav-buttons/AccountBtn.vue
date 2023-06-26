@@ -1,0 +1,74 @@
+<template>
+	<button class="Btn">
+		<div class="sign">
+			<i class="bi bi-gear-fill" :class="{ 'text-primary': $route.name === 'manage' }"></i>
+		</div>
+
+		<div class="text">Account</div>
+	</button>
+</template>
+
+<style scoped>
+.Btn {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	width: 40px;
+	height: 40px;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+	transition-duration: 0.3s;
+	/* box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199); */
+	/* color: #0d6fed; */
+	background-color: #2b3035;
+}
+
+/* plus sign */
+.sign {
+	width: 100%;
+	transition-duration: 0.3s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* text */
+.text {
+	position: absolute;
+	right: 0%;
+	width: 0%;
+	opacity: 0;
+	color: white;
+	font-size: 1rem;
+	transition-duration: 0.3s;
+}
+/* hover effect on button width */
+.Btn:hover {
+	width: 110px;
+	border-radius: 40px;
+	transition-duration: 0.3s;
+	border: 1px solid #0d6fed;
+}
+
+.Btn:hover .sign {
+	/* width: 30%;
+	transition-duration: 0.3s;
+	padding-left: 20px;
+	color: white; */
+	display: none;
+}
+/* hover effect button's text */
+.Btn:hover .text {
+	opacity: 1;
+	width: 90%;
+	transition-duration: 0.3s;
+	padding-right: 10px;
+}
+/* button click effect*/
+.Btn:active {
+	transform: translate(2px, 2px);
+}
+</style>

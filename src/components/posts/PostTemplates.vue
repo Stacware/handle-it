@@ -7,7 +7,7 @@
 			<dropdown-select :options="imageStyleOpts" :title="'Image Style'" @model-change="imageStyleSelection"></dropdown-select>
 			<div class="form-floating">
 				<input type="text" v-model="targetAudience" class="form-control" :class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" id="floatingInputValue" />
-				<small class="text-muted ms-1">i.e. Small businesses, families, over 18, etc..</small>
+				<small class="text-muted ms-1">e.g. Small businesses, families, over 18, etc..</small>
 				<label for="floatingInputValue">Target Audience</label>
 			</div>
 			<template v-slot:buttons>

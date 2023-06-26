@@ -7,43 +7,51 @@
 			<span class="navbar-brand mb-0 h1">market panda</span>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto">
-					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
+					<li v-if="userId" class="nav-item main-nav align-items-start">
 						<router-link :to="{ name: 'dashboard', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
-							<i class="bi bi-clipboard-data-fill me-1"></i>
-							<span>Dashboard</span>
+							<!-- <i class="bi bi-clipboard-data-fill me-1"></i>
+							<span>Dashboard</span> -->
+							<DashboardBtn />
 						</router-link>
 					</li>
-					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
+					<li v-if="userId" class="nav-item main-nav align-items-start">
 						<router-link :to="{ name: 'marketing', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
-							<i class="bi bi-megaphone-fill me-1"></i>
-							<span>Marketing</span>
+							<!-- <i class="bi bi-megaphone-fill me-1"></i>
+							<span>Marketing</span> -->
+							<MarketingBtn />
 						</router-link>
 					</li>
-					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
+					<li v-if="userId" class="nav-item main-nav align-items-start">
 						<router-link :to="{ name: 'email', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
-							<i class="bi bi-envelope-at-fill me-1"></i>
-							<span>Email</span>
+							<!-- <i class="bi bi-envelope-at-fill me-1"></i>
+							<span>Email</span> -->
+							<EmailBtn />
 						</router-link>
 					</li>
-					<li v-if="userId" class="nav-item main-nav align-items-start me-3">
+					<li v-if="userId" class="nav-item main-nav align-items-start">
 						<router-link :to="{ name: 'post', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
-							<i class="bi bi-postcard-fill"></i>
-							<span>Post</span>
+							<!-- <i class="bi bi-postcard-fill"></i>
+							<span>Post</span> -->
+							<PostBtn />
 						</router-link>
 					</li>
 				</ul>
 				<ul class="navbar-nav ms-auto">
 					<li v-if="userId" @mouseenter="linkHover = 'settings'" @mouseleave="linkHover = null" class="nav-item align-items-center">
 						<router-link :to="{ name: 'manage', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
-							<i v-if="linkHover !== 'settings'" class="bi bi-gear-fill me-1"></i>
-							<span v-if="linkHover === 'settings'">Account Settings</span>
+							<!-- <i v-if="linkHover !== 'settings'" class="bi bi-gear-fill me-1"></i>
+							<span v-if="linkHover === 'settings'">Account Settings</span> -->
+							<AccountBtn />
 						</router-link>
 					</li>
-					<li v-if="userId" class="nav-item align-items-center" @mouseenter="linkHover = 'logout'" @mouseleave="linkHover = null">
-						<button class="btn btn-danger nav-link" @click="logout">
+					<li v-if="userId" class="nav-item align-items-center">
+						<div class="nav-link">
+							<LogOut @click="logout" />
+						</div>
+						<!-- <button class="btn btn-danger nav-link" @click="logout">
 							<i v-if="linkHover !== 'logout'" class="bi bi-box-arrow-left me-1"></i>
 							<span v-if="linkHover === 'logout'">Logout</span>
-						</button>
+						</button> -->
 					</li>
 				</ul>
 			</div>
@@ -54,8 +62,22 @@
 <script>
 import { inject } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
+import LogOut from '@/components/ui/nav-buttons/LogOut.vue';
+import DashboardBtn from '@/components/ui/nav-buttons/DashboardBtn.vue';
+import MarketingBtn from '@/components/ui/nav-buttons/MarketingBtn.vue';
+import EmailBtn from '@/components/ui/nav-buttons/EmailBtn.vue';
+import PostBtn from '@/components/ui/nav-buttons/PostBtn.vue';
+import AccountBtn from '@/components/ui/nav-buttons/AccountBtn.vue';
 export default {
 	name: 'Navbar',
+	components: {
+		AccountBtn,
+		PostBtn,
+		EmailBtn,
+		MarketingBtn,
+		DashboardBtn,
+		LogOut,
+	},
 	data() {
 		return {
 			authStore: useAuthStore(),
