@@ -63,6 +63,8 @@ export const useAuthStore = defineStore({
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
 				}
+			} else {
+				this.userLoading = false
 			}
 		},
 		async logIn (email, password) {

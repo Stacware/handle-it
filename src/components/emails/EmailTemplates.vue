@@ -83,7 +83,7 @@ export default {
 		ShineButton,
 		ShineCloseButton,
 	},
-	inject: ['currentUser'],
+	inject: ['currentUser', 'userId'],
 	data() {
 		return {
 			requestsStore: useGptRequestsStore(),
@@ -160,7 +160,7 @@ export default {
 		async saveEditImpl(content, index) {
 			const templates = this.emailTemplates;
 			templates[index].content = content.replace(/<[^>]*>/g, '');
-			this.requestsStore.saveEditedEmail(templates, this.currentUser.objectId);
+			this.requestsStore.saveEditedEmail(templates, this.userId);
 			this.isSaved = true;
 			await new Promise((resolve) => setTimeout(resolve, 4000)); // Adjust delay as needed
 			this.isSaved = false;
