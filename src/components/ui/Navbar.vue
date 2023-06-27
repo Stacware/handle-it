@@ -46,7 +46,7 @@
 					</li>
 					<li v-if="userId" class="nav-item align-items-center">
 						<div class="nav-link">
-							<LogOut @click="logout" />
+							<LogOutBtn @click="logout" />
 						</div>
 						<!-- <button class="btn btn-danger nav-link" @click="logout">
 							<i v-if="linkHover !== 'logout'" class="bi bi-box-arrow-left me-1"></i>
@@ -62,7 +62,7 @@
 <script>
 import { inject } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
-import LogOut from '@/components/ui/nav-buttons/LogOut.vue';
+import LogOutBtn from '@/components/ui/nav-buttons/LogOut.vue';
 import DashboardBtn from '@/components/ui/nav-buttons/DashboardBtn.vue';
 import MarketingBtn from '@/components/ui/nav-buttons/MarketingBtn.vue';
 import EmailBtn from '@/components/ui/nav-buttons/EmailBtn.vue';
@@ -76,8 +76,9 @@ export default {
 		EmailBtn,
 		MarketingBtn,
 		DashboardBtn,
-		LogOut,
+		LogOutBtn,
 	},
+	inject: ['plan'],
 	data() {
 		return {
 			authStore: useAuthStore(),
@@ -158,5 +159,9 @@ export default {
 	border: unset;
 	background: transparent;
 	color: var(--bs-danger);
+}
+
+.plan {
+	height: 56px;
 }
 </style>

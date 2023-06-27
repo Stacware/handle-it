@@ -46,7 +46,7 @@
 							<div v-if="returnLogInError" class="mt-3">
 								<small class="text-danger">Error! {{ returnLogInError }}</small>
 							</div>
-							<FlippyButton :title="loading ? 'Logging in...' : 'Login'" class="mt-5" />
+							<FlippyButton :disabled="!isFormValid" :title="loading ? 'Logging in...' : !isFormValid ? 'Nope' : 'Login'" class="mt-5" :class="{ disabled: !isFormValid }" />
 						</form>
 						<div class="ear-l"></div>
 						<div class="ear-r"></div>
@@ -313,5 +313,9 @@ export default {
 	.container {
 		font-size: 14px;
 	}
+}
+
+.disabled {
+	cursor: not-allowed;
 }
 </style>

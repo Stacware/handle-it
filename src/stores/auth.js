@@ -12,6 +12,7 @@ export const useAuthStore = defineStore({
 		currentUser: null,
 		userId: null,
 		userLoading: true,
+		subscriptionPlan: null,
 		vaar: "Parse/MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU/currentUser"
 	}),
 
@@ -44,9 +45,11 @@ export const useAuthStore = defineStore({
 					this.userId = userId
 					const User = new Parse.User()
 					const query = new Parse.Query(User)
-
+					query.include("subscriptionPlan")
 					query.get(userId)
 						.then((user) => {
+							let plan = user.get("subscriptionPlan")
+							this.subscriptionPlan = plan.get('Name')
 							this.currentUser = user.attributes
 							const requestsStore = useGptRequestsStore()
 							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
@@ -86,6 +89,8 @@ export const useAuthStore = defineStore({
 				this.sessionToken = user.get('sessionToken')
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)
+				let plan = user.get("subscriptionPlan")
+				this.subscriptionPlan = plan.get('Name')
 				this.userLoading = false
 			} catch (error) {
 				this.logInError = error
@@ -95,11 +100,21 @@ export const useAuthStore = defineStore({
 		async signUp (email, password, industry, companyName) {
 			this.signUpError = null
 			const user = new Parse.User()
+			let SubscriptionPlan = Parse.Object.extend("SubscriptionPlan")
+			let query = new Parse.Query(SubscriptionPlan)
+			query.equalTo("name", "Free") // or "Tier 1", "Tier 2", etc.
+			query.first().then((plan) => {
+				// plan is the SubscriptionPlan object
+				console.log('Plan found', plan.id)
+			}, (error) => {
+				console.error('Failed to find plan', error)
+			})
 			user.set("username", email)
 			user.set("password", password)
 			user.set("email", email)
 			user.set('industry', industry)
 			user.set('companyName', companyName)
+			user.set('subscriptionPlan', plan)
 
 			try {
 				await user.signUp()
@@ -119,6 +134,23 @@ export const useAuthStore = defineStore({
 			this.currentUser = null
 			this.sessionToken = null
 			this.userId = null
+		},
+
+		upgradePlan (selectedPlan) {
+			let SubscriptionPlan = Parse.Object.extend("SubscriptionPlan")
+			let planQuery = new Parse.Query(SubscriptionPlan)
+
+			// Get the subscription plan using its ID
+			planQuery.get(selectedPlan).then((plan) => {
+				// Now that we have the plan, get the user
+				let user = Parse.User.current()
+
+				// Update the user's subscriptionPlan
+				user.set("subscriptionPlan", plan)
+				user.save()
+				this.fetchCurrentUser()
+			})
+
 		}
 	}
 })
