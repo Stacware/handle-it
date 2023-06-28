@@ -90,7 +90,15 @@ export const useAuthStore = defineStore({
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)
 				let plan = user.get("subscriptionPlan")
-				this.subscriptionPlan = plan.get('Name')
+				if (plan) {
+					try {
+						await plan.fetch()
+						console.log(plan)
+						this.subscriptionPlan = plan.get('Name')
+					} catch (err) {
+						console.log(err)
+					}
+				}
 				this.userLoading = false
 			} catch (error) {
 				this.logInError = error

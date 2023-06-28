@@ -18,7 +18,7 @@
 		</base-modal>
 		<!-- Page Title -->
 		<h1 class="text-center">{{ emailTemplates ? 'Email Templates' : 'Create Email Templates' }}</h1>
-		<h5 class="text-center">You have used {{ emailCount }}/5 email templates.</h5>
+		<h5 class="text-center">You have used {{ emailCount }}/{{ totalCount }} email templates.</h5>
 		<div class="center-content" :class="{ main: !emailTemplates }">
 			<!-- Email Templates -->
 			<div v-if="emailTemplates" class="marketing-guide container mb-5">
@@ -83,7 +83,7 @@ export default {
 		ShineButton,
 		ShineCloseButton,
 	},
-	inject: ['currentUser', 'userId'],
+	inject: ['currentUser', 'userId', 'plan'],
 	data() {
 		return {
 			requestsStore: useGptRequestsStore(),
@@ -101,14 +101,43 @@ export default {
 			editEmail: null,
 			saveEdit: null,
 			isSaved: false,
+			totalCount: 0,
 		};
 	},
 	mounted() {
 		this.saveEdit = debounce(this.saveEditImpl, 1500);
+		switch (this.plan) {
+			case 'Admin':
+				this.totalCount = 100;
+				break;
+			case 'Starter':
+				this.totalCount = 5;
+				break;
+			case 'Business':
+				this.totalCount = 30;
+				break;
+			default:
+				this.totalCount = 1;
+		}
 	},
 	watch: {
 		emailTemplates(val) {
 			if (val) this.loading = false;
+		},
+		plan() {
+			switch (this.plan) {
+				case 'Admin':
+					this.totalCount = 100;
+					break;
+				case 'Starter':
+					this.totalCount = 5;
+					break;
+				case 'Business':
+					this.totalCount = 30;
+					break;
+				default:
+					this.totalCount = 1;
+			}
 		},
 	},
 	computed: {

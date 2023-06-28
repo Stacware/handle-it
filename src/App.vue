@@ -9,7 +9,7 @@
 			@mouseleave="upgradeHover = false"
 			class="upgrade-button"
 			:title="upgradeHover ? 'Upgrade?' : 'Plan: ' + subscriptionPlan"
-			v-if="!userLoading" />
+			v-if="!userLoading && userId" />
 	</div>
 </template>
 <script>
@@ -53,7 +53,15 @@ export default {
 	},
 	methods: {
 		upgradePlan() {
+			// Uncomment which ever one you want to test upgrade to
+			// Admin
 			// this.authStore.upgradePlan('i9pESVCbnX');
+			// Free
+			// this.authStore.upgradePlan('G9cvl6uiiP');
+			// Starter
+			// this.authStore.upgradePlan('EZGGJaunu5');
+			// Business
+			// this.authStore.upgradePlan('kuvfCs6kyx');
 			console.log('upgrade works need to go to new page and implement stripe/venmo/paypal');
 		},
 	},
