@@ -92,7 +92,7 @@ export default {
 	},
 	mounted() {
 		this.saveEdit = debounce(this.saveEditImpl, 1500);
-		switch (this.plan) {
+		switch (this.plan.Name) {
 			case 'Admin':
 				this.totalCount = 100;
 				break;
@@ -111,7 +111,7 @@ export default {
 			if (val) this.loading = false;
 		},
 		plan() {
-			switch (this.plan) {
+			switch (this.plan.Name) {
 				case 'Admin':
 					this.totalCount = 100;
 					break;
