@@ -8,8 +8,8 @@
 			@mouseenter="upgradeHover = true"
 			@mouseleave="upgradeHover = false"
 			class="upgrade-button"
-			:title="upgradeHover ? 'Upgrade?' : 'Plan: ' + subscriptionPlan"
-			v-if="!userLoading" />
+			:title="upgradeHover ? 'Upgrade?' : 'Plan: ' + subscriptionPlan.Name"
+			v-if="!userLoading && userId && $route.name !== 'upgrade'" />
 	</div>
 </template>
 <script>
@@ -18,6 +18,7 @@ import Navbar from '@/components/ui/Navbar.vue';
 import { useAuthStore } from '@/stores/auth.js';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
+import { useMediaQuery } from '@vueuse/core';
 export default {
 	components: {
 		Navbar,
@@ -28,6 +29,7 @@ export default {
 		return {
 			authStore: useAuthStore(),
 			upgradeHover: false,
+			lgScreen: useMediaQuery('(min-width: 1024px)'),
 		};
 	},
 	provide() {
@@ -35,7 +37,11 @@ export default {
 			userId: computed(() => this.userId),
 			currentUser: computed(() => this.currentUser),
 			plan: computed(() => this.subscriptionPlan),
+			lgScreen: computed(() => this.lgScreen),
 		};
+	},
+	created() {
+		this.authStore.getPlans();
 	},
 	computed: {
 		userId() {
@@ -53,7 +59,7 @@ export default {
 	},
 	methods: {
 		upgradePlan() {
-			// this.authStore.upgradePlan('i9pESVCbnX');
+			this.$router.push({ name: 'upgrade', params: { userId: this.userId } });
 			console.log('upgrade works need to go to new page and implement stripe/venmo/paypal');
 		},
 	},

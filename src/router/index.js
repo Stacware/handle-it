@@ -5,6 +5,7 @@ import MarketingView from '../views/MarketingView.vue'
 import EmailView from '../views/EmailView.vue'
 import PostView from '../views/PostView.vue'
 import ManageView from '../views/ManageView.vue'
+import UpgradeView from '../views/UpgradePlan.vue'
 import { useAuthStore } from '../stores/auth.js'
 
 const router = createRouter({
@@ -43,6 +44,12 @@ const router = createRouter({
 			path: '/post/:userId',
 			name: 'post',
 			component: PostView,
+			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
+		},
+		{
+			path: '/upgrade/:userId',
+			name: 'upgrade',
+			component: UpgradeView,
 			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
 		}
 	]

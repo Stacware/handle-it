@@ -19,7 +19,7 @@
 		</base-modal>
 		<!-- Page Title -->
 		<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
-		<h5 class="text-center">You have used {{ postCount }}/5 post templates.</h5>
+		<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
 		<div class="center-content" :class="{ main: !postTemplates }">
 			<!-- Post Templates -->
 			<div v-if="postTemplates" class="marketing-guide container mb-5">
@@ -66,7 +66,7 @@ export default {
 		LoadingHand,
 		FlippyButton,
 	},
-	inject: ['currentUser'],
+	inject: ['currentUser', 'plan'],
 
 	data() {
 		return {
@@ -87,14 +87,43 @@ export default {
 			editPost: null,
 			saveEdit: null,
 			isSaved: false,
+			totalCount: 0,
 		};
 	},
 	mounted() {
 		this.saveEdit = debounce(this.saveEditImpl, 1500);
+		switch (this.plan.Name) {
+			case 'Admin':
+				this.totalCount = 100;
+				break;
+			case 'Starter':
+				this.totalCount = 5;
+				break;
+			case 'Business':
+				this.totalCount = 30;
+				break;
+			default:
+				this.totalCount = 1;
+		}
 	},
 	watch: {
 		postTemplates(val) {
 			if (val) this.loading = false;
+		},
+		plan() {
+			switch (this.plan.Name) {
+				case 'Admin':
+					this.totalCount = 100;
+					break;
+				case 'Starter':
+					this.totalCount = 5;
+					break;
+				case 'Business':
+					this.totalCount = 30;
+					break;
+				default:
+					this.totalCount = 1;
+			}
 		},
 	},
 	computed: {

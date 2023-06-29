@@ -13,6 +13,7 @@ export const useAuthStore = defineStore({
 		userId: null,
 		userLoading: true,
 		subscriptionPlan: null,
+		allPlans: [],
 		vaar: "Parse/MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU/currentUser"
 	}),
 
@@ -49,7 +50,7 @@ export const useAuthStore = defineStore({
 					query.get(userId)
 						.then((user) => {
 							let plan = user.get("subscriptionPlan")
-							this.subscriptionPlan = plan.get('Name')
+							this.subscriptionPlan = plan.attributes
 							this.currentUser = user.attributes
 							const requestsStore = useGptRequestsStore()
 							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
@@ -90,7 +91,15 @@ export const useAuthStore = defineStore({
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)
 				let plan = user.get("subscriptionPlan")
-				this.subscriptionPlan = plan.get('Name')
+				if (plan) {
+					try {
+						await plan.fetch()
+						console.log(plan)
+						this.subscriptionPlan = plan.get('Name')
+					} catch (err) {
+						console.log(err)
+					}
+				}
 				this.userLoading = false
 			} catch (error) {
 				this.logInError = error
@@ -149,6 +158,22 @@ export const useAuthStore = defineStore({
 				user.set("subscriptionPlan", plan)
 				user.save()
 				this.fetchCurrentUser()
+			})
+
+		},
+
+		getPlans () {
+			const SubscriptionsPlan = Parse.Object.extend("SubscriptionPlan")
+			const query = new Parse.Query(SubscriptionsPlan)
+
+			query.find().then((results) => {
+				results.forEach(plan => {
+					this.allPlans.push(plan.attributes)
+				})
+
+			}, (error) => {
+				// error is an instance of Parse.Error
+				console.error('Error while fetching SubscriptionsPlans: ', error)
 			})
 
 		}
