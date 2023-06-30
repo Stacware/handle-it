@@ -27,8 +27,8 @@ export default {
 <style scoped>
 .flippy-card {
 	position: relative;
-	width: 190px;
-	height: 254px;
+	width: 290px;
+	height: 290px;
 	background-color: #212529;
 	display: flex;
 	flex-direction: column;
@@ -44,8 +44,8 @@ export default {
 	inset: 0;
 	left: -5px;
 	margin: auto;
-	width: 200px;
-	height: 264px;
+	width: 300px;
+	height: 300px;
 	border-radius: 10px;
 	background: linear-gradient(-45deg, #ac1cff 0%, #0d6fed 100%);
 	z-index: -10;
@@ -77,6 +77,6 @@ export default {
 }
 
 .flippy-card:hover::before {
-	transform: rotate(-90deg) scaleX(1.34) scaleY(0.77);
+	transform: rotate(-90deg) scaleX(1.1) scaleY(0.77);
 }
 </style>

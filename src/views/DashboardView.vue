@@ -21,6 +21,9 @@
 				<EmailTemplates />
 			</article> -->
 		</section>
+		<section>
+			<WebsiteInfo />
+		</section>
 	</div>
 </template>
 <script>
@@ -29,12 +32,14 @@
 // import PostTemplates from '@/components/posts/PostTemplates.vue';
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import FlippyCard from '@/components/ui/FlippyCard.vue';
+import WebsiteInfo from '@/components/dashboard/WebsiteInfo.vue';
 export default {
 	components: {
 		// MarketingPlan,
 		// EmailTemplates,
 		// PostTemplates,
 		FlippyCard,
+		WebsiteInfo,
 	},
 	data() {
 		return {

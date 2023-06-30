@@ -36,9 +36,9 @@
 				</div>
 			</div>
 			<!-- Create/Upgrade Buttons -->
-			<FlippyButton v-if="!loading && emailCount < 5 && $route.name !== 'dashboard'" @click="openModal = true" :title="emailCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
+			<FlippyButton v-if="!loading && emailCount < totalCount && $route.name !== 'dashboard'" @click="openModal = true" :title="emailCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
 			<FlippyButton
-				v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'"
+				v-if="!loading && emailCount >= totalCount && $route.name !== 'dashboard'"
 				:disabled="true"
 				@click="null"
 				:title="'Upgrade Tier'"

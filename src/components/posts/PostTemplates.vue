@@ -30,8 +30,14 @@
 			</div>
 			<!-- Create/Upgrade Buttons -->
 
-			<FlippyButton v-if="!loading && postCount < 5 && $route.name !== 'dashboard'" @click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
-			<FlippyButton v-if="!loading && postCount >= 5 && $route.name !== 'dashboard'" :disabled="true" @click="null" :title="'Upgrade Tier'" class="mb-5 mt-2" :class="{ disabled: !validForm }" />
+			<FlippyButton v-if="!loading && postCount < totalCount && $route.name !== 'dashboard'" @click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
+			<FlippyButton
+				v-if="!loading && postCount >= totalCount && $route.name !== 'dashboard'"
+				:disabled="true"
+				@click="null"
+				:title="'Upgrade Tier'"
+				class="mb-5 mt-2"
+				:class="{ disabled: !validForm }" />
 			<div v-if="loading" class="mt-5">
 				<LoadingHand />
 				<div class="mt-5 mb-5">

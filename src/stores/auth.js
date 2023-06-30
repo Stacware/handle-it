@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import Parse from 'parse/dist/parse.min.js'
 import { useGptRequestsStore } from './gptRequests.js'
+import { useWebsiteStore } from './website.js'
 
 export const useAuthStore = defineStore({
 	id: 'auth',
@@ -53,6 +54,9 @@ export const useAuthStore = defineStore({
 							this.subscriptionPlan = plan.attributes
 							this.currentUser = user.attributes
 							const requestsStore = useGptRequestsStore()
+							const websiteStore = useWebsiteStore()
+							websiteStore.websiteInfo = user.attributes.websiteInfo
+
 							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
 
 							if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
@@ -75,6 +79,7 @@ export const useAuthStore = defineStore({
 			this.logInError = null
 			try {
 				const requestsStore = useGptRequestsStore()
+				const websiteStore = useWebsiteStore()
 				const user = await Parse.User.logIn(email, password)
 				if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
 				if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
@@ -86,6 +91,7 @@ export const useAuthStore = defineStore({
 				requestsStore.postConversation = user.attributes.postConversation
 
 				this.currentUser = user.attributes
+				websiteStore.websiteInfo = user.attributes.websiteInfo
 				this.userId = user.id
 				this.sessionToken = user.get('sessionToken')
 				localStorage.setItem('currentUser', JSON.stringify(user))
