@@ -182,6 +182,20 @@ export const useAuthStore = defineStore({
 				console.error('Error while fetching SubscriptionsPlans: ', error)
 			})
 
+		},
+		updateUserInfo (payload) {
+			let user = Parse.User.current()
+			user.set('email', payload.email)
+			user.set('username', payload.userName)
+			user.set('firstName', payload.firstName)
+			user.set('lastName', payload.lastName)
+			try {
+				user.save()
+			} catch (err) {
+				console.log(err)
+			} finally {
+				this.fetchCurrentUser()
+			}
 		}
 	}
 })
