@@ -1,14 +1,14 @@
 <template>
 	<div v-if="currentUser" class="container">
 		<h1 class="text-center my-5">Dashboard</h1>
-		<section class="d-flex justify-content-between mb-5">
-			<div class="">
+		<section class="row mb-5">
+			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
 				<FlippyCard :title="'Marketing Guide'" :count="currentUser.marketingPlan !== undefined ? 1 : 0" :total="1" @click="goToPage('marketing')" />
 			</div>
-			<div class="">
+			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
 				<FlippyCard :title="'Email Templates'" :count="requestsStore.emailCount" :total="5" @click="goToPage('email')" />
 			</div>
-			<div class="">
+			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
 				<FlippyCard :title="'Social Media'" :count="requestsStore.postCount" :total="5" @click="goToPage('post')" />
 			</div>
 			<!-- <article class="marketing col-12">

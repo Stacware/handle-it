@@ -5,31 +5,31 @@
 		</button>
 		<div class="container-fluid">
 			<span class="navbar-brand mb-0 h1">market panda</span>
-			<div class="collapse navbar-collapse" id="navbarNav">
+			<div class="collapse navbar-collapse" :class="!visible ? 'collapse' : ''" id="navbarNav">
 				<ul class="navbar-nav me-auto">
 					<li v-if="userId" class="nav-item main-nav align-items-start">
-						<router-link :to="{ name: 'dashboard', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+						<router-link @click="visible = !visible" :to="{ name: 'dashboard', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<!-- <i class="bi bi-clipboard-data-fill me-1"></i>
 							<span>Dashboard</span> -->
 							<DashboardBtn />
 						</router-link>
 					</li>
 					<li v-if="userId" class="nav-item main-nav align-items-start">
-						<router-link :to="{ name: 'marketing', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+						<router-link @click="visible = !visible" :to="{ name: 'marketing', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<!-- <i class="bi bi-megaphone-fill me-1"></i>
 							<span>Marketing</span> -->
 							<MarketingBtn />
 						</router-link>
 					</li>
 					<li v-if="userId" class="nav-item main-nav align-items-start">
-						<router-link :to="{ name: 'email', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+						<router-link @click="visible = !visible" :to="{ name: 'email', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<!-- <i class="bi bi-envelope-at-fill me-1"></i>
 							<span>Email</span> -->
 							<EmailBtn />
 						</router-link>
 					</li>
 					<li v-if="userId" class="nav-item main-nav align-items-start">
-						<router-link :to="{ name: 'post', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+						<router-link @click="visible = !visible" :to="{ name: 'post', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<!-- <i class="bi bi-postcard-fill"></i>
 							<span>Post</span> -->
 							<PostBtn />
@@ -38,7 +38,7 @@
 				</ul>
 				<ul class="navbar-nav ms-auto">
 					<li v-if="userId" @mouseenter="linkHover = 'settings'" @mouseleave="linkHover = null" class="nav-item align-items-center">
-						<router-link :to="{ name: 'manage', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
+						<router-link @click="visible = !visible" :to="{ name: 'manage', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<!-- <i v-if="linkHover !== 'settings'" class="bi bi-gear-fill me-1"></i>
 							<span v-if="linkHover === 'settings'">Account Settings</span> -->
 							<AccountBtn />
@@ -78,20 +78,27 @@ export default {
 		DashboardBtn,
 		LogOutBtn,
 	},
-	inject: ['plan'],
+	inject: ['plan', 'userId'],
 	data() {
 		return {
 			authStore: useAuthStore(),
 			linkHover: null,
+			visible: false,
 		};
 	},
-	setup() {
-		const userId = inject('userId');
-		return {
-			userId,
-		};
+	mounted() {
+		this.authStore = useAuthStore();
 	},
 	methods: {
+		closeNavbar() {
+			this.$nextTick(() => {
+				const navbarToggler = document.querySelector('.navbar-toggler');
+				const navbarCollapse = document.querySelector('.navbar-collapse.show');
+				if (navbarCollapse && window.getComputedStyle(navbarToggler).display !== 'none') {
+					navbarToggler.click();
+				}
+			});
+		},
 		async logout() {
 			// Call your logout method here
 			await this.authStore.logOut();
