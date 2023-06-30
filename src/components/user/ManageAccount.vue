@@ -18,7 +18,7 @@
 						<label for="lastName">Last name</label>
 						<input v-model="userLastName" type="text" id="lastName" name="lastName" required="" />
 					</div>
-					<div class="form-button-flippy mt-1">
+					<div class="form-button-flippy mt-3">
 						<FlippyButton :disabled="!changesDetected" :title="changesDetected ? 'Save' : 'No Changes'" :class="{ disabled: !changesDetected }" />
 					</div>
 				</form>
@@ -78,7 +78,7 @@ export default {
 	background: linear-gradient(#212529, #212529) padding-box, linear-gradient(145deg, transparent 35%, #ac1cff, #0d6fed) border-box;
 	border: 2px solid transparent;
 	padding: 32px 24px;
-	font-size: 14px;
+	font-size: 16px;
 	font-family: inherit;
 	color: white;
 	display: flex;
@@ -103,9 +103,9 @@ export default {
 .form-container .form-group label {
 	display: block;
 	margin-bottom: 5px;
-	color: #717171;
+	color: #868686;
 	font-weight: 600;
-	font-size: 12px;
+	font-size: 16px;
 }
 
 .form-container .form-group input {
@@ -136,12 +136,12 @@ export default {
 
 .form-container .form-group input:focus {
 	outline: none;
-	border-color: #e81cff;
+	border-color: #ac1cff;
 }
 
 .form-container .form-group textarea:focus {
 	outline: none;
-	border-color: #e81cff;
+	border-color: #ac1cff;
 }
 
 /* .form-container .form-submit-btn {

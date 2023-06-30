@@ -1,6 +1,6 @@
 <template>
 	<div class="mt-5">
-		<h1>Account Settings</h1>
+		<h1 class="text-center">Account Settings</h1>
 		<div class="d-flex justify-content-center align-items-center mt-5" style="height: 75vh">
 			<div id="carouselExampleIndicators" class="carousel slide w-100 h-75 container">
 				<div class="carousel-inner h-100">
