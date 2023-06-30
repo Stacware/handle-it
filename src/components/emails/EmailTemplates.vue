@@ -16,12 +16,7 @@
 			<FlippyButton v-if="!loading && emailCount >= 5 && $route.name !== 'dashboard'" @click="upgradeTier" :title="'Upgrade Tier'" class="my-5" />
 
 			<div v-if="loading" class="mt-5">
-				<LoadingHand />
-				<div class="mt-5 mb-5">
-					<transition name="slide-fade" mode="out-in">
-						<span class="load-status h4" :key="loadStatus">{{ loadStatus }}</span>
-					</transition>
-				</div>
+				<LoadingHand :loadStatus="loading" @stop-loading="loading = false" />
 			</div>
 		</div>
 	</div>
@@ -48,7 +43,8 @@ export default {
 			emailStyle: 'funny',
 			emailIntent: 'visit my website',
 			loading: false,
-			loadStatus: 'Checking your info...',
+			loadStatus: null,
+			
 			openModal: false,
 		};
 	},
@@ -71,6 +67,7 @@ export default {
 		},
 		async getEmailTemplates() {
 			this.loading = true;
+
 			this.openModal = false;
 			let conversation = this.requestsStore.emailConversation || [];
 
@@ -84,6 +81,9 @@ export default {
 				userId: this.authStore.userId,
 			};
 			this.requestsStore.startEmailTemplates(payload);
+			await this.sleep(2000);
+
+			// this.loading = false //change to false when done with dev
 			// await this.sleep(2000);
 			// this.loadStatus = 'Creating marketing guide...';
 			// await this.sleep(5000);
@@ -142,13 +142,4 @@ export default {
 	line-height: 1.5;
 }
 
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-	transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-	opacity: 0;
-}
 </style>

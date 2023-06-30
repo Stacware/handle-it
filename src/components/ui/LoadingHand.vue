@@ -1,15 +1,65 @@
 <template>
-	<div class="d-flex justify-content-center w-100">
-		<div class="🤚">
+	<div>
+		<div class="d-flex justify-content-center w-100">
+			<div class="🤚">
 			<div class="👉"></div>
 			<div class="👉"></div>
 			<div class="👉"></div>
 			<div class="👉"></div>
 			<div class="🌴"></div>
 			<div class="👍"></div>
+			</div>
+		</div>
+		<div class="mt-5 mb-5 pb-5">
+			<transition name="slide-fade" mode="out-in">
+			<span class="load-status h4" :key="loadingMessage">{{ loadingMessage }}</span>
+			</transition>
 		</div>
 	</div>
 </template>
+
+<script>
+export default {
+	props: ['loadStatus'],
+	data() {
+		return {
+		loadingMessages: [
+			'Creating marketing guide...',
+			'Creating strategy...',
+			'Gathering market analysis info...',
+			'Making it look nice...',
+			'A little magic...'
+		],
+		loadingMessageIndex: 0,
+		};
+	},
+	computed: {
+		loadingMessage() {
+		if (this.loadStatus === true) {
+			return this.loadingMessages[this.loadingMessageIndex];
+		} else if (this.loadStatus === false) {
+			return 'Viola!';
+		} else {
+			this.stopLoading();
+		}
+		},
+	},
+	mounted() {
+		if (this.loadStatus === true) {
+		setInterval(() => {
+			this.loadingMessageIndex =
+			(this.loadingMessageIndex + 1) % this.loadingMessages.length;
+		}, 2000); // Change the duration between rotations as desired
+		}
+	},
+	methods: {
+		stopLoading() {
+			this.$emit('stop-loading');
+		},
+	}
+};
+</script>
+
 <style scoped>
 .🤚 {
 	--skin-color: #e4c560;
@@ -170,4 +220,5 @@
 		transform: rotate(50deg) scale(1);
 	}
 }
+
 </style>
