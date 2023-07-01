@@ -28,30 +28,72 @@
 		<!-- Page Title -->
 		<h1 class="text-center">{{ emailTemplates ? 'Email Templates' : 'Create Email Templates' }}</h1>
 		<h5 class="text-center">You have used {{ emailCount }}/{{ totalCount }} email templates.</h5>
-
+		<div class="w-100 d-flex justify-content-center mt-4">
+			<pagination
+			:perPage="perPage"
+			:totalItems="this.emailTemplates.length"
+			@paginatedItems="displayPages"/>
+		</div>
 		<div class="container">
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<!-- Email Templates -->
 					<div class="w-100">
-						<div v-if="emailTemplates" class="marketing-guide">
+
+						<!-- <div v-if="emailTemplates" class="marketing-guide container mb-5">
 							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
-								<h3>Email #{{ index + 1 }}</h3>
-								<div v-if="editEmail === index">
+								<div class="d-flex justify-content-between align-items-center mb-2">
+									<h3 class="mb-0">Email #{{ index + 1 }}</h3>
+									<div class="d-flex justify-content-end align-items-center">
+										<p v-show="isSaved && editEmail === index" class="text-success mb-0 me-2">SAVED!</p>
+										<ShineButton v-if="editEmail !== index && $route.name !== 'dashboard'" :title="'Edit'" @click="editEmail = index" />
+										<ShineCloseButton v-else-if="editEmail === index && $route.name !== 'dashboard'" :title="'Close'" @click="editEmail = null" />
+									</div>
+								</div>
+								<QuillEditor v-if="editEmail === index" theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
+								<div v-else>{{ template.content }}</div>
+						</div>
+					</div> -->
+
+						<div v-if="emailTemplates" class="marketing-guide container mb-5">
+							<div v-for="(template, index) in emailTemplates" :key="index" class="mt-4">
+								<div class="d-flex justify-content-between align-items-center mb-2">
+									<h3 class="mb-0">Email #{{ index + 1 }}</h3>
+									<div class="d-flex justify-content-end align-items-center">
+										<p v-show="isSaved && editEmail === index" class="text-success mb-0 me-2">SAVED!</p>
+										<ShineButton v-if="editEmail !== index && $route.name !== 'dashboard'" :title="'Edit'" @click="editEmail = index" />
+										<ShineCloseButton v-else-if="editEmail === index && $route.name !== 'dashboard'" :title="'Close'" @click="editEmail = null" />
+									</div>
+								</div>
+								<QuillEditor v-if="editEmail === index" theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
+								<div v-else>{{ template.content }}</div>
+							</div>
+						</div>
+
+
+
+						<!-- <div v-if="emailTemplates" class="marketing-guide">
+							<div v-for="(template, index) in filteredList" :key="(currentPage - 1) * perPage + index + 1" class="mt-4">
+								<h3>Email #{{ (currentPage - 1) * perPage + index + 1 }}</h3>
+								<div v-if="editEmail === (currentPage - 1) * perPage + index">
 									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" v-model="template.content" />
 									<ShineButton :title="'Save'" @click="saveEmail(index)" />
 									<ShineCloseButton :title="'Cancel'" @click="cancelEditEmail" />
 								</div>
 								<div v-else>
 									{{ template.content }}
-									<ShineButton :title="'Edit'" @click="editEmail(index)" />
+									<ShineButton :title="'Edit'" @click="editEmail((currentPage - 1) * perPage + index + 1)" />
 								</div>
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
 
+
+
+
+						
 			<!-- Create/Upgrade Buttons -->
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
@@ -173,10 +215,9 @@ export default {
 			return this.emailStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.emailIntent !== null;
 		},
 		filteredList() {
-			return this.emailTemplates.slice(
-				(this.currentPage - 1) * this.perPage,
-				this.currentPage * this.perPage
-			);
+			const startIndex = (this.currentPage - 1) * this.perPage;
+			const endIndex = this.currentPage * this.perPage;
+			return this.emailTemplates.slice(startIndex, endIndex);
 		},
 	},
 	methods: {
