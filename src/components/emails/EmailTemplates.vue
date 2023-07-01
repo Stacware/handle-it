@@ -81,23 +81,6 @@ export default {
 				userId: this.authStore.userId,
 			};
 			this.requestsStore.startEmailTemplates(payload);
-			await this.sleep(2000);
-
-			// this.loading = false //change to false when done with dev
-			// await this.sleep(2000);
-			// this.loadStatus = 'Creating marketing guide...';
-			// await this.sleep(5000);
-			// this.loadStatus = 'Creating strategy...';
-			// await this.sleep(6000);
-			// this.loadStatus = 'Gathering market analysis info...';
-			// await this.sleep(5000);
-			// this.loadStatus = 'Making it look nice...';
-			// await this.sleep(4000);
-			// this.loadStatus = 'A little magic...';
-			// await this.sleep(4000);
-			// this.loadStatus = 'Voila!';
-			// Start polling
-			// this.pollTaskStatus();
 		},
 
 		async pollTaskStatus() {

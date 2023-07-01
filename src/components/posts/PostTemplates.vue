@@ -12,12 +12,7 @@
 			<FlippyButton v-if="!loading && postCount < 5 && $route.name !== 'dashboard'" @click="getPostTemplates" :title="'Create'" class="my-5" />
 			<FlippyButton v-if="!loading && postCount >= 5 && $route.name !== 'dashboard'" @click="upgradeTier" :title="'Upgrade Tier'" class="my-5" />
 			<div v-if="loading" class="mt-5">
-				<LoadingHand />
-				<div class="mt-5 mb-5">
-					<transition name="slide-fade" mode="out-in">
-						<span class="load-status h4" :key="loadStatus">{{ loadStatus }}</span>
-					</transition>
-				</div>
+				<LoadingHand :loadStatus="loading" @stop-loading="loading = false" />
 			</div>
 		</div>
 	</div>
@@ -46,6 +41,7 @@ export default {
 			postIntent: 'visit my website',
 			imageStyle: 'Digital Art',
 			loading: false,
+			loadStatus: null,
 			loadStatus: 'Checking your info...',
 		};
 	},
@@ -80,20 +76,6 @@ export default {
 				userId: this.authStore.userId,
 			};
 			this.requestsStore.startPostTemplates(payload);
-			// await this.sleep(2000);
-			// this.loadStatus = 'Creating marketing guide...';
-			// await this.sleep(5000);
-			// this.loadStatus = 'Creating strategy...';
-			// await this.sleep(6000);
-			// this.loadStatus = 'Gathering market analysis info...';
-			// await this.sleep(5000);
-			// this.loadStatus = 'Making it look nice...';
-			// await this.sleep(4000);
-			// this.loadStatus = 'A little magic...';
-			// await this.sleep(4000);
-			// this.loadStatus = 'Voila!';
-			// Start polling
-			// this.pollTaskStatus();
 		},
 
 		async pollTaskStatus() {
