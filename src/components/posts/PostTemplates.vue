@@ -1,55 +1,95 @@
 <template>
 	<div v-if="currentUser">
-		<!-- Options Modal -->
-		<base-modal :show="openModal" :title="'Post Options'">
-			<dropdown-select :options="postStyleOpts" :title="'Post Style'" @model-change="postStyleSelection"></dropdown-select>
-			<dropdown-select :options="postIntentOpts" :title="'Post Intent'" @model-change="postIntentSelection"></dropdown-select>
-			<dropdown-select :options="imageStyleOpts" :title="'Image Style'" @model-change="imageStyleSelection"></dropdown-select>
-			<div class="form-floating">
-				<input type="text" v-model="targetAudience" class="form-control" :class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" id="floatingInputValue" />
-				<small class="text-muted ms-1">e.g. Small businesses, families, over 18, etc..</small>
+	<!-- Options Modal -->
+	<base-modal :show="openModal" :title="'Post Options'">
+		<div class="modal-body">
+			<div class="mb-3">
+				<dropdown-select 
+				:options="postStyleOpts" 
+				:title="'Post Style'" 
+				@model-change="postStyleSelection"></dropdown-select>
+			</div>
+			<div class="mb-3">
+				<dropdown-select 
+				:options="postIntentOpts" 
+				:title="'Post Intent'" 
+				@model-change="postIntentSelection"></dropdown-select>
+			</div>
+			<div class="mb-3">
+				<dropdown-select 
+				:options="imageStyleOpts" 
+				:title="'Image Style'" 
+				@model-change="imageStyleSelection"></dropdown-select>
+			</div>
+			<div class="mb-3">
+				<div class="form-floating">
+				<input type="text" v-model="targetAudience" 
+				class="form-control" 
+				:class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" 
+				id="floatingInputValue" />
 				<label for="floatingInputValue">Target Audience</label>
-			</div>
-			<template v-slot:buttons>
-				<div class="d-flex justify-content-between">
-					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" />
-					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getPostTemplates()" :class="{ disabled: !validForm }" />
+				<small class="text-muted">e.g. Small businesses, families, over 18, etc..</small>
 				</div>
-			</template>
-		</base-modal>
-		<!-- Page Title -->
-		<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
-		<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
-		<div class="center-content" :class="{ main: !postTemplates }">
-			<!-- Post Templates -->
-			<div class="w-100 d-flex justify-content-center mt-4">
-				<pagination
-				:perPage="perPage"
-				:totalItems="this.postTemplates.length"
-				@paginatedItems="displayPages"/>
-			</div>
-			<div v-if="postTemplates" class="marketing-guide container mb-5">
-				<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
-					<h3>Post #{{ index + 1 }}</h3>
-					{{ template.content }}
-				</div>
-			</div>
-			<!-- Create/Upgrade Buttons -->
-
-			<FlippyButton v-if="!loading && postCount < totalCount && $route.name !== 'dashboard'" @click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
-			<FlippyButton
-				v-if="!loading && postCount >= totalCount && $route.name !== 'dashboard'"
-				:disabled="true"
-				@click="null"
-				:title="'Upgrade Tier'"
-				class="mb-5 mt-2"
-				:class="{ disabled: !validForm }" />
-			<div>
-				<LoadingHand :loadStatus="loading" />
 			</div>
 		</div>
+		<div class="modal-footer d-flex justify-content-center w-100">
+			<div class="d-flex justify-content-between flex-wrap w-100 mb-2">
+				<FlippyButton 
+				:closeType="true" 
+				:title="'Close'" 
+				@click="openModal = false" 
+				class="mb-2"/>
+				<FlippyButton 
+				:disabled="!validForm" 
+				:title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getPostTemplates()" 
+				:class="{ disabled: !validForm }" />
+			</div>
+		</div>
+	</base-modal>
+
+	<!-- Page Title -->
+	<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
+	<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
+
+	<div class="container">
+		<div class="row justify-content-center mt-4">
+		<div class="col-12 col-lg-8">
+			<!-- Post Templates -->
+			<div class="w-100">
+			<div v-if="postTemplates" class="marketing-guide">
+				<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
+				<h3>Post #{{ index + 1 }}</h3>
+				{{ template.content }}
+				</div>
+			</div>
+			</div>
+		</div>
+		</div>
+
+		<!-- Create/Upgrade Buttons -->
+		<div class="row justify-content-center mt-4">
+		<div class="col-12 col-lg-8">
+			<div class="d-grid gap-2">
+			<FlippyButton v-if="!loading && postCount < totalCount && $route.name !== 'dashboard'" 
+			@click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-3" />
+			<FlippyButton v-if="!loading && postCount >= totalCount && $route.name !== 'dashboard'" 
+				:disabled="true" @click="null" :title="'Upgrade Tier'" class="mb-3" 
+				:class="{ disabled: !validForm }" />
+			</div>
+		</div>
+		</div>
+
+		<div class="row justify-content-center mt-4">
+		<div class="col-12 col-lg-8">
+			<div>
+			<LoadingHand :loadStatus="loading" />
+			</div>
+		</div>
+		</div>
+	</div>
 	</div>
 </template>
+
 
 <script>
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
