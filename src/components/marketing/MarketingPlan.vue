@@ -5,12 +5,7 @@
 			<FlippyButton v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" :title="'Create'" class="mb-5 mt-2" />
 			<!-- <button v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button> -->
 			<div v-if="loading">
-				<LoadingHand />
-				<div class="mt-5">
-					<transition name="slide-fade" mode="out-in">
-						<span class="load-status h4" :key="loadStatus">{{ loadStatus }}</span>
-					</transition>
-				</div>
+				<LoadingHand :loadStatus="loading" @stop-loading="loading = false" />
 			</div>
 			<div v-if="marketingPlan" class="marketing-guide container">
 				<h1>{{ title }}</h1>
@@ -43,6 +38,7 @@ export default {
 			industry: this.currentUser.industry,
 			targetAudience: 'small businesses and millenials',
 			loading: false,
+			loadStatus: null,
 			loadStatus: 'Checking your info...',
 		};
 	},
@@ -83,18 +79,6 @@ export default {
 			// 		userId: this.authStore.userId,
 			// 	};
 			this.requestsStore.startMarketingPlan(payload);
-			await this.sleep(2000);
-			this.loadStatus = 'Creating marketing guide...';
-			await this.sleep(5000);
-			this.loadStatus = 'Creating strategy...';
-			await this.sleep(6000);
-			this.loadStatus = 'Gathering market analysis info...';
-			await this.sleep(5000);
-			this.loadStatus = 'Making it look nice...';
-			await this.sleep(4000);
-			this.loadStatus = 'A little magic...';
-			await this.sleep(4000);
-			this.loadStatus = 'Voila!';
 			// Start polling
 			// this.pollTaskStatus();
 		},

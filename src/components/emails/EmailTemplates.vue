@@ -46,12 +46,7 @@
 				:class="{ disabled: !validForm }" />
 			<!-- Loading -->
 			<div v-if="loading" class="mt-5">
-				<LoadingHand />
-				<div class="mt-5 mb-5">
-					<transition name="slide-fade" mode="out-in">
-						<span class="load-status h4" :key="loadStatus">{{ loadStatus }}</span>
-					</transition>
-				</div>
+				<LoadingHand :loadStatus="loading" @stop-loading="loading = false" />
 			</div>
 		</div>
 	</div>
@@ -96,7 +91,8 @@ export default {
 			emailIntent: null,
 			emailIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			loading: false,
-			loadStatus: 'Checking your info...',
+			loadStatus: null,
+			
 			openModal: false,
 			editEmail: null,
 			saveEdit: null,
@@ -157,6 +153,7 @@ export default {
 		},
 		async getEmailTemplates() {
 			this.loading = true;
+
 			this.openModal = false;
 			let conversation = this.requestsStore.emailConversation || [];
 
@@ -258,4 +255,5 @@ export default {
 p {
 	min-height: 1em; /* Adjust as needed */
 }
+
 </style>

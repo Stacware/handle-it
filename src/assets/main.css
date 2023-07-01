@@ -1,1 +1,12 @@
 @import './base.css';
+
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+	transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+	opacity: 0;
+}
