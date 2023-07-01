@@ -74,4 +74,13 @@
 			transform: scale3d(1, 1, 1);
 	}
 }
+.modal-container {
+	left: 20vw !important;
+	top: 13vh !important;
+}
+.card-class {
+	padding: 5% !important;
+	width: 60vw !important;
+	height: 70% !important;
 
+}
