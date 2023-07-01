@@ -4,6 +4,9 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="container-fluid">
+			<div>
+				<Panda :currentImageIndex="currentImageIndex"/>
+			</div>
 			<span class="navbar-brand mb-0 h1">market panda</span>
 			<div class="collapse navbar-collapse" :class="!visible ? 'collapse' : ''" id="navbarNav">
 				<ul class="navbar-nav me-auto">
@@ -60,6 +63,7 @@
 </template>
 
 <script>
+import { usePandaStore } from '@/stores/panda.js';
 import { inject } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
 import LogOutBtn from '@/components/ui/nav-buttons/LogOut.vue';
@@ -68,6 +72,7 @@ import MarketingBtn from '@/components/ui/nav-buttons/MarketingBtn.vue';
 import EmailBtn from '@/components/ui/nav-buttons/EmailBtn.vue';
 import PostBtn from '@/components/ui/nav-buttons/PostBtn.vue';
 import AccountBtn from '@/components/ui/nav-buttons/AccountBtn.vue';
+import Panda from '@/components/ui/Panda.vue'
 export default {
 	name: 'Navbar',
 	components: {
@@ -77,11 +82,13 @@ export default {
 		MarketingBtn,
 		DashboardBtn,
 		LogOutBtn,
+		Panda
 	},
 	inject: ['plan', 'userId'],
 	data() {
 		return {
 			authStore: useAuthStore(),
+			pandaStore: usePandaStore(),
 			linkHover: null,
 			visible: false,
 		};
@@ -106,6 +113,11 @@ export default {
 			this.$router.push({ name: 'home' });
 		},
 	},
+	computed: {
+		currentImageIndex() {
+			return this.pandaStore.currentImageIndex;
+		},
+	}
 };
 </script>
 
