@@ -2,7 +2,8 @@
 	<div v-if="currentUser">
 		<h1 class="text-center">{{ marketingPlan ? 'Marketing' : 'Create a Marketing Plan' }}</h1>
 		<div class="center-content" :class="{ main: !marketingPlan }">
-			<button v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button>
+			<FlippyButton v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" :title="'Create'" class="mb-5 mt-2" />
+			<!-- <button v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button> -->
 			<div v-if="loading">
 				<LoadingHand :loadStatus="loading" @stop-loading="loading = false" />
 			</div>
@@ -21,9 +22,12 @@ import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import { useAuthStore } from '@/stores/auth.js';
 import LoadingHand from '@/components/ui/LoadingHand.vue';
 import { marketingGuideMixin } from '@/components/mixins/marketingGuideMixin';
+import FlippyButton from '@/components/ui/FlippyButton.vue';
+
 export default {
 	components: {
 		LoadingHand,
+		FlippyButton,
 	},
 	mixins: [marketingGuideMixin],
 	inject: ['currentUser'],

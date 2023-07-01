@@ -66,7 +66,7 @@
 									placeholder="Company name" />
 								<div class="invalid-feedback">Cannot be left blank.</div>
 							</div>
-							<FlippyButton :title="loading ? 'Creating...' : 'Sign Up'" :disabled="!isFormValid" class="my-5" />
+							<FlippyButton :title="loading ? 'Creating...' : 'Sign Up'" :disabled="!isFormValid" class="my-5" :class="{ disabled: !isFormValid }" />
 							<!-- <button type="submit" class="btn btn-primary w-100 mt-4 py-2" :disabled="!isFormValid || loading">
 								<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="loading"></span>
 								<span v-if="loading"> Creating your account...</span>
@@ -177,5 +177,8 @@ export default {
 <style scoped>
 .card {
 	z-index: 2;
+}
+.disabled {
+	cursor: not-allowed;
 }
 </style>

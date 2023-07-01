@@ -2,13 +2,11 @@
 	<div class="modal-container">
 		<div v-if="show">
 			<div class="card-class">
+				<h2 class="mb-5 text-center">{{ title }}</h2>
 				<div class="content">
 					<slot></slot>
 					<div class="footer">
-						<div class="d-flex justify-content-between">
-							<FlippyButton :closeType="true" :title="'Close'" @click="$emit('close')" />
-							<FlippyButton :title="'Create'" @click="$emit('create')" />
-						</div>
+						<slot name="buttons"></slot>
 					</div>
 				</div>
 			</div>
@@ -18,14 +16,14 @@
 </template>
 
 <script>
-import FlippyButton from '@/components/ui/FlippyButton.vue';
 export default {
-	components: {
-		FlippyButton,
-	},
 	props: {
 		show: {
 			type: Boolean,
+			required: true,
+		},
+		title: {
+			type: String,
 			required: true,
 		},
 	},
@@ -56,7 +54,7 @@ export default {
 .card-class {
 	width: 30vw;
 	height: 60vh;
-	background: #07182e;
+	background: #212529;
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -65,6 +63,11 @@ export default {
 	border-radius: 20px;
 	z-index: 30;
 	padding: 60px;
+}
+
+h2 {
+	color: white;
+	z-index: 1;
 }
 
 .content {
@@ -79,10 +82,10 @@ export default {
 .card-class::before {
 	content: '';
 	top: -200px;
-	left: 150px;
+	left: 250px;
 	position: absolute;
 	width: 50%;
-	height: 150%;
+	height: 160%;
 	background-image: linear-gradient(360deg, #0d6fed, #ac1cff);
 	animation: rotBGimg 5s linear infinite;
 	transition: all 0.2s linear;
@@ -103,8 +106,8 @@ export default {
 .card-class::after {
 	content: '';
 	position: absolute;
-	background: #07182e;
-	inset: 5px;
+	background: #212529;
+	inset: 3px;
 	border-radius: 15px;
 }
 /* .card:hover:before {

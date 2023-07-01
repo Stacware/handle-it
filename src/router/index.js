@@ -5,6 +5,7 @@ import MarketingView from '../views/MarketingView.vue'
 import EmailView from '../views/EmailView.vue'
 import PostView from '../views/PostView.vue'
 import ManageView from '../views/ManageView.vue'
+import UpgradeView from '../views/UpgradePlan.vue'
 import { useAuthStore } from '../stores/auth.js'
 
 const router = createRouter({
@@ -44,6 +45,12 @@ const router = createRouter({
 			name: 'post',
 			component: PostView,
 			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
+		},
+		{
+			path: '/upgrade/:userId',
+			name: 'upgrade',
+			component: UpgradeView,
+			meta: { requiresAuth: true } // Add this meta field to indicate that the route requires authentication
 		}
 	]
 })
@@ -56,7 +63,6 @@ router.beforeEach(async (to, from, next) => {
 		// If the currentUser is not available, fetch it from your backend or local storage
 		try {
 			await authStore.fetchCurrentUser()
-			authStore.userLoading = false
 		} catch (error) {
 			console.error('Failed to fetch the currentUser:', error)
 		}
@@ -64,7 +70,7 @@ router.beforeEach(async (to, from, next) => {
 
 	if (to.meta.requiresAuth) {
 		// Check if the user is authenticated
-		if (authStore.currentUser && authStore.userId === to.params.userId) {
+		if (authStore.userId === to.params.userId) {
 			// User is authenticated and matches the required objectId
 			next()
 		} else {
