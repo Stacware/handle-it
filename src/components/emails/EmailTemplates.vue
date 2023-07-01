@@ -21,8 +21,14 @@
 		<h5 class="text-center">You have used {{ emailCount }}/{{ totalCount }} email templates.</h5>
 		<div class="center-content" :class="{ main: !emailTemplates }">
 			<!-- Email Templates -->
+			<div class="w-100 d-flex justify-content-center mt-4">
+				<pagination
+				:perPage="perPage"
+				:totalItems="this.emailTemplates.length"
+				@paginatedItems="displayPages"/>
+			</div>
 			<div v-if="emailTemplates" class="marketing-guide container mb-5">
-				<div v-for="(template, index) in emailTemplates" :key="index" class="mt-4">
+				<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
 					<div class="d-flex justify-content-between align-items-center mb-2">
 						<h3 class="mb-0">Email #{{ index + 1 }}</h3>
 						<div class="d-flex justify-content-end align-items-center">
@@ -59,6 +65,7 @@ import LoadingHand from '@/components/ui/LoadingHand.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
 import ShineButton from '@/components/ui/ShineButton.vue';
 import ShineCloseButton from '@/components/ui/ShineCloseButton.vue';
+import Pagination from '../ui/Pagination.vue';
 
 function debounce(func, wait) {
 	let timeout;
@@ -77,6 +84,7 @@ export default {
 		FlippyButton,
 		ShineButton,
 		ShineCloseButton,
+		Pagination
 	},
 	inject: ['currentUser', 'userId', 'plan'],
 	data() {
@@ -98,6 +106,8 @@ export default {
 			saveEdit: null,
 			isSaved: false,
 			totalCount: 0,
+			currentPage: 1,
+			perPage: 3
 		};
 	},
 	mounted() {
@@ -146,10 +156,19 @@ export default {
 		validForm() {
 			return this.emailStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.emailIntent !== null;
 		},
+		filteredList() {
+			return this.emailTemplates.slice(
+				(this.currentPage - 1) * this.perPage,
+				this.currentPage * this.perPage
+			);
+		},
 	},
 	methods: {
 		sleep(ms) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
+		},
+		displayList(pageNumber) {
+			this.currentPage = pageNumber;
 		},
 		async getEmailTemplates() {
 			this.loading = true;
@@ -208,6 +227,9 @@ export default {
 		},
 		upgradeTier() {
 			console.log('upgrade');
+		},
+		displayPages(pageNumber) {
+			this.currentPage = pageNumber;
 		},
 	},
 };

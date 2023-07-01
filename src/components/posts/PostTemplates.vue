@@ -22,8 +22,14 @@
 		<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
 		<div class="center-content" :class="{ main: !postTemplates }">
 			<!-- Post Templates -->
+			<div class="w-100 d-flex justify-content-center mt-4">
+				<pagination
+				:perPage="perPage"
+				:totalItems="this.postTemplates.length"
+				@paginatedItems="displayPages"/>
+			</div>
 			<div v-if="postTemplates" class="marketing-guide container mb-5">
-				<div v-for="(template, index) in postTemplates" :key="index" class="mt-4">
+				<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
 					<h3>Post #{{ index + 1 }}</h3>
 					{{ template.content }}
 				</div>
@@ -38,8 +44,8 @@
 				:title="'Upgrade Tier'"
 				class="mb-5 mt-2"
 				:class="{ disabled: !validForm }" />
-			<div v-if="loading" class="mt-5">
-				<LoadingHand :loadStatus="loading" @stop-loading="loading = false" />
+			<div>
+				<LoadingHand :loadStatus="loading" />
 			</div>
 		</div>
 	</div>
@@ -50,6 +56,7 @@ import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import { useAuthStore } from '@/stores/auth.js';
 import LoadingHand from '@/components/ui/LoadingHand.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
+import Pagination from '../ui/Pagination.vue';
 
 function debounce(func, wait) {
 	let timeout;
@@ -66,6 +73,7 @@ export default {
 	components: {
 		LoadingHand,
 		FlippyButton,
+		Pagination
 	},
 	inject: ['currentUser', 'plan'],
 
@@ -83,13 +91,13 @@ export default {
 			imageStyle: null,
 			imageStyleOpts: ['Digital Art', 'Cartoon', 'Realistic', 'Futuristic', 'Robot', 'Anything'],
 			loading: false,
-			loadStatus: null,
-			loadStatus: 'Checking your info...',
 			openModal: false,
 			editPost: null,
 			saveEdit: null,
 			isSaved: false,
 			totalCount: 0,
+			currentPage: 1,
+			perPage: 3
 		};
 	},
 	mounted() {
@@ -138,10 +146,19 @@ export default {
 		validForm() {
 			return this.postStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.postIntent !== null && this.imageStyle !== null;
 		},
+		filteredList() {
+			return this.postTemplates.slice(
+				(this.currentPage - 1) * this.perPage,
+				this.currentPage * this.perPage
+			);
+		},
 	},
 	methods: {
 		sleep(ms) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
+		},
+		displayList(pageNumber) {
+			this.currentPage = pageNumber;
 		},
 		async getPostTemplates() {
 			this.loading = true;
@@ -184,10 +201,13 @@ export default {
 					clearInterval(this.taskPollingInterval);
 					this.loading = false;
 				}
-			}, 5000); // Poll every 5 seconds
+			}, 10000); // Poll every 5 seconds
 		},
 		upgradeTier() {
 			console.log('upgrade');
+		},
+		displayPages(pageNumber) {
+			this.currentPage = pageNumber;
 		},
 	},
 };
