@@ -190,6 +190,20 @@ export const useAuthStore = defineStore({
 			} finally {
 				this.fetchCurrentUser()
 			}
+		},
+		updateBusinessDetails (payload) {
+			let user = Parse.User.current()
+			user.set('email', payload.email)
+			user.set('username', payload.userName)
+			user.set('firstName', payload.firstName)
+			user.set('lastName', payload.lastName)
+			try {
+				user.save()
+			} catch (err) {
+				console.log(err)
+			} finally {
+				this.fetchCurrentUser()
+			}
 		}
 	}
 })

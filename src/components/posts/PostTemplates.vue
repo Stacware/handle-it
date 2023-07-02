@@ -1,60 +1,102 @@
 <template>
 	<div v-if="currentUser">
-		<!-- Options Modal -->
-		<base-modal :show="openModal" :title="'Post Options'">
-			<dropdown-select :options="postStyleOpts" :title="'Post Style'" @model-change="postStyleSelection"></dropdown-select>
-			<dropdown-select :options="postIntentOpts" :title="'Post Intent'" @model-change="postIntentSelection"></dropdown-select>
-			<dropdown-select :options="imageStyleOpts" :title="'Image Style'" @model-change="imageStyleSelection"></dropdown-select>
-			<div class="form-floating">
-				<input type="text" v-model="targetAudience" class="form-control" :class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" id="floatingInputValue" />
-				<small class="text-muted ms-1">e.g. Small businesses, families, over 18, etc..</small>
+	<!-- Options Modal -->
+	<base-modal :show="openModal" :title="'Post Options'">
+		<div class="modal-body">
+			<div class="mb-3">
+				<dropdown-select 
+				:options="postStyleOpts" 
+				:title="'Post Style'" 
+				@model-change="postStyleSelection"></dropdown-select>
+			</div>
+			<div class="mb-3">
+				<dropdown-select 
+				:options="postIntentOpts" 
+				:title="'Post Intent'" 
+				@model-change="postIntentSelection"></dropdown-select>
+			</div>
+			<div class="mb-3">
+				<dropdown-select 
+				:options="imageStyleOpts" 
+				:title="'Image Style'" 
+				@model-change="imageStyleSelection"></dropdown-select>
+			</div>
+			<div class="mb-3">
+				<div class="form-floating">
+				<input type="text" v-model="targetAudience" 
+				class="form-control" 
+				:class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" 
+				id="floatingInputValue" />
 				<label for="floatingInputValue">Target Audience</label>
-			</div>
-			<template v-slot:buttons>
-				<div class="d-flex justify-content-between">
-					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" />
-					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getPostTemplates()" :class="{ disabled: !validForm }" />
-				</div>
-			</template>
-		</base-modal>
-		<!-- Page Title -->
-		<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
-		<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
-		<div class="center-content" :class="{ main: !postTemplates }">
-			<!-- Post Templates -->
-			<div v-if="postTemplates" class="marketing-guide container mb-5">
-				<div v-for="(template, index) in postTemplates" :key="index" class="mt-4">
-					<h3>Post #{{ index + 1 }}</h3>
-					{{ template.content }}
-				</div>
-			</div>
-			<!-- Create/Upgrade Buttons -->
-
-			<FlippyButton v-if="!loading && postCount < totalCount && $route.name !== 'dashboard'" @click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-5 mt-2" />
-			<FlippyButton
-				v-if="!loading && postCount >= totalCount && $route.name !== 'dashboard'"
-				:disabled="true"
-				@click="null"
-				:title="'Upgrade Tier'"
-				class="mb-5 mt-2"
-				:class="{ disabled: !validForm }" />
-			<div v-if="loading" class="mt-5">
-				<LoadingHand />
-				<div class="mt-5 mb-5">
-					<transition name="slide-fade" mode="out-in">
-						<span class="load-status h4" :key="loadStatus">{{ loadStatus }}</span>
-					</transition>
+				<small class="text-muted">e.g. Small businesses, families, over 18, etc..</small>
 				</div>
 			</div>
 		</div>
+		<div class="modal-footer d-flex justify-content-center w-100">
+			<div class="d-flex justify-content-between flex-wrap w-100 mb-2">
+				<FlippyButton 
+				:closeType="true" 
+				:title="'Close'" 
+				@click="openModal = false" 
+				class="mb-2"/>
+				<FlippyButton 
+				:disabled="!validForm" 
+				:title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getPostTemplates()" 
+				:class="{ disabled: !validForm }" />
+			</div>
+		</div>
+	</base-modal>
+
+	<!-- Page Title -->
+	<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
+	<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
+
+	<div class="container">
+		<div class="row justify-content-center mt-4">
+		<div class="col-12 col-lg-8">
+			<!-- Post Templates -->
+			<div class="w-100">
+			<div v-if="postTemplates" class="marketing-guide">
+				<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
+				<h3>Post #{{ index + 1 }}</h3>
+				{{ template.content }}
+				</div>
+			</div>
+			</div>
+		</div>
+		</div>
+
+		<!-- Create/Upgrade Buttons -->
+		<div class="row justify-content-center mt-4">
+		<div class="col-12 col-lg-8">
+			<div class="d-grid gap-2">
+			<FlippyButton v-if="!loading && postCount < totalCount && $route.name !== 'dashboard'" 
+			@click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-3" />
+			<FlippyButton v-if="!loading && postCount >= totalCount && $route.name !== 'dashboard'" 
+				:disabled="true" @click="null" :title="'Upgrade Tier'" class="mb-3" 
+				:class="{ disabled: !validForm }" />
+			</div>
+		</div>
+		</div>
+
+		<div class="row justify-content-center mt-4">
+		<div class="col-12 col-lg-8">
+			<div>
+			<LoadingHand :loadStatus="loading" />
+			</div>
+		</div>
+		</div>
+	</div>
 	</div>
 </template>
+
 
 <script>
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import { useAuthStore } from '@/stores/auth.js';
 import LoadingHand from '@/components/ui/LoadingHand.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
+import Pagination from '../ui/Pagination.vue';
 
 function debounce(func, wait) {
 	let timeout;
@@ -71,6 +113,7 @@ export default {
 	components: {
 		LoadingHand,
 		FlippyButton,
+		Pagination
 	},
 	inject: ['currentUser', 'plan'],
 
@@ -88,12 +131,13 @@ export default {
 			imageStyle: null,
 			imageStyleOpts: ['Digital Art', 'Cartoon', 'Realistic', 'Futuristic', 'Robot', 'Anything'],
 			loading: false,
-			loadStatus: 'Checking your info...',
 			openModal: false,
 			editPost: null,
 			saveEdit: null,
 			isSaved: false,
 			totalCount: 0,
+			currentPage: 1,
+			perPage: 3
 		};
 	},
 	mounted() {
@@ -142,10 +186,19 @@ export default {
 		validForm() {
 			return this.postStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.postIntent !== null && this.imageStyle !== null;
 		},
+		filteredList() {
+			return this.postTemplates.slice(
+				(this.currentPage - 1) * this.perPage,
+				this.currentPage * this.perPage
+			);
+		},
 	},
 	methods: {
 		sleep(ms) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
+		},
+		displayList(pageNumber) {
+			this.currentPage = pageNumber;
 		},
 		async getPostTemplates() {
 			this.loading = true;
@@ -163,20 +216,6 @@ export default {
 				userId: this.authStore.userId,
 			};
 			this.requestsStore.startPostTemplates(payload);
-			// await this.sleep(2000);
-			// this.loadStatus = 'Creating marketing guide...';
-			// await this.sleep(5000);
-			// this.loadStatus = 'Creating strategy...';
-			// await this.sleep(6000);
-			// this.loadStatus = 'Gathering market analysis info...';
-			// await this.sleep(5000);
-			// this.loadStatus = 'Making it look nice...';
-			// await this.sleep(4000);
-			// this.loadStatus = 'A little magic...';
-			// await this.sleep(4000);
-			// this.loadStatus = 'Voila!';
-			// Start polling
-			// this.pollTaskStatus();
 		},
 		async saveEditImpl(content, index) {
 			const templates = this.postTemplates;
@@ -202,10 +241,13 @@ export default {
 					clearInterval(this.taskPollingInterval);
 					this.loading = false;
 				}
-			}, 5000); // Poll every 5 seconds
+			}, 10000); // Poll every 5 seconds
 		},
 		upgradeTier() {
 			console.log('upgrade');
+		},
+		displayPages(pageNumber) {
+			this.currentPage = pageNumber;
 		},
 	},
 };

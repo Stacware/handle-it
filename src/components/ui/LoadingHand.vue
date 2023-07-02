@@ -1,16 +1,118 @@
 <template>
-	<div class="d-flex justify-content-center w-100">
-		<div class="🤚">
-			<div class="👉"></div>
-			<div class="👉"></div>
-			<div class="👉"></div>
-			<div class="👉"></div>
-			<div class="🌴"></div>
-			<div class="👍"></div>
+	<div class="hand-container justify-content-center align-items-center" :class="loadStatus ? 'd-flex' : 'd-none'">
+		<div class="hand w-50 ">
+			<div class="d-flex justify-content-center w-100">
+				<div class="🤚">
+				<div class="👉"></div>
+				<div class="👉"></div>
+				<div class="👉"></div>
+				<div class="👉"></div>
+				<div class="🌴"></div>
+				<div class="👍"></div>
+				</div>
+			</div>
+			<div class="mt-5 pb-5">
+				<transition name="slide-fade" mode="out-in">
+				<span class="load-status h4" :key="loadingMessage">{{ loadingMessage }}</span>
+				</transition>
+			</div>
+			<div >
+				<Panda :currentImageIndex="currentImageIndex" @mouseover="random"/>
+			</div>
 		</div>
 	</div>
 </template>
+
+<script>
+import { usePandaStore } from '@/stores/panda.js';
+import Panda from './Panda.vue'
+export default {
+	props: ['loadStatus'],
+	components: {
+		Panda
+	},
+	data() {
+		return {
+			pandaStore : usePandaStore(),
+			loadingMessages: [
+				'Creating marketing guide...',
+				'Creating strategy...',
+				'Gathering market analysis info...',
+				'Making it look nice...',
+				'A little magic...'
+			],
+			loadingMessageIndex: 0,
+			};
+	},
+	computed: {
+		loadingMessage() {
+		if (this.loadStatus === true) {
+			this.pandaStore.updateImageIndex(4)
+			return this.loadingMessages[this.loadingMessageIndex];
+		} else if (this.loadStatus === false) {
+			return 'Viola!';
+		} else {
+			this.stopLoading();
+		}
+		},
+		currentImageIndex() {
+			return this.pandaStore.currentImageIndex;
+		},
+	},
+	mounted() {
+		if (this.loadStatus === true) {
+		setInterval(() => {
+			this.loadingMessageIndex =
+			(this.loadingMessageIndex + 1) % this.loadingMessages.length;
+		}, 2000); // Change the duration between rotations as desired
+		}
+	},
+	methods: {
+		stopLoading() {
+			this.pandaStore.updateImageIndex(1)
+			this.$emit('stop-loading');
+		},
+		random() {
+			const min = 0;
+			const max = 7;
+			const num = Math.floor(Math.random() * (max - min + 1)) + min;
+			this.pandaStore.updateImageIndex(num);
+		}
+
+
+	}
+};
+</script>
+
 <style scoped>
+.hand-container {
+	position: fixed;
+	z-index: 5000;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.656);
+}
+.hand {
+	width: 75%;
+	background: linear-gradient(#2d2d34, #6900fc36) padding-box, linear-gradient(15deg, transparent 35%, #0d6fed , #ac1cff) border-box;
+	border: 2px solid transparent;
+	padding: 32px 24px;
+	font-size: 16px;
+	font-family: inherit;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	border-radius: 16px;
+	transition: ease-in-out 250ms;
+}
+.hand:hover {
+	transform: scale(1.01);
+	box-shadow: rgba(183, 117, 218, 0.25) 0px 50px 100px -20px, rgba(103, 17, 223, 0.3) 0px 30px 60px -30px, rgba(26, 118, 209, 0.204) 0px -2px 6px 0px inset;
+
+}
 .🤚 {
 	--skin-color: #e4c560;
 	--tap-speed: 0.6s;
@@ -170,4 +272,5 @@
 		transform: rotate(50deg) scale(1);
 	}
 }
+
 </style>
