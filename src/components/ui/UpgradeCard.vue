@@ -5,7 +5,8 @@
 		</span>
 		<div class="txt">
 			<div class="text-center mb-5">
-				<h3 class="price">{{ plans.Name === 'Free' ? 'Free 99' : '$' + plans.price }}</h3>
+				<h3 v-if="plan.Name !== plans.Name" class="price">{{ plans.Name === 'Free' ? 'Free 99' : '$' + plans.price }}</h3>
+				<h3 v-else>Current Plan</h3>
 			</div>
 			<ul class="list-group list-group-flush p-4">
 				<li class="list-group-item" v-for="desc in plans.description" :key="desc">{{ desc }}</li>
