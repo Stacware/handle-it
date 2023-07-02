@@ -19,7 +19,7 @@
 			</div>
 			<div class="modal-footer d-flex justify-content-center w-100">
 				<div class="d-flex justify-content-between flex-wrap w-100 mb-2">
-					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" class="mb-2"/>
+					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" class="mb-2" />
 					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getEmailTemplates()" :class="{ disabled: !validForm }" />
 				</div>
 			</div>
@@ -38,13 +38,16 @@
 							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
 								<h3>Email #{{ index + 1 }}</h3>
 								<div v-if="editEmail === index">
-									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" v-model="template.content" />
-									<ShineButton :title="'Save'" @click="saveEmail(index)" />
-									<ShineCloseButton :title="'Cancel'" @click="cancelEditEmail" />
+									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
+									<!-- <ShineButton :title="'Save'" @click="saveEmail(index)" /> -->
+									<div class="d-flex">
+										<ShineCloseButton :title="'Cancel'" @click="editEmail = null" />
+										<h6 v-show="isSaved" class="text-success mb-0 ms-2 align-self-center">SAVED!</h6>
+									</div>
 								</div>
 								<div v-else>
 									{{ template.content }}
-									<ShineButton :title="'Edit'" @click="editEmail(index)" />
+									<ShineButton :title="'Edit'" @click="editEmail = index" />
 								</div>
 							</div>
 						</div>
@@ -57,7 +60,13 @@
 				<div class="col-12 col-lg-8">
 					<div class="d-grid gap-2">
 						<FlippyButton v-if="!loading && emailCount < totalCount && $route.name !== 'dashboard'" @click="openModal = true" :title="emailCount === 0 ? 'Create' : 'More?'" class="mb-3" />
-						<FlippyButton v-if="!loading && emailCount >= totalCount && $route.name !== 'dashboard'" :disabled="true" @click="null" :title="'Upgrade Tier'" class="mb-3" :class="{ disabled: !validForm }" />
+						<FlippyButton
+							v-if="!loading && emailCount >= totalCount && $route.name !== 'dashboard'"
+							:disabled="true"
+							@click="null"
+							:title="'Upgrade Tier'"
+							class="mb-3"
+							:class="{ disabled: !validForm }" />
 					</div>
 				</div>
 			</div>
@@ -72,7 +81,6 @@
 		</div>
 	</div>
 </template>
-
 
 <script>
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
@@ -100,7 +108,7 @@ export default {
 		FlippyButton,
 		ShineButton,
 		ShineCloseButton,
-		Pagination
+		Pagination,
 	},
 	inject: ['currentUser', 'userId', 'plan'],
 	data() {
@@ -116,14 +124,14 @@ export default {
 			emailIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			loading: false,
 			loadStatus: null,
-			
+
 			openModal: false,
 			editEmail: null,
 			saveEdit: null,
 			isSaved: false,
 			totalCount: 0,
 			currentPage: 1,
-			perPage: 3
+			perPage: 3,
 		};
 	},
 	mounted() {
@@ -173,10 +181,7 @@ export default {
 			return this.emailStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.emailIntent !== null;
 		},
 		filteredList() {
-			return this.emailTemplates.slice(
-				(this.currentPage - 1) * this.perPage,
-				this.currentPage * this.perPage
-			);
+			return this.emailTemplates.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
 		},
 	},
 	methods: {
@@ -293,5 +298,4 @@ export default {
 p {
 	min-height: 1em; /* Adjust as needed */
 }
-
 </style>
