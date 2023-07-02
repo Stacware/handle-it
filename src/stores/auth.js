@@ -156,7 +156,7 @@ export const useAuthStore = defineStore({
 				let user = Parse.User.current()
 
 				// Update the user's subscriptionPlan
-				user.set("subscriptionPlan", plan)
+				user.set("subscriptionPlan", plan.id)
 				user.save()
 				this.fetchCurrentUser()
 			})
