@@ -1,95 +1,78 @@
 <template>
 	<div v-if="currentUser">
-	<!-- Options Modal -->
-	<base-modal :show="openModal" :title="'Post Options'">
-		<div class="modal-body">
-			<div class="mb-3">
-				<dropdown-select 
-				:options="postStyleOpts" 
-				:title="'Post Style'" 
-				@model-change="postStyleSelection"></dropdown-select>
+		<!-- Options Modal -->
+		<base-modal :show="openModal" :title="'Post Options'">
+			<div class="modal-body">
+				<div class="mb-3">
+					<dropdown-select :options="postStyleOpts" :title="'Post Style'" @model-change="postStyleSelection"></dropdown-select>
+				</div>
+				<div class="mb-3">
+					<dropdown-select :options="postIntentOpts" :title="'Post Intent'" @model-change="postIntentSelection"></dropdown-select>
+				</div>
+				<div class="mb-3">
+					<dropdown-select :options="imageStyleOpts" :title="'Image Style'" @model-change="imageStyleSelection"></dropdown-select>
+				</div>
+				<div class="mb-3">
+					<div class="form-floating">
+						<input type="text" v-model="targetAudience" class="form-control" :class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" id="floatingInputValue" />
+						<label for="floatingInputValue">Target Audience</label>
+						<small class="text-muted">e.g. Small businesses, families, over 18, etc..</small>
+					</div>
+				</div>
 			</div>
-			<div class="mb-3">
-				<dropdown-select 
-				:options="postIntentOpts" 
-				:title="'Post Intent'" 
-				@model-change="postIntentSelection"></dropdown-select>
+			<div class="modal-footer d-flex justify-content-center w-100">
+				<div class="d-flex justify-content-between flex-wrap w-100 mb-2">
+					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" class="mb-2" />
+					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getPostTemplates()" :class="{ disabled: !validForm }" />
+				</div>
 			</div>
-			<div class="mb-3">
-				<dropdown-select 
-				:options="imageStyleOpts" 
-				:title="'Image Style'" 
-				@model-change="imageStyleSelection"></dropdown-select>
+		</base-modal>
+
+		<!-- Page Title -->
+		<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
+		<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
+
+		<div class="container">
+			<div class="row justify-content-center mt-4">
+				<div class="col-12 col-lg-8">
+					<!-- Post Templates -->
+					<div class="w-100">
+						<div v-if="postTemplates" class="marketing-guide">
+							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
+								<h3>Post #{{ index + 1 }}</h3>
+								{{ template.content }}
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="mb-3">
-				<div class="form-floating">
-				<input type="text" v-model="targetAudience" 
-				class="form-control" 
-				:class="{ 'is-invalid': targetAudience === null || targetAudience.trim() === '' }" 
-				id="floatingInputValue" />
-				<label for="floatingInputValue">Target Audience</label>
-				<small class="text-muted">e.g. Small businesses, families, over 18, etc..</small>
+
+			<!-- Create/Upgrade Buttons -->
+			<div class="row justify-content-center mt-4">
+				<div class="col-12 col-lg-8">
+					<div class="d-grid gap-2">
+						<FlippyButton v-if="!loading && postCount < totalCount && $route.name !== 'dashboard'" @click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-3" />
+						<FlippyButton
+							v-if="!loading && postCount >= totalCount && $route.name !== 'dashboard'"
+							:disabled="true"
+							@click="null"
+							:title="'Upgrade Tier'"
+							class="mb-3"
+							:class="{ disabled: !validForm }" />
+					</div>
+				</div>
+			</div>
+
+			<div class="row justify-content-center mt-4">
+				<div class="col-12 col-lg-8">
+					<div>
+						<LoadingHand :loadStatus="loading" />
+					</div>
 				</div>
 			</div>
 		</div>
-		<div class="modal-footer d-flex justify-content-center w-100">
-			<div class="d-flex justify-content-between flex-wrap w-100 mb-2">
-				<FlippyButton 
-				:closeType="true" 
-				:title="'Close'" 
-				@click="openModal = false" 
-				class="mb-2"/>
-				<FlippyButton 
-				:disabled="!validForm" 
-				:title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getPostTemplates()" 
-				:class="{ disabled: !validForm }" />
-			</div>
-		</div>
-	</base-modal>
-
-	<!-- Page Title -->
-	<h1 class="text-center">{{ postTemplates ? 'Social Media Posts' : 'Create Social Media Posts' }}</h1>
-	<h5 class="text-center">You have used {{ postCount }}/{{ totalCount }} post templates.</h5>
-
-	<div class="container">
-		<div class="row justify-content-center mt-4">
-		<div class="col-12 col-lg-8">
-			<!-- Post Templates -->
-			<div class="w-100">
-			<div v-if="postTemplates" class="marketing-guide">
-				<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
-				<h3>Post #{{ index + 1 }}</h3>
-				{{ template.content }}
-				</div>
-			</div>
-			</div>
-		</div>
-		</div>
-
-		<!-- Create/Upgrade Buttons -->
-		<div class="row justify-content-center mt-4">
-		<div class="col-12 col-lg-8">
-			<div class="d-grid gap-2">
-			<FlippyButton v-if="!loading && postCount < totalCount && $route.name !== 'dashboard'" 
-			@click="openModal = true" :title="postCount === 0 ? 'Create' : 'More?'" class="mb-3" />
-			<FlippyButton v-if="!loading && postCount >= totalCount && $route.name !== 'dashboard'" 
-				:disabled="true" @click="null" :title="'Upgrade Tier'" class="mb-3" 
-				:class="{ disabled: !validForm }" />
-			</div>
-		</div>
-		</div>
-
-		<div class="row justify-content-center mt-4">
-		<div class="col-12 col-lg-8">
-			<div>
-			<LoadingHand :loadStatus="loading" />
-			</div>
-		</div>
-		</div>
-	</div>
 	</div>
 </template>
-
 
 <script>
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
@@ -113,9 +96,9 @@ export default {
 	components: {
 		LoadingHand,
 		FlippyButton,
-		Pagination
+		Pagination,
 	},
-	inject: ['currentUser', 'plan'],
+	inject: ['currentUser', 'plan', 'totalCount'],
 
 	data() {
 		return {
@@ -135,46 +118,45 @@ export default {
 			editPost: null,
 			saveEdit: null,
 			isSaved: false,
-			totalCount: 0,
 			currentPage: 1,
-			perPage: 3
+			perPage: 3,
 		};
 	},
 	mounted() {
 		this.saveEdit = debounce(this.saveEditImpl, 1500);
-		switch (this.plan.Name) {
-			case 'Admin':
-				this.totalCount = 100;
-				break;
-			case 'Starter':
-				this.totalCount = 5;
-				break;
-			case 'Business':
-				this.totalCount = 30;
-				break;
-			default:
-				this.totalCount = 1;
-		}
+		// switch (this.plan.Name) {
+		// 	case 'Admin':
+		// 		this.totalCount = 100;
+		// 		break;
+		// 	case 'Starter':
+		// 		this.totalCount = 5;
+		// 		break;
+		// 	case 'Business':
+		// 		this.totalCount = 30;
+		// 		break;
+		// 	default:
+		// 		this.totalCount = 1;
+		// }
 	},
 	watch: {
 		postTemplates(val) {
 			if (val) this.loading = false;
 		},
-		plan() {
-			switch (this.plan.Name) {
-				case 'Admin':
-					this.totalCount = 100;
-					break;
-				case 'Starter':
-					this.totalCount = 5;
-					break;
-				case 'Business':
-					this.totalCount = 30;
-					break;
-				default:
-					this.totalCount = 1;
-			}
-		},
+		// plan() {
+		// 	switch (this.plan.Name) {
+		// 		case 'Admin':
+		// 			this.totalCount = 100;
+		// 			break;
+		// 		case 'Starter':
+		// 			this.totalCount = 5;
+		// 			break;
+		// 		case 'Business':
+		// 			this.totalCount = 30;
+		// 			break;
+		// 		default:
+		// 			this.totalCount = 1;
+		// 	}
+		// },
 	},
 	computed: {
 		postTemplates() {
@@ -187,10 +169,7 @@ export default {
 			return this.postStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.postIntent !== null && this.imageStyle !== null;
 		},
 		filteredList() {
-			return this.postTemplates.slice(
-				(this.currentPage - 1) * this.perPage,
-				this.currentPage * this.perPage
-			);
+			return this.postTemplates.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
 		},
 	},
 	methods: {

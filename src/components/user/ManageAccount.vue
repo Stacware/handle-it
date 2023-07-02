@@ -77,6 +77,7 @@ export default {
 	width: 75%;
 	background: linear-gradient(#212529, #212529) padding-box, linear-gradient(145deg, transparent 35%, #ac1cff, #0d6fed) border-box;
 	border: 2px solid transparent;
+	border-radius: 16px;
 	padding: 32px 24px;
 	font-size: 16px;
 	font-family: inherit;
@@ -90,7 +91,6 @@ export default {
 .form-container:hover {
 	transform: scale(1.01);
 	box-shadow: rgba(183, 117, 218, 0.25) 0px 50px 100px -20px, rgba(103, 17, 223, 0.3) 0px 30px 60px -30px, rgba(26, 118, 209, 0.204) 0px -2px 6px 0px inset;
-
 }
 .form-container .form {
 	display: flex;

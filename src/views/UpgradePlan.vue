@@ -1,17 +1,18 @@
 <template>
 	<div v-if="authStore.allPlans.length !== 0 && planChoice === null" class="cards-container container" :class="[lgScreen ? 'lg-container' : 'reg-container']">
-		<UpgradeCard :plans="planFree[0]" class="m-auto" />
+		<UpgradeCard :plans="planFree[0]" class="m-auto" @click="planChoice = 'Free'" />
 		<UpgradeCard :plans="planStarter[0]" class="m-auto" @click="planChoice = 'Starter'" />
-		<UpgradeCard :plans="planBusiness[0]" class="m-auto" />
+		<UpgradeCard :plans="planBusiness[0]" class="m-auto" @click="planChoice = 'Business'" />
 	</div>
-	<div v-if="planChoice === 'Starter'">
-		<StarterPayment />
+	<div class="cards-container" v-if="planChoice === 'Starter'">
+		<StarterPayment @paymentMethodCreated="createSubscription" />
 	</div>
 </template>
 
 <script>
 import UpgradeCard from '@/components/ui/UpgradeCard.vue';
 import { useAuthStore } from '@/stores/auth.js';
+import { useStripeStore } from '@/stores/stripe.js';
 import StarterPayment from '../components/upgrade/StarterPayment.vue';
 export default {
 	components: {
@@ -22,6 +23,7 @@ export default {
 	data() {
 		return {
 			authStore: useAuthStore(),
+			stripeStore: useStripeStore(),
 			planChoice: null,
 		};
 	},
@@ -37,6 +39,21 @@ export default {
 		},
 	},
 	methods: {
+		async createSubscription(paymentMethodId) {
+			this.stripeStore.makePayment(paymentMethodId);
+			// const user = Parse.User.current();
+			// await Parse.Cloud.run('addNewPaymentMethod', {
+			// 	userId: user.id,
+			// 	customerId: user.get('customerId'),
+			// 	paymentMethodId: paymentMethodId,
+			// });
+
+			// const subscription = await Parse.Cloud.run('createStarterSubscription', {
+			// 	userId: user.id,
+			// });
+			// console.log(subscription);
+			// handle the subscription result...
+		},
 		goTo(plan) {},
 	},
 };

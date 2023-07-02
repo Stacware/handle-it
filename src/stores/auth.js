@@ -118,17 +118,19 @@ export const useAuthStore = defineStore({
 			const user = new Parse.User()
 			let SubscriptionPlan = Parse.Object.extend("SubscriptionPlan")
 			let query = new Parse.Query(SubscriptionPlan)
-			query.equalTo("Name", "Free") // or "Tier 1", "Tier 2", etc.
-			const plan = query.first()
-			user.set("username", email)
-			user.set("password", password)
-			user.set("email", email)
-			user.set('industry', industry)
-			user.set('companyName', companyName)
-			user.set('subscriptionPlan', plan)
-			try {
-				await user.signUp()
 
+			try {
+				let plan = await query.get('G9cvl6uiiP') // Free plan
+				user.set('subscriptionPlan', plan)
+
+				user.set("username", email)
+				user.set("password", password)
+				user.set("email", email)
+				user.set('industry', industry)
+				user.set('companyName', companyName)
+
+				await user.signUp()
+				await Parse.Cloud.run('createStripeCustomer', { userId: user.id, email: email })
 			} catch (error) {
 				this.signUpError = error
 			} finally {

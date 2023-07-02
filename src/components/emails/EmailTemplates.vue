@@ -110,7 +110,7 @@ export default {
 		ShineCloseButton,
 		Pagination,
 	},
-	inject: ['currentUser', 'userId', 'plan'],
+	inject: ['currentUser', 'userId', 'plan', 'totalCount'],
 	data() {
 		return {
 			requestsStore: useGptRequestsStore(),
@@ -129,46 +129,45 @@ export default {
 			editEmail: null,
 			saveEdit: null,
 			isSaved: false,
-			totalCount: 0,
 			currentPage: 1,
 			perPage: 3,
 		};
 	},
 	mounted() {
 		this.saveEdit = debounce(this.saveEditImpl, 1500);
-		switch (this.plan.Name) {
-			case 'Admin':
-				this.totalCount = 100;
-				break;
-			case 'Starter':
-				this.totalCount = 5;
-				break;
-			case 'Business':
-				this.totalCount = 30;
-				break;
-			default:
-				this.totalCount = 1;
-		}
+		// switch (this.plan.Name) {
+		// 	case 'Admin':
+		// 		this.totalCount = 100;
+		// 		break;
+		// 	case 'Starter':
+		// 		this.totalCount = 5;
+		// 		break;
+		// 	case 'Business':
+		// 		this.totalCount = 30;
+		// 		break;
+		// 	default:
+		// 		this.totalCount = 1;
+		// }
 	},
 	watch: {
 		emailTemplates(val) {
 			if (val) this.loading = false;
 		},
-		plan() {
-			switch (this.plan.Name) {
-				case 'Admin':
-					this.totalCount = 100;
-					break;
-				case 'Starter':
-					this.totalCount = 5;
-					break;
-				case 'Business':
-					this.totalCount = 30;
-					break;
-				default:
-					this.totalCount = 1;
-			}
-		},
+		// plan() {
+		// 	switch (this.plan.Name) {
+		// 		case 'Admin':
+		// 			this.totalCount = 100;
+		// 			break;
+		// 		case 'Starter':
+		// 			this.totalCount = 5;
+		// 			break;
+		// 		case 'Business':
+		// 			this.totalCount = 30;
+		// 			break;
+		// 		default:
+		// 			this.totalCount = 1;
+		// 	}
+		// },
 	},
 	computed: {
 		emailTemplates() {

@@ -30,6 +30,7 @@ export default {
 			authStore: useAuthStore(),
 			upgradeHover: false,
 			lgScreen: useMediaQuery('(min-width: 1024px)'),
+			totalCount: 1,
 		};
 	},
 	provide() {
@@ -38,10 +39,41 @@ export default {
 			currentUser: computed(() => this.currentUser),
 			plan: computed(() => this.subscriptionPlan),
 			lgScreen: computed(() => this.lgScreen),
+			totalCount: computed(() => this.totalCount),
 		};
 	},
 	created() {
 		this.authStore.getPlans();
+		// switch (this.plan.Name) {
+		// 	case 'Admin':
+		// 		this.totalCount = 100;
+		// 		break;
+		// 	case 'Starter':
+		// 		this.totalCount = 5;
+		// 		break;
+		// 	case 'Business':
+		// 		this.totalCount = 30;
+		// 		break;
+		// 	default:
+		// 		this.totalCount = 1;
+		// }
+	},
+	watch: {
+		plan() {
+			switch (this.plan.Name) {
+				case 'Admin':
+					this.totalCount = 100;
+					break;
+				case 'Starter':
+					this.totalCount = 5;
+					break;
+				case 'Business':
+					this.totalCount = 30;
+					break;
+				default:
+					this.totalCount = 1;
+			}
+		},
 	},
 	computed: {
 		userId() {
