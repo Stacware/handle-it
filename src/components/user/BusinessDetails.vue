@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<h4 class="text-center">Business Details</h4>
-		<div class="d-flex justify-content-center">
+		<div v-if="currentUser" class="d-flex justify-content-center">
 			<div class="form-container">
 				<div>{{ currentUser.companyName }}</div>
 				<form class="form" @submit.prevent="updateBusinessDetails">
@@ -64,6 +64,9 @@ export default {
 </script>
 
 <style scoped>
+.container {
+	margin-top: 1vh;
+}
 .form-button-flippy {
 	z-index: 1000;
 }
@@ -74,7 +77,7 @@ export default {
 
 .form-container {
 	width: 75%;
-	background: linear-gradient(#212529, #212529) padding-box, linear-gradient(240deg, transparent 35%, #0d6fed , #ac1cff) border-box;
+	background: linear-gradient(#212529, #212529) padding-box, linear-gradient(240deg, transparent 35%, #0d6fed, #ac1cff) border-box;
 	border: 2px solid transparent;
 	padding: 32px 24px;
 	font-size: 16px;
@@ -90,7 +93,6 @@ export default {
 .form-container:hover {
 	transform: scale(1.01);
 	box-shadow: rgba(183, 117, 218, 0.25) 0px 50px 100px -20px, rgba(103, 17, 223, 0.3) 0px 30px 60px -30px, rgba(26, 118, 209, 0.204) 0px -2px 6px 0px inset;
-
 }
 
 .form-container .form {

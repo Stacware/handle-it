@@ -21,7 +21,7 @@
 					<div class="carousel-item h-100">
 						<div class="card h-100 shadow-lg">
 							<div class="card-body">
-								<Payments />
+								<PaymentDetails />
 							</div>
 						</div>
 					</div>
@@ -40,14 +40,14 @@
 </template>
 <script>
 import { useAuthStore } from '@/stores/auth.js';
-import Payments from '../components/user/Payments.vue';
+import PaymentDetails from '../components/user/PaymentDetails.vue';
 import ManageAccount from '@/components/user/ManageAccount.vue';
 import BusinessDetails from '@/components/user/BusinessDetails.vue';
 export default {
 	components: {
 		ManageAccount,
 		BusinessDetails,
-		Payments
+		PaymentDetails,
 	},
 	inject: ['currentUser'],
 	data() {

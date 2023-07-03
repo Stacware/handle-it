@@ -81,11 +81,11 @@ h2 {
 
 .card-class::before {
 	content: '';
-	top: -200px;
-	left: 250px;
+	top: -470px;
+	left: 420px;
 	position: absolute;
-	width: 50%;
-	height: 160%;
+	width: 25%;
+	height: 300%;
 	background-image: linear-gradient(360deg, #0d6fed, #ac1cff);
 	animation: rotBGimg 5s linear infinite;
 	transition: all 0.2s linear;

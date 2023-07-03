@@ -19,7 +19,7 @@
 			</div>
 			<div class="modal-footer d-flex justify-content-center w-100">
 				<div class="d-flex justify-content-between flex-wrap w-100 mb-2">
-					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" class="mb-2"/>
+					<FlippyButton :closeType="true" :title="'Close'" @click="openModal = false" class="mb-2" />
 					<FlippyButton :disabled="!validForm" :title="!validForm ? 'Not Yet' : 'Create'" @click="!validForm ? null : getEmailTemplates()" :class="{ disabled: !validForm }" />
 				</div>
 			</div>
@@ -28,78 +28,45 @@
 		<!-- Page Title -->
 		<h1 class="text-center">{{ emailTemplates ? 'Email Templates' : 'Create Email Templates' }}</h1>
 		<h5 class="text-center">You have used {{ emailCount }}/{{ totalCount }} email templates.</h5>
-		<div class="w-100 d-flex justify-content-center mt-4">
-			<pagination
-			:perPage="perPage"
-			:totalItems="this.emailTemplates.length"
-			@paginatedItems="displayPages"/>
-		</div>
+
 		<div class="container">
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<!-- Email Templates -->
 					<div class="w-100">
-
-						<!-- <div v-if="emailTemplates" class="marketing-guide container mb-5">
+						<div v-if="emailTemplates" class="marketing-guide">
 							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
-								<div class="d-flex justify-content-between align-items-center mb-2">
-									<h3 class="mb-0">Email #{{ index + 1 }}</h3>
-									<div class="d-flex justify-content-end align-items-center">
-										<p v-show="isSaved && editEmail === index" class="text-success mb-0 me-2">SAVED!</p>
-										<ShineButton v-if="editEmail !== index && $route.name !== 'dashboard'" :title="'Edit'" @click="editEmail = index" />
-										<ShineCloseButton v-else-if="editEmail === index && $route.name !== 'dashboard'" :title="'Close'" @click="editEmail = null" />
+								<h3>Email #{{ index + 1 }}</h3>
+								<div v-if="editEmail === index">
+									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
+									<!-- <ShineButton :title="'Save'" @click="saveEmail(index)" /> -->
+									<div class="d-flex">
+										<ShineCloseButton :title="'Cancel'" @click="editEmail = null" />
+										<h6 v-show="isSaved" class="text-success mb-0 ms-2 align-self-center">SAVED!</h6>
 									</div>
-								</div>
-								<QuillEditor v-if="editEmail === index" theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
-								<div v-else>{{ template.content }}</div>
-						</div>
-					</div> -->
-
-						<div v-if="emailTemplates" class="marketing-guide container mb-5">
-							<div v-for="(template, index) in emailTemplates" :key="index" class="mt-4">
-								<div class="d-flex justify-content-between align-items-center mb-2">
-									<h3 class="mb-0">Email #{{ index + 1 }}</h3>
-									<div class="d-flex justify-content-end align-items-center">
-										<p v-show="isSaved && editEmail === index" class="text-success mb-0 me-2">SAVED!</p>
-										<ShineButton v-if="editEmail !== index && $route.name !== 'dashboard'" :title="'Edit'" @click="editEmail = index" />
-										<ShineCloseButton v-else-if="editEmail === index && $route.name !== 'dashboard'" :title="'Close'" @click="editEmail = null" />
-									</div>
-								</div>
-								<QuillEditor v-if="editEmail === index" theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
-								<div v-else>{{ template.content }}</div>
-							</div>
-						</div>
-
-
-
-						<!-- <div v-if="emailTemplates" class="marketing-guide">
-							<div v-for="(template, index) in filteredList" :key="(currentPage - 1) * perPage + index + 1" class="mt-4">
-								<h3>Email #{{ (currentPage - 1) * perPage + index + 1 }}</h3>
-								<div v-if="editEmail === (currentPage - 1) * perPage + index">
-									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" v-model="template.content" />
-									<ShineButton :title="'Save'" @click="saveEmail(index)" />
-									<ShineCloseButton :title="'Cancel'" @click="cancelEditEmail" />
 								</div>
 								<div v-else>
 									{{ template.content }}
-									<ShineButton :title="'Edit'" @click="editEmail((currentPage - 1) * perPage + index + 1)" />
+									<ShineButton :title="'Edit'" @click="editEmail = index" />
 								</div>
 							</div>
-						</div> -->
+						</div>
 					</div>
 				</div>
 			</div>
 
-
-
-
-						
 			<!-- Create/Upgrade Buttons -->
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<div class="d-grid gap-2">
 						<FlippyButton v-if="!loading && emailCount < totalCount && $route.name !== 'dashboard'" @click="openModal = true" :title="emailCount === 0 ? 'Create' : 'More?'" class="mb-3" />
-						<FlippyButton v-if="!loading && emailCount >= totalCount && $route.name !== 'dashboard'" :disabled="true" @click="null" :title="'Upgrade Tier'" class="mb-3" :class="{ disabled: !validForm }" />
+						<FlippyButton
+							v-if="!loading && emailCount >= totalCount && $route.name !== 'dashboard'"
+							:disabled="true"
+							@click="null"
+							:title="'Upgrade Tier'"
+							class="mb-3"
+							:class="{ disabled: !validForm }" />
 					</div>
 				</div>
 			</div>
@@ -114,7 +81,6 @@
 		</div>
 	</div>
 </template>
-
 
 <script>
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
@@ -142,9 +108,9 @@ export default {
 		FlippyButton,
 		ShineButton,
 		ShineCloseButton,
-		Pagination
+		Pagination,
 	},
-	inject: ['currentUser', 'userId', 'plan'],
+	inject: ['currentUser', 'userId', 'plan', 'totalCount'],
 	data() {
 		return {
 			requestsStore: useGptRequestsStore(),
@@ -158,51 +124,50 @@ export default {
 			emailIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			loading: false,
 			loadStatus: null,
-			
+
 			openModal: false,
 			editEmail: null,
 			saveEdit: null,
 			isSaved: false,
-			totalCount: 0,
 			currentPage: 1,
-			perPage: 3
+			perPage: 3,
 		};
 	},
 	mounted() {
 		this.saveEdit = debounce(this.saveEditImpl, 1500);
-		switch (this.plan.Name) {
-			case 'Admin':
-				this.totalCount = 100;
-				break;
-			case 'Starter':
-				this.totalCount = 5;
-				break;
-			case 'Business':
-				this.totalCount = 30;
-				break;
-			default:
-				this.totalCount = 1;
-		}
+		// switch (this.plan.Name) {
+		// 	case 'Admin':
+		// 		this.totalCount = 100;
+		// 		break;
+		// 	case 'Starter':
+		// 		this.totalCount = 5;
+		// 		break;
+		// 	case 'Business':
+		// 		this.totalCount = 30;
+		// 		break;
+		// 	default:
+		// 		this.totalCount = 1;
+		// }
 	},
 	watch: {
 		emailTemplates(val) {
 			if (val) this.loading = false;
 		},
-		plan() {
-			switch (this.plan.Name) {
-				case 'Admin':
-					this.totalCount = 100;
-					break;
-				case 'Starter':
-					this.totalCount = 5;
-					break;
-				case 'Business':
-					this.totalCount = 30;
-					break;
-				default:
-					this.totalCount = 1;
-			}
-		},
+		// plan() {
+		// 	switch (this.plan.Name) {
+		// 		case 'Admin':
+		// 			this.totalCount = 100;
+		// 			break;
+		// 		case 'Starter':
+		// 			this.totalCount = 5;
+		// 			break;
+		// 		case 'Business':
+		// 			this.totalCount = 30;
+		// 			break;
+		// 		default:
+		// 			this.totalCount = 1;
+		// 	}
+		// },
 	},
 	computed: {
 		emailTemplates() {
@@ -215,9 +180,7 @@ export default {
 			return this.emailStyle !== null && this.targetAudience !== null && this.targetAudience.trim() !== '' && this.emailIntent !== null;
 		},
 		filteredList() {
-			const startIndex = (this.currentPage - 1) * this.perPage;
-			const endIndex = this.currentPage * this.perPage;
-			return this.emailTemplates.slice(startIndex, endIndex);
+			return this.emailTemplates.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
 		},
 	},
 	methods: {
@@ -334,5 +297,4 @@ export default {
 p {
 	min-height: 1em; /* Adjust as needed */
 }
-
 </style>

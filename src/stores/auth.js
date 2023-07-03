@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import Parse from 'parse/dist/parse.min.js'
 import { useGptRequestsStore } from './gptRequests.js'
 import { useWebsiteStore } from './website.js'
+import { useStripeStore } from './stripe.js'
 
 export const useAuthStore = defineStore({
 	id: 'auth',
@@ -97,15 +98,16 @@ export const useAuthStore = defineStore({
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)
 				let plan = user.get("subscriptionPlan")
-				if (plan) {
-					try {
-						await plan.fetch()
-						console.log(plan)
-						this.subscriptionPlan = plan.get('Name')
-					} catch (err) {
-						console.log(err)
-					}
-				}
+				this.subscriptionPlan = plan.attributes
+				// if (plan) {
+				// 	try {
+				// 		await plan.fetch()
+				// 		console.log(plan)
+				// 		this.subscriptionPlan = plan.get('Name')
+				// 	} catch (err) {
+				// 		console.log(err)
+				// 	}
+				// }
 				this.userLoading = false
 			} catch (error) {
 				this.logInError = error
@@ -117,23 +119,19 @@ export const useAuthStore = defineStore({
 			const user = new Parse.User()
 			let SubscriptionPlan = Parse.Object.extend("SubscriptionPlan")
 			let query = new Parse.Query(SubscriptionPlan)
-			query.equalTo("name", "Free") // or "Tier 1", "Tier 2", etc.
-			query.first().then((plan) => {
-				// plan is the SubscriptionPlan object
-				console.log('Plan found', plan.id)
-			}, (error) => {
-				console.error('Failed to find plan', error)
-			})
-			user.set("username", email)
-			user.set("password", password)
-			user.set("email", email)
-			user.set('industry', industry)
-			user.set('companyName', companyName)
-			user.set('subscriptionPlan', plan)
 
 			try {
-				await user.signUp()
+				let plan = await query.get('G9cvl6uiiP') // Free plan
+				user.set('subscriptionPlan', plan)
 
+				user.set("username", email)
+				user.set("password", password)
+				user.set("email", email)
+				user.set('industry', industry)
+				user.set('companyName', companyName)
+
+				await user.signUp()
+				await Parse.Cloud.run('createStripeCustomer', { userId: user.id, email: email })
 			} catch (error) {
 				this.signUpError = error
 			} finally {
@@ -142,6 +140,7 @@ export const useAuthStore = defineStore({
 		},
 
 		logOut () {
+			const stripeStore = useStripeStore()
 			Parse.User.logOut()
 			localStorage.removeItem('currentUser')
 			localStorage.removeItem('userId')
@@ -149,6 +148,7 @@ export const useAuthStore = defineStore({
 			this.currentUser = null
 			this.sessionToken = null
 			this.userId = null
+			stripeStore.userPaymentInfo = null
 		},
 
 		upgradePlan (selectedPlan) {
@@ -161,7 +161,7 @@ export const useAuthStore = defineStore({
 				let user = Parse.User.current()
 
 				// Update the user's subscriptionPlan
-				user.set("subscriptionPlan", plan)
+				user.set("subscriptionPlan", plan.id)
 				user.save()
 				this.fetchCurrentUser()
 			})

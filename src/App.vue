@@ -16,6 +16,7 @@
 import { computed } from 'vue';
 import Navbar from '@/components/ui/Navbar.vue';
 import { useAuthStore } from '@/stores/auth.js';
+import { useStripeStore } from '@/stores/stripe.js';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
 import { useMediaQuery } from '@vueuse/core';
@@ -28,8 +29,10 @@ export default {
 	data() {
 		return {
 			authStore: useAuthStore(),
+			stripeStore: useStripeStore(),
 			upgradeHover: false,
 			lgScreen: useMediaQuery('(min-width: 1024px)'),
+			totalCount: 1,
 		};
 	},
 	provide() {
@@ -38,10 +41,44 @@ export default {
 			currentUser: computed(() => this.currentUser),
 			plan: computed(() => this.subscriptionPlan),
 			lgScreen: computed(() => this.lgScreen),
+			totalCount: computed(() => this.totalCount),
 		};
 	},
 	created() {
 		this.authStore.getPlans();
+		// switch (this.plan.Name) {
+		// 	case 'Admin':
+		// 		this.totalCount = 100;
+		// 		break;
+		// 	case 'Starter':
+		// 		this.totalCount = 5;
+		// 		break;
+		// 	case 'Business':
+		// 		this.totalCount = 30;
+		// 		break;
+		// 	default:
+		// 		this.totalCount = 1;
+		// }
+	},
+	watch: {
+		currentUser() {
+			this.stripeStore.getUserPaymentInfo();
+		},
+		subscriptionPlan() {
+			switch (this.subscriptionPlan.Name) {
+				case 'Admin':
+					this.totalCount = 100;
+					break;
+				case 'Starter':
+					this.totalCount = 5;
+					break;
+				case 'Business':
+					this.totalCount = 30;
+					break;
+				default:
+					this.totalCount = 1;
+			}
+		},
 	},
 	computed: {
 		userId() {
@@ -78,5 +115,6 @@ export default {
 	position: fixed;
 	bottom: 20px;
 	right: 20px;
+	z-index: 1000;
 }
 </style>
