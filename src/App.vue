@@ -59,8 +59,8 @@ export default {
 		// }
 	},
 	watch: {
-		plan() {
-			switch (this.plan.Name) {
+		subscriptionPlan() {
+			switch (this.subscriptionPlan.Name) {
 				case 'Admin':
 					this.totalCount = 100;
 					break;
