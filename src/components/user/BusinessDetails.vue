@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<h4 class="text-center">Business Details</h4>
-		<div class="d-flex justify-content-center">
+		<div v-if="currentUser" class="d-flex justify-content-center">
 			<div class="form-container">
 				<div>{{ currentUser.companyName }}</div>
 				<form class="form" @submit.prevent="updateBusinessDetails">

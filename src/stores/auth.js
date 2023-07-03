@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import Parse from 'parse/dist/parse.min.js'
 import { useGptRequestsStore } from './gptRequests.js'
 import { useWebsiteStore } from './website.js'
+import { useStripeStore } from './stripe.js'
 
 export const useAuthStore = defineStore({
 	id: 'auth',
@@ -139,6 +140,7 @@ export const useAuthStore = defineStore({
 		},
 
 		logOut () {
+			const stripeStore = useStripeStore()
 			Parse.User.logOut()
 			localStorage.removeItem('currentUser')
 			localStorage.removeItem('userId')
@@ -146,6 +148,7 @@ export const useAuthStore = defineStore({
 			this.currentUser = null
 			this.sessionToken = null
 			this.userId = null
+			stripeStore.userPaymentInfo = null
 		},
 
 		upgradePlan (selectedPlan) {

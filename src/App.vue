@@ -46,7 +46,6 @@ export default {
 	},
 	created() {
 		this.authStore.getPlans();
-		this.stripeStore.getUserPaymentInfo();
 		// switch (this.plan.Name) {
 		// 	case 'Admin':
 		// 		this.totalCount = 100;
@@ -62,6 +61,9 @@ export default {
 		// }
 	},
 	watch: {
+		currentUser() {
+			this.stripeStore.getUserPaymentInfo();
+		},
 		subscriptionPlan() {
 			switch (this.subscriptionPlan.Name) {
 				case 'Admin':

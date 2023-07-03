@@ -43,13 +43,14 @@ export const useStripeStore = defineStore({
 			const query = new Parse.Query(PaymentMethod)
 
 			query.equalTo('user', currentUser)
-
 			query.include('card')
 
 			query.first().then((paymentMethod) => {
-				// Access the card column value
-				const card = paymentMethod.get('card')
-				this.userPaymentInfo = card
+				if (paymentMethod) {
+					// Access the card column value
+					const card = paymentMethod.get('card')
+					this.userPaymentInfo = card
+				}
 				// console.log(card)
 			}).catch((error) => {
 				console.error('Error fetching PaymentMethod:', error)

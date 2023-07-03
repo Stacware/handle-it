@@ -1,9 +1,9 @@
 <template>
 	<div class="container">
 		<h4 class="text-center">Personal Info</h4>
-		<div class="d-flex justify-content-center">
+		<div v-if="currentUser" class="d-flex justify-content-center">
 			<div class="form-container">
-				<div class="">Hello{{ currentUser.firstName ? ', ' + currentUser.firstName + '!' : '!' }}</div>
+				<div class="">Hello{{ currentUser?.firstName ? ', ' + currentUser.firstName + '!' : '!' }}</div>
 				<form class="form" @submit.prevent="updateUserInfo">
 					<div class="form-group">
 						<label for="email">Email</label>
