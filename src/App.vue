@@ -16,6 +16,7 @@
 import { computed } from 'vue';
 import Navbar from '@/components/ui/Navbar.vue';
 import { useAuthStore } from '@/stores/auth.js';
+import { useStripeStore } from '@/stores/stripe.js';
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
 import { useMediaQuery } from '@vueuse/core';
@@ -28,6 +29,7 @@ export default {
 	data() {
 		return {
 			authStore: useAuthStore(),
+			stripeStore: useStripeStore(),
 			upgradeHover: false,
 			lgScreen: useMediaQuery('(min-width: 1024px)'),
 			totalCount: 1,
@@ -44,6 +46,7 @@ export default {
 	},
 	created() {
 		this.authStore.getPlans();
+		this.stripeStore.getUserPaymentInfo();
 		// switch (this.plan.Name) {
 		// 	case 'Admin':
 		// 		this.totalCount = 100;

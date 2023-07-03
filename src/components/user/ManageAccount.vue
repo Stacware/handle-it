@@ -65,6 +65,9 @@ export default {
 </script>
 
 <style scoped>
+.container {
+	margin-top: 1vh;
+}
 .form-button-flippy {
 	z-index: 1000;
 }
