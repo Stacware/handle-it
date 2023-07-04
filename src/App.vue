@@ -113,5 +113,6 @@ export default {
 	bottom: 20px;
 	right: 20px;
 	z-index: 1000;
+	width: 150px;
 }
 </style>
