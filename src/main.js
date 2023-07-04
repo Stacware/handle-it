@@ -17,6 +17,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import DropdownSelect from '@/components/ui/DropdownSelect.vue'
 
+
 import Parse from 'parse/dist/parse.min.js'
 
 Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
@@ -27,6 +28,7 @@ const app = createApp(App)
 app.component('base-modal', BaseModal)
 app.component('dropdown-select', DropdownSelect)
 app.component('QuillEditor', QuillEditor)
+
 app.use(createPinia())
 app.use(router)
 app.mixin({

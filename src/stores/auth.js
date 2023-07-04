@@ -131,7 +131,6 @@ export const useAuthStore = defineStore({
 				user.set('companyName', companyName)
 
 				await user.signUp()
-				await Parse.Cloud.run('createStripeCustomer', { userId: user.id, email: email })
 			} catch (error) {
 				this.signUpError = error
 			} finally {

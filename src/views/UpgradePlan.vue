@@ -1,11 +1,10 @@
 <template>
-	<div v-if="authStore.allPlans.length !== 0 && planChoice === null" class="cards-container container" :class="[lgScreen ? 'lg-container' : 'reg-container']">
-		<UpgradeCard :plans="planFree[0]" class="m-auto" @click="planChoice = 'Free'" />
-		<UpgradeCard :plans="planStarter[0]" class="m-auto" @click="planChoice = 'Starter'" />
-		<UpgradeCard :plans="planBusiness[0]" class="m-auto" @click="planChoice = 'Business'" />
-	</div>
-	<div class="cards-container" v-if="planChoice === 'Starter'">
-		<StarterPayment @paymentMethodCreated="createSubscription" />
+	<div>
+		<div v-if="authStore.allPlans.length !== 0 && planChoice === null" class="cards-container container" :class="[lgScreen ? 'lg-container' : 'reg-container']">
+			<UpgradeCard :plans="planFree[0]" class="m-auto" />
+			<UpgradeCard :plans="planStarter[0]" class="m-auto" />
+			<UpgradeCard :plans="planBusiness[0]" class="m-auto" />
+		</div>
 	</div>
 </template>
 
@@ -13,11 +12,11 @@
 import UpgradeCard from '@/components/ui/UpgradeCard.vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useStripeStore } from '@/stores/stripe.js';
-import StarterPayment from '../components/upgrade/StarterPayment.vue';
+// import StarterPayment from '../components/upgrade/StarterPayment.vue';
 export default {
 	components: {
 		UpgradeCard,
-		StarterPayment,
+		// StarterPayment,
 	},
 	inject: ['plan', 'lgScreen'],
 	data() {
@@ -39,8 +38,8 @@ export default {
 		},
 	},
 	methods: {
-		async createSubscription(paymentMethodId) {
-			this.stripeStore.makePayment(paymentMethodId);
+		async createSubscription(payload) {
+			this.stripeStore.makePayment(payload.paymentMethodId, payload.plan);
 			// const user = Parse.User.current();
 			// await Parse.Cloud.run('addNewPaymentMethod', {
 			// 	userId: user.id,

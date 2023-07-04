@@ -1,5 +1,5 @@
 <template>
-	<div class="upcard" :class="[lgScreen ? 'lg-container' : 'reg-container']">
+	<div class="upcard" :class="[lgScreen ? 'lg-container' : 'reg-container']" @click="plan.Name !== plans.Name && plans.Name !== 'Free' ? checkout() : null">
 		<span>
 			<div class="label">{{ plans.Name }}</div>
 		</span>
@@ -16,12 +16,20 @@
 				<i v-if="icon === 'Business'" class="bi bi-buildings-fill h3"></i>
 				<i v-if="icon === 'Free'" class="bi bi-piggy-bank-fill h3"></i>
 			</div> -->
+			<!-- <div class="checkout">
+				<button v-if="plan.Name !== plans.Name && plans.Name !== 'Free'" @click="checkout">Upgrade</button>
+				<button disabled v-if="plan.Name === plans.Name && plans.Name !== 'Free'">Current Plan</button>
+				<button v-if="plans.Name === 'Free' && plan.Name !== plans.Name">Downgrade</button>
+			</div> -->
 		</div>
 		<div class="shadow"></div>
 	</div>
 </template>
 
 <script>
+// import Parse from 'parse';
+import { useStripeStore } from '@/stores/stripe.js';
+
 export default {
 	props: {
 		plans: {
@@ -29,11 +37,41 @@ export default {
 			required: true,
 		},
 	},
-	inject: ['plan', 'lgScreen'],
+	inject: ['plan', 'lgScreen', 'currentUser', 'userId'],
+	data() {
+		return {
+			stripeStore: useStripeStore(),
+		};
+	},
+	methods: {
+		async checkout() {
+			console.log('checkout');
+			const payload = {
+				plan: this.plans.Name,
+				email: this.currentUser.email,
+				userId: this.userId,
+			};
+			this.stripeStore.checkoutUser(payload);
+			// const stripe = window.Stripe('pk_test_51NPIe1HNcBL4SbOJET7arjnDduQ0sWwYeBRSfm2dSK46gkWrJxbK71F105xkAVMa9Bka26HDcKKb1IZu0JUF6mOF00fMlOzKd1');
+
+			// // Fetch checkout session
+			// const session = await Parse.Cloud.run('createCheckoutSession', { plan: this.plans.Name, email: this.currentUser.email });
+
+			// // Redirect to checkout
+			// const result = await stripe.redirectToCheckout({ sessionId: session.sessionId });
+
+			// if (result.error) {
+			// 	console.error(result.error.message);
+			// }
+		},
+	},
 };
 </script>
 
 <style scoped>
+.checkout {
+	z-index: 5000;
+}
 .upcard {
 	position: relative;
 	border: 4px solid rgba(255, 255, 255, 0.3);
@@ -87,7 +125,7 @@ export default {
 }
 
 .upcard:hover .shadow {
-	animation: rotate 3s linear infinite;
+	/* animation: rotate 3s linear infinite; */
 }
 
 .upcard span {

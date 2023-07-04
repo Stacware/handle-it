@@ -15,46 +15,20 @@ export const useStripeStore = defineStore({
 	},
 
 	actions: {
-		async makePayment (paymentMethodId) {
-			const authStore = useAuthStore()
-			const user = Parse.User.current()
-			if (!user.get('customerId')) {
-				console.error('User does not have a Stripe customer ID')
-				return
+
+		async checkoutUser (payload) {
+			console.log('store')
+			const stripe = window.Stripe('pk_test_51NPIe1HNcBL4SbOJET7arjnDduQ0sWwYeBRSfm2dSK46gkWrJxbK71F105xkAVMa9Bka26HDcKKb1IZu0JUF6mOF00fMlOzKd1')
+
+			// Fetch checkout session
+			const session = await Parse.Cloud.run('createCheckoutSession', { plan: payload.Name, email: payload.email, userId: payload.userId })
+
+			// Redirect to checkout
+			const result = await stripe.redirectToCheckout({ sessionId: session.sessionId })
+
+			if (result.error) {
+				console.error(result.error.message)
 			}
-			await Parse.Cloud.run('addNewPaymentMethod', {
-				userId: user.id,
-				customerId: user.get('customerId'),
-				paymentMethodId: paymentMethodId,
-			})
-
-			const subscription = await Parse.Cloud.run('createStarterSubscription', {
-				userId: user.id,
-			})
-			console.log(subscription)
-			if (subscription.status === 'active' || subscription.status === 'incomplete') {
-				authStore.fetchCurrentUser()
-			}
-		},
-		getUserPaymentInfo () {
-			const currentUser = Parse.User.current()
-
-			const PaymentMethod = Parse.Object.extend('PaymentMethod')
-			const query = new Parse.Query(PaymentMethod)
-
-			query.equalTo('user', currentUser)
-			query.include('card')
-
-			query.first().then((paymentMethod) => {
-				if (paymentMethod) {
-					// Access the card column value
-					const card = paymentMethod.get('card')
-					this.userPaymentInfo = card
-				}
-				// console.log(card)
-			}).catch((error) => {
-				console.error('Error fetching PaymentMethod:', error)
-			})
 		}
 	}
 })

@@ -61,9 +61,6 @@ export default {
 		// }
 	},
 	watch: {
-		currentUser() {
-			this.stripeStore.getUserPaymentInfo();
-		},
 		subscriptionPlan() {
 			switch (this.subscriptionPlan.Name) {
 				case 'Admin':

@@ -47,7 +47,7 @@ export default {
 				console.error(error.message);
 			} else {
 				// Emit the paymentMethod id to the parent component
-				this.$emit('paymentMethodCreated', paymentMethod.id);
+				this.$emit('paymentMethodCreated', { paymentMethodId: paymentMethod.id, plan: 'Starter' });
 			}
 		},
 	},
