@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<h4 class="text-center">Payment Info</h4>
-		<div v-if="card" class="cc-card-container d-flex justify-content-center">
+		<h4 v-if="plan.Name !== 'Free'" class="text-center">Payment Info</h4>
+		<!-- <div v-if="card" class="cc-card-container d-flex justify-content-center">
 			<div class="flip-card">
 				<div class="flip-card-inner">
 					<div class="flip-card-front">
@@ -107,22 +107,32 @@
 		</div>
 		<div v-else class="cc-card-container d-flex justify-content-center">
 			<h4>You dont have any payment info...</h4>
+		</div> -->
+		<div v-if="plan.Name !== 'Free'" class="text-center">
+			<button @click="createPortalSession">Manage Subscription</button>
+		</div>
+		<div v-else class="text-center">
+			<h5>Free Plan</h5>
+			<p>No payment info</p>
 		</div>
 	</div>
 </template>
 
 <script>
 import { useStripeStore } from '@/stores/stripe.js';
+import Parse from 'parse/dist/parse.min.js';
 
 export default {
+	inject: ['userId', 'plan'],
 	data() {
 		return {
 			stripeStore: useStripeStore(),
 		};
 	},
-	computed: {
-		card() {
-			return this.stripeStore.userPaymentInfo;
+	methods: {
+		async createPortalSession() {
+			const session = await Parse.Cloud.run('createPortalSession', { userId: this.userId });
+			window.location.href = session.url;
 		},
 	},
 };

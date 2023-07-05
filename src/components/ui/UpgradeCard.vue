@@ -1,5 +1,5 @@
 <template>
-	<div class="upcard" :class="[lgScreen ? 'lg-container' : 'reg-container']" @click="plan.Name !== plans.Name && plans.Name !== 'Free' ? checkout() : null">
+	<div class="upcard" :class="[lgScreen ? 'lg-container' : 'reg-container']" @click="plan.Name !== plans.Name && plans.Name !== 'Free' ? checkout(plans.Name) : null">
 		<span>
 			<div class="label">{{ plans.Name }}</div>
 		</span>
@@ -44,25 +44,16 @@ export default {
 		};
 	},
 	methods: {
-		async checkout() {
-			console.log('checkout');
+		async checkout(plan) {
 			const payload = {
-				plan: this.plans.Name,
 				email: this.currentUser.email,
 				userId: this.userId,
 			};
-			this.stripeStore.checkoutUser(payload);
-			// const stripe = window.Stripe('pk_test_51NPIe1HNcBL4SbOJET7arjnDduQ0sWwYeBRSfm2dSK46gkWrJxbK71F105xkAVMa9Bka26HDcKKb1IZu0JUF6mOF00fMlOzKd1');
-
-			// // Fetch checkout session
-			// const session = await Parse.Cloud.run('createCheckoutSession', { plan: this.plans.Name, email: this.currentUser.email });
-
-			// // Redirect to checkout
-			// const result = await stripe.redirectToCheckout({ sessionId: session.sessionId });
-
-			// if (result.error) {
-			// 	console.error(result.error.message);
-			// }
+			if (plan === 'Business') {
+				this.stripeStore.checkoutBusinessUser(payload);
+			} else {
+				this.stripeStore.checkoutStarterUser(payload);
+			}
 		},
 	},
 };
