@@ -21,7 +21,7 @@ export const useStripeStore = defineStore({
 			const stripe = window.Stripe('pk_live_51NPIe1HNcBL4SbOJSsekLZkCve1qtzYjKJ2ZsvHsrjsZ9cejUUhU2cfoLmhJed7nC1IuKcm3GffL3eYSOEc9Gzes0030kq9aPT')
 
 			// Fetch checkout session
-			const session = await Parse.Cloud.run('createBusinessCheckoutSession', { email: payload.email, userId: payload.userId })
+			const session = await Parse.Cloud.run('createBusinessCheckout', { email: payload.email, userId: payload.userId })
 
 			// Redirect to checkout
 			const result = await stripe.redirectToCheckout({ sessionId: session.sessionId })
@@ -35,7 +35,7 @@ export const useStripeStore = defineStore({
 			const stripe = window.Stripe('pk_live_51NPIe1HNcBL4SbOJSsekLZkCve1qtzYjKJ2ZsvHsrjsZ9cejUUhU2cfoLmhJed7nC1IuKcm3GffL3eYSOEc9Gzes0030kq9aPT')
 
 			// Fetch checkout session
-			const session = await Parse.Cloud.run('createStarterCheckoutSession', { email: payload.email, userId: payload.userId })
+			const session = await Parse.Cloud.run('createStarterCheckout', { email: payload.email, userId: payload.userId })
 
 			// Redirect to checkout
 			const result = await stripe.redirectToCheckout({ sessionId: session.sessionId })
