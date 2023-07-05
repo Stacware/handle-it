@@ -18,7 +18,7 @@ export const useStripeStore = defineStore({
 
 		async checkoutBusinessUser (payload) {
 			console.log(payload)
-			const stripe = window.Stripe('pk_test_51NPIe1HNcBL4SbOJET7arjnDduQ0sWwYeBRSfm2dSK46gkWrJxbK71F105xkAVMa9Bka26HDcKKb1IZu0JUF6mOF00fMlOzKd1')
+			const stripe = window.Stripe('pk_live_51NPIe1HNcBL4SbOJSsekLZkCve1qtzYjKJ2ZsvHsrjsZ9cejUUhU2cfoLmhJed7nC1IuKcm3GffL3eYSOEc9Gzes0030kq9aPT')
 
 			// Fetch checkout session
 			const session = await Parse.Cloud.run('createBusinessCheckoutSession', { email: payload.email, userId: payload.userId })
@@ -32,7 +32,7 @@ export const useStripeStore = defineStore({
 		},
 		async checkoutStarterUser (payload) {
 			console.log(payload)
-			const stripe = window.Stripe('pk_test_51NPIe1HNcBL4SbOJET7arjnDduQ0sWwYeBRSfm2dSK46gkWrJxbK71F105xkAVMa9Bka26HDcKKb1IZu0JUF6mOF00fMlOzKd1')
+			const stripe = window.Stripe('pk_live_51NPIe1HNcBL4SbOJSsekLZkCve1qtzYjKJ2ZsvHsrjsZ9cejUUhU2cfoLmhJed7nC1IuKcm3GffL3eYSOEc9Gzes0030kq9aPT')
 
 			// Fetch checkout session
 			const session = await Parse.Cloud.run('createStarterCheckoutSession', { email: payload.email, userId: payload.userId })
