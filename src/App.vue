@@ -61,9 +61,6 @@ export default {
 		// }
 	},
 	watch: {
-		currentUser() {
-			this.stripeStore.getUserPaymentInfo();
-		},
 		subscriptionPlan() {
 			switch (this.subscriptionPlan.Name) {
 				case 'Admin':
@@ -116,5 +113,6 @@ export default {
 	bottom: 20px;
 	right: 20px;
 	z-index: 1000;
+	width: 150px;
 }
 </style>

@@ -23,7 +23,9 @@
 		"stripe": "^12.11.0",
 		"uuidv4": "^6.2.13",
 		"vue": "^3.3.2",
-		"vue-router": "^4.2.0"
+		"vue-router": "^4.2.0",
+		"vue-stripe-checkout": "^3.5.15",
+		"vue-stripe-elements-plus": "^1.0.3"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^4.2.3",
