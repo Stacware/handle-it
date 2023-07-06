@@ -52,7 +52,7 @@ export default {
 
 <style scoped>
 img {
-	height: 4vw;
+	height: clamp(60px, 4vw, 400px);
 	width: auto;
 	transition: ease-in-out 500ms;
 }

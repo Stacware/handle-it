@@ -1,6 +1,9 @@
 <template>
 	<div class="container py-5">
 		<div class="row justify-content-center">
+			<div class="d-flex justify-content-center">
+				<img src="@/assets/img/login-panda.png" alt="" class="panda">
+			</div>
 			<div class="col-12 col-md-8 col-lg-6">
 				<div class="card shadow-lg">
 					<div class="card-body p-5">
@@ -48,22 +51,24 @@
 							</div>
 							<FlippyButton :disabled="!isFormValid" :title="loading ? 'Logging in...' : !isFormValid ? 'Nope' : 'Login'" class="mt-5" :class="{ disabled: !isFormValid }" />
 						</form>
-						<div class="ear-l"></div>
-						<div class="ear-r"></div>
+						<!-- <div class="ear-l"></div>
+						<div class="ear-r"></div> -->
 						<div class="panda-face">
-							<div class="blush-l"></div>
-							<div class="blush-r"></div>
+							<!-- <div class="blush-l"></div>
+							<div class="blush-r"></div>-->
 							<div class="eye-l">
 								<div class="eyeball-l" :class="{ focused: usernameFocused }"></div>
 							</div>
 							<div class="eye-r">
 								<div class="eyeball-r" :class="{ focused: usernameFocused }"></div>
-							</div>
-							<div class="nose"></div>
-							<div class="mouth"></div>
+							</div> 
+							<!--<div class="nose"></div>
+							<div class="mouth"></div>-->
+						</div> 
+						<div>
+							<div class="hand-l" :class="{ focused: passwordFocused }"></div>
+							<div class="hand-r" :class="{ focused: passwordFocused }"></div>
 						</div>
-						<div class="hand-l" :class="{ focused: passwordFocused }"></div>
-						<div class="hand-r" :class="{ focused: passwordFocused }"></div>
 					</div>
 				</div>
 			</div>
@@ -161,20 +166,19 @@ export default {
 .hand-l.focused {
 	height: 6.56em;
 	top: -5.625rem;
-	left: 15.625rem;
+	left: 39%;
 	transform: rotate(-155deg);
 }
 .hand-r.focused {
 	height: 6.56em;
 	top: -5.625rem;
-	right: 15.625rem;
+	right: 39%;
 	transform: rotate(155deg);
 }
 .panda-face {
 	height: 7.5em;
 	width: 8.4em;
-	background-color: #ffffff;
-	border: 0.18em solid #052b64;
+	background-color: transparent;
 	border-radius: 7.5em 7.5em 5.62em 5.62em;
 	position: absolute;
 	top: -7.5rem;
@@ -303,10 +307,14 @@ export default {
 	top: -5px;
 }
 .hand-l {
-	left: 7.5em;
+	left: 17%;
 }
 .hand-r {
-	right: 7.5em;
+	right: 17%;
+}
+.panda {
+	height: 135px;
+	width: auto;
 }
 
 @media screen and (max-width: 500px) {
@@ -314,7 +322,33 @@ export default {
 		font-size: 14px;
 	}
 }
-
+@media (max-width: 1200px) {
+	.hand-l.focused {
+		left: 35%;
+	}
+	
+	.hand-r.focused {
+		right: 35%;
+	}
+}
+@media (max-width: 770px) {
+	.hand-l.focused {
+		left: 37%;
+	}
+	
+	.hand-r.focused {
+		right: 37%;
+	}
+}
+@media (max-width: 400px) {
+	.hand-l.focused {
+		left: 33%;
+	}
+	
+	.hand-r.focused {
+		right: 33%;
+	}
+}
 .disabled {
 	cursor: not-allowed;
 }

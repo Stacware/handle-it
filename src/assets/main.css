@@ -84,3 +84,8 @@
 	height: 70% !important;
 
 }
+@media screen and (max-width: 992px) {
+	.panda-container {
+		display: none;
+	}
+}
