@@ -33,10 +33,16 @@
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<!-- Email Templates -->
+					<div class="d-flex justify-content-center">
+						<pagination
+						:perPage="perPage"
+						:totalItems="this.emailTemplates.length"
+						@paginatedItems="displayPages"/>
+					</div>
 					<div class="w-100">
 						<div v-if="emailTemplates" class="marketing-guide">
 							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
-								<h3>Email #{{ index + 1 }}</h3>
+								<h3>Email #{{ index + 1+ (currentPage - 1) * perPage }}</h3>
 								<div v-if="editEmail === index">
 									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, index)" />
 									<!-- <ShineButton :title="'Save'" @click="saveEmail(index)" /> -->
@@ -186,9 +192,6 @@ export default {
 	methods: {
 		sleep(ms) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
-		},
-		displayList(pageNumber) {
-			this.currentPage = pageNumber;
 		},
 		async getEmailTemplates() {
 			this.loading = true;

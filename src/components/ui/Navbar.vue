@@ -4,7 +4,7 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="container-fluid">
-			<div>
+			<div class="panda-container">
 				<Panda :currentImageIndex="currentImageIndex"/>
 			</div>
 			<span class="navbar-brand mb-0 h1">market panda</span>

@@ -66,7 +66,7 @@
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<div>
-						<LoadingHand :loadStatus="loading" />
+						<LoadingHand :loadStatus="loading" :loaderContent="posts" />
 					</div>
 				</div>
 			</div>
@@ -114,6 +114,7 @@ export default {
 			imageStyle: null,
 			imageStyleOpts: ['Digital Art', 'Cartoon', 'Realistic', 'Futuristic', 'Robot', 'Anything'],
 			loading: false,
+			loaderContent: 'posts',
 			openModal: false,
 			editPost: null,
 			saveEdit: null,

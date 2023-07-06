@@ -13,11 +13,12 @@
 			</div>
 			<div class="mt-5 pb-5">
 				<transition name="slide-fade" mode="out-in">
-				<span class="load-status h4" :key="loadingMessage">{{ loadingMessage }}</span>
+				<span class="load-status h4" :key="loadingMessage">{{ loadingMessage }}...</span>
 				</transition>
 			</div>
-			<div >
+			<div class="d-flex justify-content-center align-items-end">
 				<Panda :currentImageIndex="currentImageIndex" @mouseover="random"/>
+				<span class="w-25">YO!</span>
 			</div>
 		</div>
 	</div>
@@ -26,6 +27,7 @@
 <script>
 import { usePandaStore } from '@/stores/panda.js';
 import Panda from './Panda.vue'
+import { loaderMessages } from '@/business/config.js'
 export default {
 	props: ['loadStatus'],
 	components: {
@@ -34,13 +36,7 @@ export default {
 	data() {
 		return {
 			pandaStore : usePandaStore(),
-			loadingMessages: [
-				'Creating marketing guide...',
-				'Creating strategy...',
-				'Gathering market analysis info...',
-				'Making it look nice...',
-				'A little magic...'
-			],
+			loadingMessages: loaderMessages.postLoaderMessages,
 			loadingMessageIndex: 0,
 			};
 	},

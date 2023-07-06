@@ -1,7 +1,7 @@
 <template>
 	<div class="container d-flex justify-content-center align-items-center" style="height: 100vh">
 		<transition name="flip" mode="out-in">
-			<Login v-if="showLoginForm" key="login-form" @switch="showLoginForm = !showLoginForm" />
+			<Login v-if="showLoginForm" key="login-form" @switch="showLoginForm = !showLoginForm" class="login"/>
 			<SignUp v-else key="signup-form" @switch="showLoginForm = !showLoginForm" />
 		</transition>
 	</div>
@@ -44,6 +44,9 @@ export default {
 </script>
 
 <style scoped>
+.login {
+	margin-top: -10%;
+}
 .flip-enter-active {
 	animation: flip-in 0.5s ease-in both;
 }
