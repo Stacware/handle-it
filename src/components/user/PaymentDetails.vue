@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h4 v-if="plan.Name !== 'Free'" class="text-center">Payment Info</h4>
+		<h4 v-if="currentUser.stripeId" class="text-center">Payment Info</h4>
 		<!-- <div v-if="card" class="cc-card-container d-flex justify-content-center">
 			<div class="flip-card">
 				<div class="flip-card-inner">
@@ -108,8 +108,8 @@
 		<div v-else class="cc-card-container d-flex justify-content-center">
 			<h4>You dont have any payment info...</h4>
 		</div> -->
-		<div v-if="plan.Name !== 'Free'" class="text-center">
-			<button @click="createPortalSession">Manage Subscription</button>
+		<div v-if="currentUser.stripeId" class="text-center">
+			<button class="btn btn-secondary" @click="createPortalSession">Manage Subscription</button>
 		</div>
 		<div v-else class="text-center">
 			<h5>Free Plan</h5>
@@ -123,7 +123,7 @@ import { useStripeStore } from '@/stores/stripe.js';
 import Parse from 'parse/dist/parse.min.js';
 
 export default {
-	inject: ['userId', 'plan'],
+	inject: ['userId', 'plan', 'currentUser'],
 	data() {
 		return {
 			stripeStore: useStripeStore(),
