@@ -129,8 +129,7 @@ export default {
 			emailStyleOpts: ['Normal', 'Funny', 'Professional', 'Serious', 'Funny and Professional', 'Out of the box'],
 			emailIntent: null,
 			emailIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
-			loading: false,
-			loadStatus: null,
+			loading: true,
 
 			openModal: false,
 			editEmail: null,
