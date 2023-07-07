@@ -17,7 +17,7 @@
 				</transition>
 			</div>
 			<div class="d-flex justify-content-center align-items-end">
-				<Panda :currentImageIndex="currentImageIndex" @mouseover="random"/>
+				<Panda :currentImageIndex="currentImageIndex" @mouseover="random" @mouseleave="random"/>
 				<span class="w-25">YO!</span>
 			</div>
 		</div>
@@ -29,22 +29,29 @@ import { usePandaStore } from '@/stores/panda.js';
 import Panda from './Panda.vue'
 import { loaderMessages } from '@/business/config.js'
 export default {
-	props: ['loadStatus'],
+	props: ['loadStatus', 'loaderContent'],
 	components: {
 		Panda
 	},
 	data() {
 		return {
 			pandaStore : usePandaStore(),
-			loadingMessages: loaderMessages.postLoaderMessages,
+			loadingMessages: '',
 			loadingMessageIndex: 0,
 			};
+	},
+	created() {
+		if (this.loaderContent === 0) {
+				this.loadingMessages == loaderMessages.postLoaderMessages
+				console.log(this.loadingMessages)
+			}
 	},
 	computed: {
 		loadingMessage() {
 		if (this.loadStatus === true) {
-			this.pandaStore.updateImageIndex(4)
-			return this.loadingMessages[this.loadingMessageIndex];
+			this.pandaStore.updateImageIndex(4)		
+
+			return this.loadingMessages;
 		} else if (this.loadStatus === false) {
 			return 'Viola!';
 		} else {
