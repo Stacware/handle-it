@@ -162,6 +162,8 @@ export const useAuthStore = defineStore({
 
 		logOut () {
 			const stripeStore = useStripeStore()
+			const requestsStore = useGptRequestsStore()
+
 			Parse.User.logOut()
 			localStorage.removeItem('currentUser')
 			localStorage.removeItem('userId')
@@ -169,6 +171,7 @@ export const useAuthStore = defineStore({
 			this.currentUser = null
 			this.sessionToken = null
 			this.userId = null
+			requestsStore.marketingPlan = null
 			stripeStore.userPaymentInfo = null
 		},
 
