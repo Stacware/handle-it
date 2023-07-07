@@ -9,9 +9,10 @@ export const useGptRequestsStore = defineStore({
 		postTemplates: null,
 		postCount: 0,
 		postConversation: [],
-		emailTemplates: null,
+		emailTemplates: [],
 		emailCount: 0,
 		emailConversation: [],
+		emailLoading: false,
 		taskStatus: null,
 	}),
 
@@ -47,12 +48,15 @@ export const useGptRequestsStore = defineStore({
 		},
 
 		async startEmailTemplates (payload) {
+			this.emailLoading = true
 			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
 				const response = await Parse.Cloud.run('getEmails', payload)
-				this.emailTemplates = response.emailTemplates
+				console.log(response)
+				this.emailTemplates.push(response.emailTemplate)
 				this.emailCount = response.emailCount
+				this.emailLoading = false
 			} catch (error) {
 				console.error(error)
 			}

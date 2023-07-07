@@ -4,6 +4,9 @@ import { useGptRequestsStore } from './gptRequests.js'
 import { useWebsiteStore } from './website.js'
 import { useStripeStore } from './stripe.js'
 
+const User = Parse.User
+const MarketingPlans = Parse.Object.extend("MarketingPlans")
+
 export const useAuthStore = defineStore({
 	id: 'auth',
 
@@ -38,37 +41,51 @@ export const useAuthStore = defineStore({
 	},
 
 	actions: {
+		assignUserDetails (user, marketingPlan, emailTemplates) {
+			const requestsStore = useGptRequestsStore()
+			const websiteStore = useWebsiteStore()
+
+			if (marketingPlan) {
+				requestsStore.marketingPlan = marketingPlan.get("plan")
+			}
+
+			if (emailTemplates.length) {
+				requestsStore.emailTemplates = emailTemplates.map(template => template.get('plan'))
+				requestsStore.emailCount = user.attributes.emailCount
+			}
+
+			if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
+			requestsStore.postCount = user.attributes.postCount
+			requestsStore.postConversation = user.attributes.postConversation
+
+			this.currentUser = user.attributes
+			websiteStore.websiteInfo = user.attributes.websiteInfo
+			this.userId = user.id
+			this.sessionToken = user.get('sessionToken')
+			let plan = user.get("subscriptionPlan")
+			this.subscriptionPlan = plan.attributes
+			this.userLoading = false
+		},
+
 		async fetchCurrentUser () {
-			// const storedUser = localStorage.getItem('currentUser')
 			const userId = localStorage.getItem('userId')
 			if (userId) {
-				// If user is found in local storage, parse and set it as the currentUser
 				try {
-					// this.currentUser = JSON.parse(storedUser)
 					this.userId = userId
-					const User = new Parse.User()
 					const query = new Parse.Query(User)
 					query.include("subscriptionPlan")
-					query.get(userId)
-						.then((user) => {
-							let plan = user.get("subscriptionPlan")
-							this.subscriptionPlan = plan.attributes
-							this.currentUser = user.attributes
-							const requestsStore = useGptRequestsStore()
-							const websiteStore = useWebsiteStore()
-							websiteStore.websiteInfo = user.attributes.websiteInfo
 
-							if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
+					const userPromise = query.get(userId)
+					const marketingPlanQuery = new Parse.Query(MarketingPlans)
+					marketingPlanQuery.equalTo("user", User.createWithoutData(userId))
+					const marketingPlanPromise = marketingPlanQuery.first()
 
-							if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
-							requestsStore.emailCount = user.attributes.emailCount
-							requestsStore.emailConversation = user.attributes.emailConversation
+					const emailTemplateQuery = new Parse.Query("EmailTemplates")
+					emailTemplateQuery.equalTo("user", User.createWithoutData(userId))
+					const emailTemplatesPromise = emailTemplateQuery.find()
 
-							if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
-							requestsStore.postCount = user.attributes.postCount
-							requestsStore.postConversation = user.attributes.postConversation
-							this.userLoading = false
-						})
+					const [user, marketingPlan, emailTemplates] = await Promise.all([userPromise, marketingPlanPromise, emailTemplatesPromise])
+					this.assignUserDetails(user, marketingPlan, emailTemplates)
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
 				}
@@ -76,39 +93,23 @@ export const useAuthStore = defineStore({
 				this.userLoading = false
 			}
 		},
+
 		async logIn (email, password) {
 			this.logInError = null
 			try {
-				const requestsStore = useGptRequestsStore()
-				const websiteStore = useWebsiteStore()
 				const user = await Parse.User.logIn(email, password)
-				if (user.attributes.marketingPlan !== undefined) requestsStore.marketingPlan = user.attributes.marketingPlan
-				if (user.attributes.emailTemplates !== undefined) requestsStore.emailTemplates = user.attributes.emailTemplates
-				requestsStore.emailCount = user.attributes.emailCount
-				requestsStore.emailConversation = user.attributes.emailConversation
+				const marketingPlanQuery = new Parse.Query(MarketingPlans)
+				marketingPlanQuery.equalTo("user", user)
+				const marketingPlan = await marketingPlanQuery.first()
 
-				if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
-				requestsStore.postCount = user.attributes.postCount
-				requestsStore.postConversation = user.attributes.postConversation
+				const emailTemplateQuery = new Parse.Query("EmailTemplates")
+				emailTemplateQuery.equalTo("user", user)
+				const emailTemplates = await emailTemplateQuery.find()
 
-				this.currentUser = user.attributes
-				websiteStore.websiteInfo = user.attributes.websiteInfo
-				this.userId = user.id
-				this.sessionToken = user.get('sessionToken')
+				this.assignUserDetails(user, marketingPlan, emailTemplates)
+
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)
-				let plan = user.get("subscriptionPlan")
-				this.subscriptionPlan = plan.attributes
-				// if (plan) {
-				// 	try {
-				// 		await plan.fetch()
-				// 		console.log(plan)
-				// 		this.subscriptionPlan = plan.get('Name')
-				// 	} catch (err) {
-				// 		console.log(err)
-				// 	}
-				// }
-				this.userLoading = false
 			} catch (error) {
 				this.logInError = error
 			}
@@ -116,7 +117,7 @@ export const useAuthStore = defineStore({
 
 		async signUp (email, password, industry, companyName) {
 			this.signUpError = null
-			const user = new Parse.User()
+			const user = new User()
 			let SubscriptionPlan = Parse.Object.extend("SubscriptionPlan")
 			let query = new Parse.Query(SubscriptionPlan)
 
@@ -131,10 +132,9 @@ export const useAuthStore = defineStore({
 				user.set('companyName', companyName)
 
 				await user.signUp()
+				this.logIn(email, password)
 			} catch (error) {
 				this.signUpError = error
-			} finally {
-				this.logIn(email, password)
 			}
 		},
 
@@ -154,17 +154,12 @@ export const useAuthStore = defineStore({
 			let SubscriptionPlan = Parse.Object.extend("SubscriptionPlan")
 			let planQuery = new Parse.Query(SubscriptionPlan)
 
-			// Get the subscription plan using its ID
 			planQuery.get(selectedPlan).then((plan) => {
-				// Now that we have the plan, get the user
 				let user = Parse.User.current()
-
-				// Update the user's subscriptionPlan
-				user.set("subscriptionPlan", plan.id)
+				user.set("subscriptionPlan", plan)
 				user.save()
 				this.fetchCurrentUser()
 			})
-
 		},
 
 		getPlans () {
@@ -172,43 +167,37 @@ export const useAuthStore = defineStore({
 			const query = new Parse.Query(SubscriptionsPlan)
 
 			query.find().then((results) => {
-				results.forEach(plan => {
-					this.allPlans.push(plan.attributes)
-				})
-
-			}, (error) => {
-				// error is an instance of Parse.Error
-				console.error('Error while fetching SubscriptionsPlans: ', error)
+				this.allPlans = results
 			})
+		},
 
-		},
-		updateUserInfo (payload) {
+		addEmailTemplate (newTemplate) {
 			let user = Parse.User.current()
-			user.set('email', payload.email)
-			user.set('username', payload.userName)
-			user.set('firstName', payload.firstName)
-			user.set('lastName', payload.lastName)
-			try {
-				user.save()
-			} catch (err) {
-				console.log(err)
-			} finally {
-				this.fetchCurrentUser()
-			}
+			user.add("emailTemplates", newTemplate)
+			user.save()
 		},
-		updateBusinessDetails (payload) {
+
+		addPostTemplate (newTemplate) {
 			let user = Parse.User.current()
-			user.set('email', payload.email)
-			user.set('username', payload.userName)
-			user.set('firstName', payload.firstName)
-			user.set('lastName', payload.lastName)
-			try {
-				user.save()
-			} catch (err) {
-				console.log(err)
-			} finally {
-				this.fetchCurrentUser()
-			}
+			user.add("postTemplates", newTemplate)
+			user.save()
+		},
+
+		removeEmailTemplate (selectedTemplate) {
+			let user = Parse.User.current()
+			let templates = user.get("emailTemplates")
+			templates.splice(templates.indexOf(selectedTemplate), 1)
+			user.set("emailTemplates", templates)
+			user.save()
+		},
+
+		removePostTemplate (selectedTemplate) {
+			let user = Parse.User.current()
+			let templates = user.get("postTemplates")
+			templates.splice(templates.indexOf(selectedTemplate), 1)
+			user.set("postTemplates", templates)
+			user.save()
 		}
 	}
 })
+

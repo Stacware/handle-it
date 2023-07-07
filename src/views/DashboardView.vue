@@ -3,7 +3,7 @@
 		<h1 class="text-center my-5">Dashboard</h1>
 		<section class="row mb-5">
 			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
-				<FlippyCard :title="'Marketing Guide'" :count="currentUser.marketingPlan !== undefined ? 1 : 0" :total="1" @click="goToPage('marketing')" />
+				<FlippyCard :title="'Marketing Guide'" :count="requestsStore.marketingPlan !== undefined ? 1 : 0" :total="1" @click="goToPage('marketing')" />
 			</div>
 			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
 				<FlippyCard :title="'Email Templates'" :count="requestsStore.emailCount" :total="totalCount" @click="goToPage('email')" />
