@@ -121,11 +121,11 @@ export const useAuthStore = defineStore({
 
 				const postTemplateQuery = new Parse.Query("PostTemplates")
 				postTemplateQuery.equalTo("user", user)
-				const postTemplates = postTemplateQuery.find()
+				const postTemplates = await postTemplateQuery.find()
 
 				const websiteInfoQuery = new Parse.Query(WebsiteInfo)
 				websiteInfoQuery.equalTo("user", user)
-				const websiteInfo = websiteInfoQuery.first()
+				const websiteInfo = await websiteInfoQuery.first()
 
 				this.assignUserDetails(user, marketingPlan, emailTemplates, postTemplates, websiteInfo)
 
@@ -133,6 +133,7 @@ export const useAuthStore = defineStore({
 				localStorage.setItem('userId', user.id)
 			} catch (error) {
 				this.logInError = error
+				console.log(error)
 			}
 		},
 
