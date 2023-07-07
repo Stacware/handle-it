@@ -171,33 +171,33 @@ export const useAuthStore = defineStore({
 			})
 		},
 
-		addEmailTemplate (newTemplate) {
-			let user = Parse.User.current()
-			user.add("emailTemplates", newTemplate)
-			user.save()
-		},
+		// addEmailTemplate (newTemplate) {
+		// 	let user = Parse.User.current()
+		// 	user.add("emailTemplates", newTemplate)
+		// 	user.save()
+		// },
 
-		addPostTemplate (newTemplate) {
-			let user = Parse.User.current()
-			user.add("postTemplates", newTemplate)
-			user.save()
-		},
+		// addPostTemplate (newTemplate) {
+		// 	let user = Parse.User.current()
+		// 	user.add("postTemplates", newTemplate)
+		// 	user.save()
+		// },
 
-		removeEmailTemplate (selectedTemplate) {
-			let user = Parse.User.current()
-			let templates = user.get("emailTemplates")
-			templates.splice(templates.indexOf(selectedTemplate), 1)
-			user.set("emailTemplates", templates)
-			user.save()
-		},
+		// removeEmailTemplate (selectedTemplate) {
+		// 	let user = Parse.User.current()
+		// 	let templates = user.get("emailTemplates")
+		// 	templates.splice(templates.indexOf(selectedTemplate), 1)
+		// 	user.set("emailTemplates", templates)
+		// 	user.save()
+		// },
 
-		removePostTemplate (selectedTemplate) {
-			let user = Parse.User.current()
-			let templates = user.get("postTemplates")
-			templates.splice(templates.indexOf(selectedTemplate), 1)
-			user.set("postTemplates", templates)
-			user.save()
-		}
+		// removePostTemplate (selectedTemplate) {
+		// 	let user = Parse.User.current()
+		// 	let templates = user.get("postTemplates")
+		// 	templates.splice(templates.indexOf(selectedTemplate), 1)
+		// 	user.set("postTemplates", templates)
+		// 	user.save()
+		// }
 	}
 })
 
