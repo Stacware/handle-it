@@ -40,14 +40,17 @@ export default {
 			loadingMessageIndex: 0,
 			};
 	},
+	created() {
+		if (this.loaderContent === 0) {
+				this.loadingMessages == loaderMessages.postLoaderMessages
+				console.log(this.loadingMessages)
+			}
+	},
 	computed: {
 		loadingMessage() {
 		if (this.loadStatus === true) {
 			this.pandaStore.updateImageIndex(4)		
-			if (this.loaderContent === 0) {
-				this.loadingMessages == loaderMessages.postLoaderMessages
-				console.log(this.loaderMessages)
-			}
+
 			return this.loadingMessages;
 		} else if (this.loadStatus === false) {
 			return 'Viola!';

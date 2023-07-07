@@ -135,7 +135,7 @@ export default {
 			postIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			imageStyle: null,
 			imageStyleOpts: ['Digital Art', 'Cartoon', 'Realistic', 'Futuristic', 'Robot', 'Anything'],
-			loading: true,
+			loading: false,
 			loader: 0,
 			openModal: false,
 			editPost: null,
@@ -215,6 +215,7 @@ export default {
 				userId: this.authStore.userId,
 			};
 			this.requestsStore.startPostTemplates(payload);
+			this.targetAudience = null;
 		},
 		async saveEditImpl(content, id) {
 			const templates = this.postTemplates;

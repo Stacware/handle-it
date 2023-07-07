@@ -80,9 +80,25 @@ export const useGptRequestsStore = defineStore({
 				const response = await Parse.Cloud.run('getPosts', payload)
 				this.postTemplates = response.postTemplates
 				this.postCount = response.postCount
-				console.log(this.postCount)
 			} catch (error) {
 				console.error(error)
+			}
+		},
+
+		async saveEditedPost (payload, userId) {
+			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+			try {
+				const User = new Parse.User()
+				const query = new Parse.Query(User)
+
+				query.get(userId)
+					.then((user) => {
+						user.set('postTemplates', payload)
+						user.save()
+					})
+				// this.userLoading = false
+			} catch (error) {
+				console.error('Failed to parse the stored user:', error)
 			}
 		},
 
