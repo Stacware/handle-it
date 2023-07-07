@@ -37,7 +37,6 @@ export default {
 			authStore: useAuthStore(),
 			industry: this.currentUser.industry,
 			targetAudience: 'small businesses and millenials',
-			loading: false,
 			loadStatus: null,
 			loadStatus: 'Checking your info...',
 		};
@@ -50,6 +49,9 @@ export default {
 	computed: {
 		marketingPlan() {
 			return this.requestsStore.returnMarketingPlan;
+		},
+		loading() {
+			return this.requestsStore.marketingLoading;
 		},
 	},
 	methods: {

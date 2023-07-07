@@ -2,7 +2,7 @@
 	<div>
 		<div v-if="info" class="text-center my-5">
 			<h2>Website</h2>
-			<h5>info for {{ userWebsite }}</h5>
+			<h5>info for {{ currentUser?.websiteURL || userWebsite }}</h5>
 		</div>
 		<div v-if="!info">
 			<h5 class="text-center">Enter your website URL to get detailed information</h5>
@@ -83,7 +83,7 @@ export default {
 			userWebsite: null,
 		};
 	},
-	inject: ['userId', 'plan'],
+	inject: ['userId', 'plan', 'currentUser'],
 	computed: {
 		moment: () => moment,
 		info() {

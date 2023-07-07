@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<div v-if="authStore.allPlans.length !== 0 && planChoice === null" class="cards-container container" :class="[lgScreen ? 'lg-container' : 'reg-container']">
-			<UpgradeCard :plans="planFree[0]" class="m-auto" />
-			<UpgradeCard :plans="planStarter[0]" class="m-auto" />
-			<UpgradeCard :plans="planBusiness[0]" class="m-auto" />
+			<UpgradeCard :plans="planFree[0].attributes" class="m-auto" />
+			<UpgradeCard :plans="planStarter[0].attributes" class="m-auto" />
+			<UpgradeCard :plans="planBusiness[0].attributes" class="m-auto" />
 		</div>
 	</div>
 </template>
@@ -28,13 +28,13 @@ export default {
 	},
 	computed: {
 		planFree() {
-			return this.authStore.allPlans.filter((plan) => plan.Name === 'Free');
+			return this.authStore.allPlans.filter((plan) => plan.attributes.Name === 'Free');
 		},
 		planStarter() {
-			return this.authStore.allPlans.filter((plan) => plan.Name === 'Starter');
+			return this.authStore.allPlans.filter((plan) => plan.attributes.Name === 'Starter');
 		},
 		planBusiness() {
-			return this.authStore.allPlans.filter((plan) => plan.Name === 'Business');
+			return this.authStore.allPlans.filter((plan) => plan.attributes.Name === 'Business');
 		},
 	},
 	methods: {

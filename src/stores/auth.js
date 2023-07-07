@@ -6,6 +6,7 @@ import { useStripeStore } from './stripe.js'
 
 const User = Parse.User
 const MarketingPlans = Parse.Object.extend("MarketingPlans")
+const WebsiteInfo = Parse.Object.extend("WebsiteInfo")
 
 export const useAuthStore = defineStore({
 	id: 'auth',
@@ -41,7 +42,7 @@ export const useAuthStore = defineStore({
 	},
 
 	actions: {
-		assignUserDetails (user, marketingPlan, emailTemplates, postTemplates) {
+		assignUserDetails (user, marketingPlan, emailTemplates, postTemplates, websiteInfo) {
 			const requestsStore = useGptRequestsStore()
 			const websiteStore = useWebsiteStore()
 
@@ -59,8 +60,11 @@ export const useAuthStore = defineStore({
 				requestsStore.postCount = user.attributes.postCount
 			}
 
+			if (websiteInfo) {
+				websiteStore.websiteInfo = websiteInfo.get("results")
+			}
+
 			this.currentUser = user.attributes
-			websiteStore.websiteInfo = user.attributes.websiteInfo
 			this.userId = user.id
 			this.sessionToken = user.get('sessionToken')
 			let plan = user.get("subscriptionPlan")
@@ -89,8 +93,12 @@ export const useAuthStore = defineStore({
 					postTemplateQuery.equalTo("user", User.createWithoutData(userId))
 					const postTemplatesPromise = postTemplateQuery.find()
 
-					const [user, marketingPlan, emailTemplates, postTemplates] = await Promise.all([userPromise, marketingPlanPromise, emailTemplatesPromise, postTemplatesPromise])
-					this.assignUserDetails(user, marketingPlan, emailTemplates, postTemplates)
+					const websiteInfoQuery = new Parse.Query(WebsiteInfo)
+					websiteInfoQuery.equalTo("user", User.createWithoutData(userId))
+					const websiteInfoPromise = websiteInfoQuery.first()
+
+					const [user, marketingPlan, emailTemplates, postTemplates, websiteInfo] = await Promise.all([userPromise, marketingPlanPromise, emailTemplatesPromise, postTemplatesPromise, websiteInfoPromise])
+					this.assignUserDetails(user, marketingPlan, emailTemplates, postTemplates, websiteInfo)
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
 				}
@@ -112,10 +120,14 @@ export const useAuthStore = defineStore({
 				const emailTemplates = await emailTemplateQuery.find()
 
 				const postTemplateQuery = new Parse.Query("PostTemplates")
-				postTemplateQuery.equalTo("user", User.createWithoutData(userId))
+				postTemplateQuery.equalTo("user", user)
 				const postTemplates = postTemplateQuery.find()
 
-				this.assignUserDetails(user, marketingPlan, emailTemplates, postTemplates)
+				const websiteInfoQuery = new Parse.Query(WebsiteInfo)
+				websiteInfoQuery.equalTo("user", user)
+				const websiteInfo = websiteInfoQuery.first()
+
+				this.assignUserDetails(user, marketingPlan, emailTemplates, postTemplates, websiteInfo)
 
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)
@@ -176,6 +188,7 @@ export const useAuthStore = defineStore({
 			const query = new Parse.Query(SubscriptionsPlan)
 
 			query.find().then((results) => {
+				console.log(results)
 				this.allPlans = results
 			})
 		},
