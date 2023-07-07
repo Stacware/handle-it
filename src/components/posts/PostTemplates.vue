@@ -37,15 +37,12 @@
 				<div class="col-12 col-lg-8">
 					<!-- Post Templates -->
 					<div class="d-flex justify-content-center">
-						<pagination
-						:perPage="perPage"
-						:totalItems="this.postTemplates.length"
-						@paginatedItems="displayPages"/>
+						<pagination :perPage="perPage" :totalItems="this.postTemplates.length" @paginatedItems="displayPages" />
 					</div>
 					<div class="w-100">
 						<div v-if="postTemplates" class="marketing-guide">
 							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
-								<h3>Post #{{ index + 1+ (currentPage - 1) * perPage }}</h3>
+								<h3>Post #{{ index + 1 + (currentPage - 1) * perPage }}</h3>
 								<p>{{ template.id }}</p>
 								<div v-if="editPost === template.id">
 									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, template.id)" />
@@ -120,7 +117,7 @@ export default {
 		ShineButton,
 		ShineCloseButton,
 	},
-	inject: ['currentUser', 'plan', 'totalCount', 'userId',],
+	inject: ['currentUser', 'plan', 'totalCount', 'userId'],
 
 	data() {
 		return {
@@ -135,7 +132,6 @@ export default {
 			postIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			imageStyle: null,
 			imageStyleOpts: ['Digital Art', 'Cartoon', 'Realistic', 'Futuristic', 'Robot', 'Anything'],
-			loadStatus: null,
 			loader: 0,
 			openModal: false,
 			editPost: null,
@@ -162,7 +158,6 @@ export default {
 		// }
 	},
 	watch: {
-
 		// plan() {
 		// 	switch (this.plan.Name) {
 		// 		case 'Admin':
@@ -220,7 +215,7 @@ export default {
 		async saveEditImpl(content, id) {
 			const templates = this.postTemplates;
 			// templates[index].content = content.replace(/<[^>]*>/g, '');
-			const editTemplate = templates.find(template => template.id === id); //set found template with matching UUID to editTemplate
+			const editTemplate = templates.find((template) => template.id === id); //set found template with matching UUID to editTemplate
 			editTemplate.content = content.replace(/<[^>]*>/g, '');
 			this.requestsStore.saveEditedPost(templates, this.userId);
 			this.isSaved = true;

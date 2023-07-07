@@ -41,7 +41,7 @@ export const useAuthStore = defineStore({
 	},
 
 	actions: {
-		assignUserDetails (user, marketingPlan, emailTemplates) {
+		assignUserDetails (user, marketingPlan, emailTemplates, postTemplates) {
 			const requestsStore = useGptRequestsStore()
 			const websiteStore = useWebsiteStore()
 
@@ -50,13 +50,14 @@ export const useAuthStore = defineStore({
 			}
 
 			if (emailTemplates.length) {
-				requestsStore.emailTemplates = emailTemplates.map(template => template.get('plan'))
+				requestsStore.emailTemplates = emailTemplates.map(template => template.get('template'))
 				requestsStore.emailCount = user.attributes.emailCount
 			}
 
-			if (user.attributes.postTemplates !== undefined) requestsStore.postTemplates = user.attributes.postTemplates
-			requestsStore.postCount = user.attributes.postCount
-			requestsStore.postConversation = user.attributes.postConversation
+			if (postTemplates.length) {
+				requestsStore.postTemplates = postTemplates.map(template => template.get('template'))
+				requestsStore.postCount = user.attributes.postCount
+			}
 
 			this.currentUser = user.attributes
 			websiteStore.websiteInfo = user.attributes.websiteInfo
@@ -84,8 +85,12 @@ export const useAuthStore = defineStore({
 					emailTemplateQuery.equalTo("user", User.createWithoutData(userId))
 					const emailTemplatesPromise = emailTemplateQuery.find()
 
-					const [user, marketingPlan, emailTemplates] = await Promise.all([userPromise, marketingPlanPromise, emailTemplatesPromise])
-					this.assignUserDetails(user, marketingPlan, emailTemplates)
+					const postTemplateQuery = new Parse.Query("PostTemplates")
+					postTemplateQuery.equalTo("user", User.createWithoutData(userId))
+					const postTemplatesPromise = postTemplateQuery.find()
+
+					const [user, marketingPlan, emailTemplates, postTemplates] = await Promise.all([userPromise, marketingPlanPromise, emailTemplatesPromise, postTemplatesPromise])
+					this.assignUserDetails(user, marketingPlan, emailTemplates, postTemplates)
 				} catch (error) {
 					console.error('Failed to parse the stored user:', error)
 				}
@@ -106,7 +111,11 @@ export const useAuthStore = defineStore({
 				emailTemplateQuery.equalTo("user", user)
 				const emailTemplates = await emailTemplateQuery.find()
 
-				this.assignUserDetails(user, marketingPlan, emailTemplates)
+				const postTemplateQuery = new Parse.Query("PostTemplates")
+				postTemplateQuery.equalTo("user", User.createWithoutData(userId))
+				const postTemplates = postTemplateQuery.find()
+
+				this.assignUserDetails(user, marketingPlan, emailTemplates, postTemplates)
 
 				localStorage.setItem('currentUser', JSON.stringify(user))
 				localStorage.setItem('userId', user.id)

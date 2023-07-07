@@ -6,7 +6,7 @@ export const useGptRequestsStore = defineStore({
 
 	state: () => ({
 		marketingPlan: null,
-		postTemplates: null,
+		postTemplates: [],
 		postCount: 0,
 		postConversation: [],
 		postLoading: false,
