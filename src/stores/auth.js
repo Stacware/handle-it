@@ -196,6 +196,50 @@ export const useAuthStore = defineStore({
 				this.allPlans = results
 			})
 		},
+		async updateBusinessDetails (payload) {
+
+			const query = new Parse.Query(User)
+
+			query.get(payload.userId)
+				.then((user) => {
+					// Update the user details
+					user.set('industry', payload.industry)
+					user.set('companyName', payload.companyName)
+					user.set('subSector', payload.subSector)
+
+					return user.save()
+				})
+				.then((response) => {
+					this.fetchCurrentUser()
+					console.log('Updated user', response)
+				})
+				.catch((error) => {
+					console.error('Error while updating user: ', error)
+				})
+		},
+		async updateUserInfo (payload) {
+
+			const query = new Parse.Query(User)
+
+			query.get(payload.userId)
+				.then((user) => {
+					// Update the user details
+					user.set('email', payload.email)
+					user.set('username', payload.username)
+					user.set('firstName', payload.firstName)
+					user.set('lastName', payload.lastName)
+
+					return user.save()
+				})
+				.then((response) => {
+					this.fetchCurrentUser()
+					console.log('Updated user', response)
+				})
+				.catch((error) => {
+					console.error('Error while updating user: ', error)
+				})
+		}
+
 
 		// addEmailTemplate (newTemplate) {
 		// 	let user = Parse.User.current()

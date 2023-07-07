@@ -53,7 +53,7 @@ export default {
 			const payload = {
 				userId: this.userId,
 				email: this.userEmail,
-				userName: this.userEmail,
+				username: this.userEmail,
 				firstName: this.userFirstName,
 				lastName: this.userLastName,
 			};
