@@ -135,7 +135,7 @@ export default {
 			postIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			imageStyle: null,
 			imageStyleOpts: ['Digital Art', 'Cartoon', 'Realistic', 'Futuristic', 'Robot', 'Anything'],
-			loading: false,
+			loadStatus: null,
 			loader: 0,
 			openModal: false,
 			editPost: null,
@@ -162,9 +162,7 @@ export default {
 		// }
 	},
 	watch: {
-		postTemplates(val) {
-			if (val) this.loading = false;
-		},
+
 		// plan() {
 		// 	switch (this.plan.Name) {
 		// 		case 'Admin':
@@ -182,8 +180,11 @@ export default {
 		// },
 	},
 	computed: {
+		loading() {
+			return this.requestsStore.postLoading;
+		},
 		postTemplates() {
-			return this.requestsStore.returnPostTemplates;
+			return this.requestsStore.returnPostTemplates.reverse();
 		},
 		postCount() {
 			return this.requestsStore.returnPostCount;
@@ -200,7 +201,6 @@ export default {
 			return new Promise((resolve) => setTimeout(resolve, ms));
 		},
 		async getPostTemplates() {
-			this.loading = true;
 			this.openModal = false;
 
 			let conversation = this.requestsStore.postConversation || [];
