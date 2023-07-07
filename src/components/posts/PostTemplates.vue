@@ -36,11 +36,29 @@
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<!-- Post Templates -->
+					<div class="d-flex justify-content-center">
+						<pagination
+						:perPage="perPage"
+						:totalItems="this.postTemplates.length"
+						@paginatedItems="displayPages"/>
+					</div>
 					<div class="w-100">
 						<div v-if="postTemplates" class="marketing-guide">
 							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
-								<h3>Post #{{ index + 1 }}</h3>
-								{{ template.content }}
+								<h3>Post #{{ index + 1+ (currentPage - 1) * perPage }}</h3>
+								<p>{{ template.id }}</p>
+								<div v-if="editPost === template.id">
+									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, template.id)" />
+									<!-- <ShineButton :title="'Save'" @click="savePost(index)" /> -->
+									<div class="d-flex">
+										<ShineCloseButton :title="'Cancel'" @click="editPost = null" />
+										<h6 v-show="isSaved" class="text-success mb-0 ms-2 align-self-center">SAVED!</h6>
+									</div>
+								</div>
+								<div v-else>
+									{{ template.content }}
+									<ShineButton :title="'Edit'" @click="editPost = template.id" />
+								</div>
 							</div>
 						</div>
 					</div>
@@ -66,7 +84,7 @@
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<div>
-						<LoadingHand :loadStatus="loading" :loaderContent="posts" />
+						<LoadingHand :loadStatus="loading" :loaderContent="loader" />
 					</div>
 				</div>
 			</div>
@@ -80,6 +98,8 @@ import { useAuthStore } from '@/stores/auth.js';
 import LoadingHand from '@/components/ui/LoadingHand.vue';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
 import Pagination from '../ui/Pagination.vue';
+import ShineButton from '@/components/ui/ShineButton.vue';
+import ShineCloseButton from '@/components/ui/ShineCloseButton.vue';
 
 function debounce(func, wait) {
 	let timeout;
@@ -97,8 +117,10 @@ export default {
 		LoadingHand,
 		FlippyButton,
 		Pagination,
+		ShineButton,
+		ShineCloseButton,
 	},
-	inject: ['currentUser', 'plan', 'totalCount'],
+	inject: ['currentUser', 'plan', 'totalCount', 'userId',],
 
 	data() {
 		return {
@@ -113,8 +135,8 @@ export default {
 			postIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			imageStyle: null,
 			imageStyleOpts: ['Digital Art', 'Cartoon', 'Realistic', 'Futuristic', 'Robot', 'Anything'],
-			loading: false,
-			loaderContent: 'posts',
+			loadStatus: null,
+			loader: 0,
 			openModal: false,
 			editPost: null,
 			saveEdit: null,
@@ -140,9 +162,7 @@ export default {
 		// }
 	},
 	watch: {
-		postTemplates(val) {
-			if (val) this.loading = false;
-		},
+
 		// plan() {
 		// 	switch (this.plan.Name) {
 		// 		case 'Admin':
@@ -160,8 +180,11 @@ export default {
 		// },
 	},
 	computed: {
+		loading() {
+			return this.requestsStore.postLoading;
+		},
 		postTemplates() {
-			return this.requestsStore.returnPostTemplates;
+			return this.requestsStore.returnPostTemplates.reverse();
 		},
 		postCount() {
 			return this.requestsStore.returnPostCount;
@@ -177,11 +200,7 @@ export default {
 		sleep(ms) {
 			return new Promise((resolve) => setTimeout(resolve, ms));
 		},
-		displayList(pageNumber) {
-			this.currentPage = pageNumber;
-		},
 		async getPostTemplates() {
-			this.loading = true;
 			this.openModal = false;
 
 			let conversation = this.requestsStore.postConversation || [];
@@ -196,10 +215,13 @@ export default {
 				userId: this.authStore.userId,
 			};
 			this.requestsStore.startPostTemplates(payload);
+			this.targetAudience = null;
 		},
-		async saveEditImpl(content, index) {
+		async saveEditImpl(content, id) {
 			const templates = this.postTemplates;
-			templates[index].content = content.replace(/<[^>]*>/g, '');
+			// templates[index].content = content.replace(/<[^>]*>/g, '');
+			const editTemplate = templates.find(template => template.id === id); //set found template with matching UUID to editTemplate
+			editTemplate.content = content.replace(/<[^>]*>/g, '');
 			this.requestsStore.saveEditedPost(templates, this.userId);
 			this.isSaved = true;
 			await new Promise((resolve) => setTimeout(resolve, 4000)); // Adjust delay as needed

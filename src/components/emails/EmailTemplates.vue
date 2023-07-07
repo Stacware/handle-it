@@ -127,7 +127,6 @@ export default {
 			emailIntent: null,
 			emailIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			loadStatus: null,
-
 			openModal: false,
 			editEmail: null,
 			saveEdit: null,

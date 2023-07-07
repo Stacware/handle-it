@@ -9,6 +9,7 @@ export const useGptRequestsStore = defineStore({
 		postTemplates: null,
 		postCount: 0,
 		postConversation: [],
+		postLoading: false,
 		emailTemplates: [],
 		emailCount: 0,
 		emailConversation: [],
@@ -78,15 +79,33 @@ export const useGptRequestsStore = defineStore({
 			}
 		},
 		async startPostTemplates (payload) {
+			this.postLoading = true
 			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			Parse.serverURL = 'https://parseapi.back4app.com/'
 			try {
 				const response = await Parse.Cloud.run('getPosts', payload)
-				this.postTemplates = response.postTemplates
+				this.postTemplates.push(response.postTemplate)
 				this.postCount = response.postCount
-				console.log(this.postCount)
+				this.postLoading = false
 			} catch (error) {
 				console.error(error)
+			}
+		},
+
+		async saveEditedPost (payload, userId) {
+			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
+			try {
+				const User = new Parse.User()
+				const query = new Parse.Query(User)
+
+				query.get(userId)
+					.then((user) => {
+						user.set('postTemplates', payload)
+						user.save()
+					})
+				// this.userLoading = false
+			} catch (error) {
+				console.error('Failed to parse the stored user:', error)
 			}
 		},
 
