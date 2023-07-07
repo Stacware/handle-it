@@ -51,12 +51,12 @@ export const useAuthStore = defineStore({
 			}
 
 			if (emailTemplates.length) {
-				requestsStore.emailTemplates = emailTemplates.map(template => template.get('template'))
+				requestsStore.emailTemplates = emailTemplates.map(template => template.toJSON())
 				requestsStore.emailCount = user.attributes.emailCount
 			}
 
 			if (postTemplates.length) {
-				requestsStore.postTemplates = postTemplates.map(template => template.get('template'))
+				requestsStore.postTemplates = postTemplates.map(template => template.toJSON())
 				requestsStore.postCount = user.attributes.postCount
 			}
 

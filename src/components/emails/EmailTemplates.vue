@@ -40,9 +40,14 @@
 						<div v-if="emailTemplates" class="marketing-guide">
 							<div v-for="(template, index) in filteredList" :key="index" class="mt-4">
 								<h3>Email #{{ index + 1 + (currentPage - 1) * perPage }}</h3>
-								<p>{{ template.id }}</p>
-								<div v-if="editEmail === template.id">
-									<QuillEditor theme="snow" toolbar="full" :contentType="'html'" :content="template.content" @update:content="(content) => saveEdit(content, template.id)" />
+								<!-- <p>{{ template.id }}</p> -->
+								<div v-if="editEmail === template.objectId">
+									<QuillEditor
+										theme="snow"
+										toolbar="full"
+										:contentType="'html'"
+										:content="template.template.content"
+										@update:content="(content) => saveEdit(content, template.objectId)" />
 									<!-- <ShineButton :title="'Save'" @click="saveEmail(index)" /> -->
 									<div class="d-flex">
 										<ShineCloseButton :title="'Cancel'" @click="editEmail = null" />
@@ -50,8 +55,8 @@
 									</div>
 								</div>
 								<div v-else>
-									{{ template.content }}
-									<ShineButton :title="'Edit'" @click="editEmail = template.id" />
+									{{ template.template.content }}
+									<ShineButton :title="'Edit'" @click="editEmail = template.objectId" />
 								</div>
 							</div>
 						</div>
@@ -220,14 +225,8 @@ export default {
 			this.targetAudience = null;
 		},
 		async saveEditImpl(content, id) {
-			const templates = this.emailTemplates;
-
-			// templates[index].content = content.replace(/<[^>]*>/g, '');
-
-			const editTemplate = templates.find((template) => template.id === id); //set found template with matching UUID to editTemplate
-			editTemplate.content = content.replace(/<[^>]*>/g, '');
-
-			this.requestsStore.saveEditedEmail(templates, this.userId);
+			const updated = content.replace(/<[^>]*>/g, '');
+			this.requestsStore.saveEditedEmail(updated, id);
 			this.isSaved = true;
 			await new Promise((resolve) => setTimeout(resolve, 4000)); // Adjust delay as needed
 			this.isSaved = false;

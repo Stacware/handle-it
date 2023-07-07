@@ -65,21 +65,25 @@ export const useGptRequestsStore = defineStore({
 				console.error(error)
 			}
 		},
-		async saveEditedEmail (payload, userId) {
+		async saveEditedEmail (payload, id) {
 			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			try {
-				const User = new Parse.User()
-				const query = new Parse.Query(User)
+				const EmailTemplate = Parse.Object.extend('EmailTemplates')
+				const query = new Parse.Query(EmailTemplate)
 
-				query.get(userId)
-					.then((user) => {
-						user.set('emailTemplates', payload)
-						user.save()
-					})
-				// this.userLoading = false
+				const emailTemplate = await query.get(id)
+				emailTemplate.set('template', { content: payload })
+				await emailTemplate.save()
+				const index = this.emailTemplates.findIndex(template => template.objectId === id)
+				if (index !== -1) {
+					this.emailTemplates[index].template = { content: payload }
+				}
+				console.log('Email template updated successfully')
+
 			} catch (error) {
-				console.error('Failed to parse the stored user:', error)
+				console.error('Failed to update the email template:', error)
 			}
+
 		},
 		async startPostTemplates (payload) {
 			this.postLoading = true
@@ -95,22 +99,26 @@ export const useGptRequestsStore = defineStore({
 			}
 		},
 
-		async saveEditedPost (payload, userId) {
+		async saveEditedPost (payload, id) {
 			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
 			try {
-				const User = new Parse.User()
-				const query = new Parse.Query(User)
+				const PostTemplate = Parse.Object.extend('PostTemplates')
+				const query = new Parse.Query(PostTemplate)
 
-				query.get(userId)
-					.then((user) => {
-						user.set('postTemplates', payload)
-						user.save()
-					})
-				// this.userLoading = false
+				const postTemplate = await query.get(id)
+				postTemplate.set('template', { content: payload })
+				await postTemplate.save()
+				const index = this.postTemplates.findIndex(template => template.objectId === id)
+				if (index !== -1) {
+					this.postTemplates[index].template = { content: payload }
+				}
+				console.log('Post template updated successfully')
+
 			} catch (error) {
-				console.error('Failed to parse the stored user:', error)
+				console.error('Failed to update the post template:', error)
 			}
 		},
+
 
 		async getTaskStatus (userId) {
 			Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", 'A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ')
