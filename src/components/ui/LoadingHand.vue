@@ -17,7 +17,7 @@
 				</transition>
 			</div>
 			<div class="d-flex justify-content-center align-items-end">
-				<Panda :currentImageIndex="currentImageIndex" @mouseover="random"/>
+				<Panda :currentImageIndex="currentImageIndex" @mouseover="random" @mouseleave="random"/>
 				<span class="w-25">YO!</span>
 			</div>
 		</div>
