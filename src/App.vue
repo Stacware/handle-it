@@ -1,8 +1,9 @@
 <template>
 	<div class="app-container">
-		<Navbar />
+		<Navbar @help="start" />
 		<LoadingSpinner v-if="userLoading" class="spinner" />
-		<router-view v-if="!userLoading"></router-view>
+		<router-view v-if="!userLoading"> </router-view>
+		<v-tour name="newUser" :steps="steps" />
 		<FlippyButton
 			@click="upgradePlan"
 			@mouseenter="upgradeHover = true"
@@ -33,6 +34,57 @@ export default {
 			upgradeHover: false,
 			lgScreen: useMediaQuery('(min-width: 1024px)'),
 			totalCount: 1,
+			steps: [
+				{
+					target: '#step-1',
+					header: {
+						title: 'Welcome!',
+					},
+					content: 'Welcome to your dashboard!',
+					params: {
+						placement: 'top',
+					},
+				},
+				{
+					target: '#step-2',
+					header: {
+						title: 'Marketing Guide',
+					},
+					content: 'These cards display your total used/total allowed. Clicking this will take you to create/view your Marketing Guide, Strategy, and Analysis',
+					params: {
+						placement: 'top',
+					},
+				},
+				{
+					target: '#step-3',
+					header: {
+						title: 'Email Templates',
+					},
+					content: 'Create/View/Edit your email templates for marketing purposes.',
+					params: {
+						placement: 'top',
+					},
+				},
+				{
+					target: '#step-4',
+					header: {
+						title: 'Social Media Posts',
+					},
+					content: 'Create/View/Edit social media templates to post on all your socials. Short, simple and effective.',
+					params: {
+						placement: 'top',
+					},
+					// Change pages before showing this step and also do something after this step
+					// before: (type) =>
+					// 	new Promise(resolve => {
+					// 		resolve(this.$router.push('/'))
+					// 	}),
+					// after: (type) =>
+					// 	new Promise(resolve => {
+					// 		resolve(this.help = false)
+					// 	})
+				},
+			],
 		};
 	},
 	provide() {
@@ -46,6 +98,7 @@ export default {
 	},
 	created() {
 		this.authStore.getPlans();
+
 		// switch (this.plan.Name) {
 		// 	case 'Admin':
 		// 		this.totalCount = 100;
@@ -95,6 +148,9 @@ export default {
 		upgradePlan() {
 			this.$router.push({ name: 'upgrade', params: { userId: this.userId } });
 			console.log('upgrade works need to go to new page and implement stripe/venmo/paypal');
+		},
+		start() {
+			this.$tours['newUser'].start();
 		},
 	},
 };

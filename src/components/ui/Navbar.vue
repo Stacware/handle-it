@@ -5,7 +5,7 @@
 		</button>
 		<div class="container-fluid">
 			<div class="panda-container">
-				<Panda :currentImageIndex="currentImageIndex"/>
+				<Panda :currentImageIndex="currentImageIndex" />
 			</div>
 			<span class="navbar-brand mb-0 h1">market panda</span>
 			<div class="collapse navbar-collapse" :class="!visible ? 'collapse' : ''" id="navbarNav">
@@ -40,6 +40,11 @@
 					</li>
 				</ul>
 				<ul class="navbar-nav ms-auto">
+					<li v-if="userId" class="nav-item align-self-center me-3" :class="{ hovering: hovering }" @mouseenter="hovering = true" @mouseleave="hovering = false">
+						<!-- <div class="nav-link align-self-center"> -->
+						<i @click="$emit('help')" class="bi bi-question-circle-fill"></i>
+						<!-- </div> -->
+					</li>
 					<li v-if="userId" @mouseenter="linkHover = 'settings'" @mouseleave="linkHover = null" class="nav-item align-items-center">
 						<router-link @click="visible = !visible" :to="{ name: 'manage', params: { userId: userId } }" class="nav-link" :active-class="'text-primary'">
 							<!-- <i v-if="linkHover !== 'settings'" class="bi bi-gear-fill me-1"></i>
@@ -64,7 +69,6 @@
 
 <script>
 import { usePandaStore } from '@/stores/panda.js';
-import { inject } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
 import LogOutBtn from '@/components/ui/nav-buttons/LogOut.vue';
 import DashboardBtn from '@/components/ui/nav-buttons/DashboardBtn.vue';
@@ -72,7 +76,7 @@ import MarketingBtn from '@/components/ui/nav-buttons/MarketingBtn.vue';
 import EmailBtn from '@/components/ui/nav-buttons/EmailBtn.vue';
 import PostBtn from '@/components/ui/nav-buttons/PostBtn.vue';
 import AccountBtn from '@/components/ui/nav-buttons/AccountBtn.vue';
-import Panda from '@/components/ui/Panda.vue'
+import Panda from '@/components/ui/Panda.vue';
 export default {
 	name: 'Navbar',
 	components: {
@@ -82,8 +86,9 @@ export default {
 		MarketingBtn,
 		DashboardBtn,
 		LogOutBtn,
-		Panda
+		Panda,
 	},
+	emits: ['help'],
 	inject: ['plan', 'userId'],
 	data() {
 		return {
@@ -91,6 +96,7 @@ export default {
 			pandaStore: usePandaStore(),
 			linkHover: null,
 			visible: false,
+			hovering: false,
 		};
 	},
 	mounted() {
@@ -117,7 +123,7 @@ export default {
 		currentImageIndex() {
 			return this.pandaStore.currentImageIndex;
 		},
-	}
+	},
 };
 </script>
 
@@ -182,5 +188,10 @@ export default {
 
 .plan {
 	height: 56px;
+}
+
+.hovering {
+	color: #ac1cff;
+	cursor: pointer;
 }
 </style>

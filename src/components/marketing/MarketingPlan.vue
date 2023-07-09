@@ -61,7 +61,7 @@ export default {
 		async createMarketingPlan() {
 			this.loading = true;
 			const payload = {
-				payload: `Please generate a comprehensive marketing guide, strategy, and market analysis for a company operating in the ${this.industry} industry and targeting the ${this.targetAudience}.`,
+				payload: `Please generate a comprehensive marketing guide, strategy, and market analysis for a company operating in the ${this.industry} industry.`,
 				userId: this.authStore.userId,
 			};
 			// 	const payload = {

@@ -23,6 +23,10 @@ import Parse from 'parse/dist/parse.min.js'
 Parse.initialize("MrMgKMNOEjpVUlPbhbrYxdRbQAhkQZYXpByLKQzU", "A5lGWDlQV0fnIbLCeREL1MpgtTXuq7q8qYsLHjmZ")
 Parse.serverURL = "https://parseapi.back4app.com"
 
+import VueTour from 'v3-tour'
+
+import 'v3-tour/dist/vue-tour.css'
+
 const app = createApp(App)
 
 app.component('base-modal', BaseModal)
@@ -31,6 +35,7 @@ app.component('QuillEditor', QuillEditor)
 
 app.use(createPinia())
 app.use(router)
+app.use(VueTour)
 app.mixin({
 	methods: {
 		formatMessage (message) {

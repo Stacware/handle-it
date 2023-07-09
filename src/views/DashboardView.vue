@@ -1,15 +1,20 @@
 <template>
 	<div v-if="currentUser" class="container">
-		<h1 class="text-center my-5">Dashboard</h1>
+		<h1 class="text-center my-5" id="step-1">Dashboard</h1>
 		<section class="row mb-5">
 			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
-				<FlippyCard :title="'Marketing Guide'" :count="requestsStore.marketingPlan !== undefined && requestsStore.marketingPlan !== null ? 1 : 0" :total="1" @click="goToPage('marketing')" />
+				<FlippyCard
+					id="step-2"
+					:title="'Marketing Guide'"
+					:count="requestsStore.marketingPlan !== undefined && requestsStore.marketingPlan !== null ? 1 : 0"
+					:total="1"
+					@click="goToPage('marketing')" />
 			</div>
 			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
-				<FlippyCard :title="'Email Templates'" :count="requestsStore.emailCount" :total="totalCount" @click="goToPage('email')" />
+				<FlippyCard id="step-3" :title="'Email Templates'" :count="requestsStore.emailCount" :total="totalCount" @click="goToPage('email')" />
 			</div>
 			<div class="col-12 col-md-4 mb-4 d-flex align-items-center justify-content-center">
-				<FlippyCard :title="'Social Media'" :count="requestsStore.postCount" :total="totalCount" @click="goToPage('post')" />
+				<FlippyCard id="step-4" :title="'Social Media'" :count="requestsStore.postCount" :total="totalCount" @click="goToPage('post')" />
 			</div>
 			<!-- <article class="marketing col-12">
 				<MarketingPlan />
