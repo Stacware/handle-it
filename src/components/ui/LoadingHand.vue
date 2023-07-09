@@ -44,6 +44,10 @@ export default {
 		if (this.loaderContent === 0) {
 				this.loadingMessages == loaderMessages.postLoaderMessages
 				console.log(this.loadingMessages)
+			}else if(this.loaderContent === 1){
+				this.loadingMessages == loaderMessages.emailLoaderMessages
+			}else{
+				this.loadingMessages == loaderMessages.marketLoaderMessages
 			}
 	},
 	computed: {
@@ -51,7 +55,7 @@ export default {
 		if (this.loadStatus === true) {
 			this.pandaStore.updateImageIndex(4)		
 
-			return this.loadingMessages;
+			return this.loadingMessages[this.loadingMessageIndex];
 		} else if (this.loadStatus === false) {
 			return 'Viola!';
 		} else {
