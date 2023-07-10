@@ -84,6 +84,21 @@ export default {
 					// 		resolve(this.help = false)
 					// 	})
 				},
+				{
+					target: '#step-5',
+					header: {
+						title: 'Welcome to your Marketing Guide!',
+					},
+					content: 'Here you can create and view your tailored Marketing Guide, Strategy, and Analysis for your industry!',
+					params: {
+						placement: 'top',
+					},
+					// Change pages before showing this step and also do something after this step
+					before: (type) =>
+						new Promise((resolve) => {
+							resolve(this.$router.push({ name: 'marketing', params: { userId: this.userId } }));
+						}),
+				},
 			],
 		};
 	},
@@ -150,7 +165,12 @@ export default {
 			console.log('upgrade works need to go to new page and implement stripe/venmo/paypal');
 		},
 		start() {
-			this.$tours['newUser'].start();
+			if (this.$route.name.includes('dashboard')) {
+				this.$tours['newUser'].start();
+			} else {
+				this.$router.push({ name: 'dashboard', params: { userId: this.userId } });
+				this.$tours['newUser'].start();
+			}
 		},
 	},
 };
@@ -158,7 +178,7 @@ export default {
 
 <style scoped>
 .app-container {
-	height: 100vh;
+	min-height: 100vh;
 }
 .spinner {
 	margin: 40vh auto;

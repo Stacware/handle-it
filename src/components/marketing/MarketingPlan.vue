@@ -1,17 +1,18 @@
 <template>
 	<div v-if="currentUser">
-		<h1 class="text-center">{{ marketingPlan ? 'Marketing' : 'Create a Marketing Plan' }}</h1>
-		<div class="center-content" :class="{ main: !marketingPlan }">
+		<h1 id="step-5" class="text-center">{{ marketingPlan ? 'Marketing' : 'Create a Marketing Plan' }}</h1>
+		<div class="center-content mb-5" :class="{ main: !marketingPlan }">
 			<FlippyButton v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" :title="'Create'" class="mb-5 mt-2" />
 			<!-- <button v-if="!loading && marketingPlan === null && $route.name !== 'dashboard'" @click="createMarketingPlan" class="btn btn-sm btn-outline-primary">Create Marketing Plan</button> -->
 			<div v-if="loading">
 				<LoadingHand :loadStatus="loading" @stop-loading="loading = false" />
 			</div>
 			<div v-if="marketingPlan" class="marketing-guide container">
-				<h1>{{ title }}</h1>
+				<!-- <h1>{{ title }}</h1>
 				<div v-for="(paragraph, index) in paragraphs" :key="index">
 					<p>{{ paragraph }}</p>
-				</div>
+				</div> -->
+				<QuillEditor theme="bubble" :readOnly="true" :contentType="'html'" :content="marketingPlan" />
 			</div>
 		</div>
 	</div>
@@ -21,7 +22,7 @@
 import { useGptRequestsStore } from '@/stores/gptRequests.js';
 import { useAuthStore } from '@/stores/auth.js';
 import LoadingHand from '@/components/ui/LoadingHand.vue';
-import { marketingGuideMixin } from '@/components/mixins/marketingGuideMixin';
+// import { marketingGuideMixin } from '@/components/mixins/marketingGuideMixin';
 import FlippyButton from '@/components/ui/FlippyButton.vue';
 
 export default {
@@ -29,7 +30,7 @@ export default {
 		LoadingHand,
 		FlippyButton,
 	},
-	mixins: [marketingGuideMixin],
+	// mixins: [marketingGuideMixin],
 	inject: ['currentUser'],
 	data() {
 		return {
@@ -59,7 +60,6 @@ export default {
 			return new Promise((resolve) => setTimeout(resolve, ms));
 		},
 		async createMarketingPlan() {
-			this.loading = true;
 			const payload = {
 				payload: `Please generate a comprehensive marketing guide, strategy, and market analysis for a company operating in the ${this.industry} industry.`,
 				userId: this.authStore.userId,
@@ -103,7 +103,7 @@ export default {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 88vh;
+	height: 100vh;
 }
 
 .center-content {
