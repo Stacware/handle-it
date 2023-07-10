@@ -83,7 +83,7 @@
 			<div class="row justify-content-center mt-4">
 				<div class="col-12 col-lg-8">
 					<div>
-						<LoadingHand :loadStatus="loading" />
+						<LoadingHand :loadStatus="loading" :loaderContent="loader" />
 					</div>
 				</div>
 			</div>
@@ -133,6 +133,7 @@ export default {
 			emailIntentOpts: ['Visit my website', 'Purchase my product(s)', 'Follow my socials'],
 			loadStatus: null,
 			openModal: false,
+			loader: 1,
 			editEmail: null,
 			saveEdit: null,
 			isSaved: false,

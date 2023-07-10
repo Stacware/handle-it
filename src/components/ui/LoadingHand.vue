@@ -42,21 +42,29 @@ export default {
 	},
 	created() {
 		if (this.loaderContent === 0) {
-				this.loadingMessages == loaderMessages.postLoaderMessages
+				this.loadingMessages = loaderMessages.postLoaderMessages
 				console.log(this.loadingMessages)
+			}else if(this.loaderContent === 1){
+				this.loadingMessages = loaderMessages.emailLoaderMessages
+			}else{
+				this.loadingMessages = loaderMessages.marketLoaderMessages
 			}
 	},
 	computed: {
 		loadingMessage() {
-		if (this.loadStatus === true) {
-			this.pandaStore.updateImageIndex(4)		
+			if (this.loadStatus === true) {
+				this.pandaStore.updateImageIndex(4);
 
-			return this.loadingMessages;
-		} else if (this.loadStatus === false) {
-			return 'Viola!';
-		} else {
-			this.stopLoading();
-		}
+				if (this.loadingMessages.length > 0) {
+				return this.loadingMessages[this.loadingMessageIndex];
+				} else {
+				return 'Loading...'; // Default loading message if the array is empty
+				}
+			} else if (this.loadStatus === false) {
+				return 'Viola!';
+			} else {
+				this.stopLoading();
+			}
 		},
 		currentImageIndex() {
 			return this.pandaStore.currentImageIndex;
